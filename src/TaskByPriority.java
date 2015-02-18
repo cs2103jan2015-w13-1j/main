@@ -11,6 +11,14 @@ public class TaskByPriority {
 	private ArrayList<Integer> toDoList = new ArrayList<Integer>();
 	private ArrayList<Integer> archivedtaskList = new ArrayList<Integer>();
 	
+	/**
+	 * Construct by specifying the priority
+	 * @param priority
+	 */
+	public TaskByPriority(int priority){
+		this.priority = priority;
+	}
+	
 	public int getProirity(){
 		return this.priority;
 	}

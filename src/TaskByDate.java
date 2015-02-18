@@ -11,6 +11,14 @@ public class TaskByDate {
 	private ArrayList<Integer> toDoList = new ArrayList<Integer>();
 	private ArrayList<Integer> archivedtaskList = new ArrayList<Integer>();
 	
+	/**
+	 * Construct an new instance by specifying a date
+	 * @param date
+	 */
+	public TaskByDate(Date date){
+		this.date = date;
+	}
+	
 	public Date getDate(){
 		return this.date;
 	}
