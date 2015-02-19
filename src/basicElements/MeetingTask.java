@@ -1,3 +1,4 @@
+package basicElements;
 import java.util.*;
 
 /**
@@ -12,7 +13,7 @@ public class MeetingTask extends Task{
 	
 	private Date startTime;
 	private Date endTime;
-	protected static String type = "DeadlineTask";
+	protected static String type = "MeetingTask";
 	
 	/**
 	 * The Constructor for a task

@@ -1,3 +1,5 @@
+import hashMaps.TaskList;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,6 +16,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import basicElements.Task;
 
 /*
  * @author: Esmond Peh

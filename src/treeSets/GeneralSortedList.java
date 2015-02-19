@@ -1,4 +1,7 @@
+package treeSets;
 import java.util.*;
+
+import basicElements.Task;
 
 /**
  * General sorted list used to store the tasks in sorted order when the program is running

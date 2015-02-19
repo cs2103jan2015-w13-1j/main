@@ -1,4 +1,7 @@
+package hashMaps;
 import java.util.*;
+
+import basicElements.TaskByPriority;
 
 public class PriorityList extends HashMap<Integer, TaskByPriority>{
 	

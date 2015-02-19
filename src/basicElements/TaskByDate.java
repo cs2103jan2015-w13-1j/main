@@ -1,4 +1,5 @@
-import java.util.*;
+package basicElements;
+
 
 /**
  * Used to store the id's of tasks on a particular date.
@@ -7,17 +8,16 @@ import java.util.*;
  */
 
 public class TaskByDate extends TaskByProperty {
-	private Date date;
-	
+	private String date;
 	/**
 	 * Construct an new instance by specifying a date
 	 * @param date
 	 */
-	public TaskByDate(Date date){
+	public TaskByDate(String date){
 		this.date = date;
 	}
 	
-	public Date getDate(){
+	public String getDate(){
 		return this.date;
 	}
 }

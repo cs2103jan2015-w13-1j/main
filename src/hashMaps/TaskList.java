@@ -1,4 +1,7 @@
+package hashMaps;
 import java.util.*;
+
+import basicElements.Task;
 
 /**
  * Used for creating task lists for both todo list and archived list

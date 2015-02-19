@@ -1,4 +1,7 @@
+package hashMaps;
 import java.util.*;
+
+import basicElements.TaskByTag;
 
 public class TagList extends HashMap<String, TaskByTag>{
 	
