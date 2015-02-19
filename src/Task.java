@@ -38,6 +38,11 @@ public class Task {
 		}
 	}
 	
+	// Default constructor
+	public Task() {
+		
+	}
+	
 	public int getId(){
 		return this.id;
 	}
