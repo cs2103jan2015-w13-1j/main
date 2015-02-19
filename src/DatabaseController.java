@@ -77,14 +77,15 @@ public class DatabaseController {
 			throws java.text.ParseException {
 		int id = (int) (long) taskJSON.get("ID");
 		String description = (String) taskJSON.get("Description");
-		String string_date = (String) taskJSON.get("Deadline");
-		Date date = convertDateToString(string_date);
+//		String string_date = (String) taskJSON.get("Deadline");
+//		Date date = convertDateToString(string_date);
+		String type = (String) taskJSON.get("Type");
 		JSONArray tagsList = (JSONArray) taskJSON.get("tags");
 		ArrayList<String> tags = tagsList;
 		int priority = (int) (long) taskJSON.get("Priority");
 		boolean archived = (boolean) taskJSON.get("Archived");
 
-		Task task = new Task(id, description, date, priority, tags);
+		Task task = new Task(id, description, priority, tags);
 		if (archived == true) {
 			task.moveToArchive();
 		}
@@ -101,9 +102,12 @@ public class DatabaseController {
 	private static TaskList initialiseDummyDataForTesting() {
 		TaskList taskListHashMap = new TaskList();
 		
-		Task dummyTask = new Task(1, "dummy 1", new Date(), 1, null);
-		Task dummyTask2 = new Task(2, "dummy 2", new Date(), 2, null);
-		Task dummyTask3 = new Task(3, "dummy 3", new Date(), 3, null);
+		Task dummyTask = new Task(1, "dummy 1", 1, null);
+		Task dummyTask2 = new Task(2, "dummy 2", 2, null);
+		Task dummyTask3 = new Task(3, "dummy 3", 3, null);
+		dummyTask.addTag("Personal");
+		dummyTask3.addTag("Work");
+		dummyTask3.addTag("School");
 		
 		taskListHashMap.addTask(dummyTask.getId(), dummyTask);
 		taskListHashMap.addTask(dummyTask2.getId(), dummyTask2);
@@ -141,24 +145,25 @@ public class DatabaseController {
 	private static void addTaskToTaskListJSON(JSONObject taskListJSON,
 			Task task) {
 		
-		String reportDate = convertDateToString(task);
+//		String reportDate = convertDateToString(task);
 		
 		JSONObject newTask = new JSONObject();
 		newTask.put("ID", task.getId());
 		newTask.put("Description", task.getDescription());
-		newTask.put("Deadline", reportDate);
+//		newTask.put("Deadline", reportDate);
+		newTask.put("Type", task.getType());
 		newTask.put("Priority", task.getPriority());
 		newTask.put("Tags", task.getTags().toString());
 		newTask.put("Archived", task.isArchived());	
 		taskListJSON.put(task.getId(), newTask);
 	}
 
-	private static String convertDateToString(Task task) {
-		DateFormat df = new SimpleDateFormat(STRING_FORMAT_FOR_DATE);
-		Date today = task.getDeadline();
-		String reportDate = df.format(today);
-		return reportDate;
-	}
+//	private static String convertDateToString(Task task) {
+//		DateFormat df = new SimpleDateFormat(STRING_FORMAT_FOR_DATE);
+//		Date today = task.getDeadline();
+//		String reportDate = df.format(today);
+//		return reportDate;
+//	}
 
 	private static void initializeStorage() throws IOException {
 		// check if 5 tables exist, if not, create the tables.
