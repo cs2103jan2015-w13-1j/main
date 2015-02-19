@@ -51,11 +51,11 @@ public class DatabaseController {
 
 	private static void createStorage(String storageName) throws IOException {
 		File storageFile = new File(storageName);
-		analysisStorageDirectory(storageFile);
+		analyseStorageDirectory(storageFile);
 		storageFile.createNewFile();
 	}
 
-	private static void analysisStorageDirectory(File storageFile) {
+	private static void analyseStorageDirectory(File storageFile) {
 		if (storageFile.getParentFile() != null) {
 			storageFile.getParentFile().mkdirs();
 		}
