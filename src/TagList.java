@@ -22,5 +22,12 @@ public class TagList extends HashMap<String, TaskByTag>{
 		this.put(tag, taskBytag);
 	}
 	
+	public TaskByTag removeTag(String tag) {
+		return this.remove(tag);
+	}
 	
+	public void changeTagNmae(String originalTagName, String newTagName) {
+		TaskByTag taskByTag = this.removeTag(originalTagName);
+		this.addNewTag(newTagName, taskByTag);
+	}
 }
