@@ -6,6 +6,10 @@ public class TagList extends HashMap<String, TaskByTag>{
 		return this.containsKey(tag);
 	}
 	
+	public Set<String> getAllTags() {
+		return this.keySet();
+	}
+	
 	private TaskByTag getTaskWithTag(String tag){
 		return this.get(tag);
 	}
