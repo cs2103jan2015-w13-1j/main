@@ -5,9 +5,12 @@ import java.util.*;
  * @author Yichen
  */
 public class Task {
+	
+	private static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \nDate : %3$s \nPriority : %4$s \nTags : %5$s \nArchived : %6$s";
+	
 	private int id;
 	private String description;
-	private Date date;
+	private Date deadline;
 	private int priority = -1;
 	private ArrayList<String> tags = new ArrayList<String>();
 	private boolean archived = false;
@@ -26,7 +29,7 @@ public class Task {
 	public Task(int id, String description, Date date, int priority, ArrayList<String> tags){
 		this.id = id;
 		this.description = description;
-		this.date = date;
+		this.deadline = date;
 		if (priority > 0){
 			this.priority = priority;
 		}
@@ -43,8 +46,8 @@ public class Task {
 		return this.description;
 	}
 	
-	public Date getDate(){
-		return this.date;
+	public Date getDeadline(){
+		return this.deadline;
 	}
 	
 	public int getPriority(){
@@ -71,8 +74,8 @@ public class Task {
 	 * Change the date to the new date provided
 	 * @param newDate
 	 */	
-	public void changeDate(Date newDate){
-		this.date = newDate;
+	public void changeDeadline(Date newDate){
+		this.deadline = newDate;
 	}
 	
 	/**
@@ -111,5 +114,9 @@ public class Task {
 	 */
 	public void removeFromArchive(){
 		this.archived = false;
+	}
+	
+	public String toString() {
+		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(), getDeadline(), getPriority(), getTags(), isArchived());
 	}
 }
