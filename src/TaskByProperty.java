@@ -1,27 +1,17 @@
 import java.util.*;
 
 /**
- * Used to store the id's of tasks on a particular date.
+ * Used to store the id's of tasks with a particular tag.
  * Mainly for instant searching purpose
+ * The name of the tag can be changed
  * @author Yichen
  */
 
-public class TaskByDate {
-	private Date date;
+public class TaskByProperty {
 	private ArrayList<Integer> toDoList = new ArrayList<Integer>();
 	private ArrayList<Integer> archivedtaskList = new ArrayList<Integer>();
 	
-	/**
-	 * Construct an new instance by specifying a date
-	 * @param date
-	 */
-	public TaskByDate(Date date){
-		this.date = date;
-	}
-	
-	public Date getDate(){
-		return this.date;
-	}
+	protected TaskByProperty() {}
 	
 	public ArrayList<Integer> getToDoTaskIds(){
 		return this.toDoList;
