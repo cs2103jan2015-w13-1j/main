@@ -6,7 +6,7 @@ public class PriorityList extends HashMap<Integer, TaskByPriority>{
 		return this.containsKey(priority);
 	}
 	
-	public TaskByPriority getTaskWithPriority(int priority){
+	private TaskByPriority getTaskWithPriority(int priority){
 		return this.get(priority);
 	}
 	

@@ -6,7 +6,7 @@ public class DateList extends HashMap<Date, TaskByDate> {
 		return this.containsKey(date);
 	}
 	
-	public TaskByDate getTaskOnDate(Date date){
+	private TaskByDate getTaskOnDate(Date date){
 		return this.get(date);
 	}
 	
