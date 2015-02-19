@@ -21,7 +21,7 @@ public class PrioritySortedList extends GeneralSortedList implements Comparator<
 			return priorityCompare;
 		}
 		else {
-			return t1.getDate().compareTo(t2.getDate());
+			return t1.getTime().compareTo(t2.getTime());
 		}
 	}
 }

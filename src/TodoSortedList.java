@@ -16,7 +16,7 @@ public class TodoSortedList extends GeneralSortedList implements Comparator<Task
 	 * @return an integer indicating the comparison result of t1 and t2
 	 */
 	public int compare(Task t1, Task t2) {
-		int dateCompare = t1.getDate().compareTo(t2.getDate());
+		int dateCompare = t1.getTime().compareTo(t2.getTime());
 		if(dateCompare != 0) {
 			return dateCompare;
 		}

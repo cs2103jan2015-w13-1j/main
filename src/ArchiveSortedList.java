@@ -16,7 +16,7 @@ public class ArchiveSortedList extends GeneralSortedList implements Comparator<T
 	 * @return an integer indicating the comparison result of t1 and t2
 	 */
 	public int compare(Task t1, Task t2) {
-		int dateCompare = t2.getDate().compareTo(t1.getDate());
+		int dateCompare = t2.getTime().compareTo(t1.getTime());
 		if(dateCompare != 0) {
 			return dateCompare;
 		}

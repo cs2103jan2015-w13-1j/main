@@ -6,11 +6,12 @@ import java.util.*;
  */
 public class Task {
 	
-	private static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \nDate : %3$s \nPriority : %4$s \nTags : %5$s \nArchived : %6$s";
+	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \n"
+														+ "Priority : %3$s \nTags : %4$s \nArchived : %6$s";
 	
+	protected static String type = "GenericTask";
 	private int id;
 	private String description;
-	private Date deadline;
 	private int priority = -1;
 	private ArrayList<String> tags = new ArrayList<String>();
 	private boolean archived = false;
@@ -19,17 +20,14 @@ public class Task {
 	 * The Constructor for a task
 	 * @param id
 	 * @param description
-	 * @param date
-	 * 			null if not specified
 	 * @param priority
 	 * 			-1 if not specified
 	 * @param tags
 	 * 			null if not specified
 	 */
-	public Task(int id, String description, Date date, int priority, ArrayList<String> tags){
+	public Task(int id, String description, int priority, ArrayList<String> tags){
 		this.id = id;
 		this.description = description;
-		this.deadline = date;
 		if (priority > 0){
 			this.priority = priority;
 		}
@@ -47,12 +45,12 @@ public class Task {
 		return this.id;
 	}
 	
-	public String getDescription(){
-		return this.description;
+	public String getType() {
+		return this.type;
 	}
 	
-	public Date getDeadline(){
-		return this.deadline;
+	public String getDescription(){
+		return this.description;
 	}
 	
 	public int getPriority(){
@@ -66,21 +64,20 @@ public class Task {
 	public boolean isArchived(){
 		return this.archived;
 	}
-
+	
+	/**
+	 * @return null as time is not specified for a generic task
+	 */
+	public Date getTime() {
+		return null;
+	}
+	
 	/**
 	 * Change the original description to the new description provided
 	 * @param newDescription
 	 */
 	public void changeDescription(String newDescription){
 		this.description = newDescription;
-	}
-	
-	/**
-	 * Change the date to the new date provided
-	 * @param newDate
-	 */	
-	public void changeDeadline(Date newDate){
-		this.deadline = newDate;
 	}
 	
 	/**
@@ -122,6 +119,8 @@ public class Task {
 	}
 	
 	public String toString() {
-		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(), getDeadline(), getPriority(), getTags(), isArchived());
+		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(),
+												getPriority(), getTags(), isArchived());
 	}
+
 }
