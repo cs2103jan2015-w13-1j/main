@@ -1,5 +1,9 @@
 import java.util.*;
 
+/**
+ * Used for creating task lists for both todo list and archived list
+ * @author Yichen
+ */
 public class TaskList extends HashMap<Integer, Task>{
 
 	public void addTask(int id, Task task){
