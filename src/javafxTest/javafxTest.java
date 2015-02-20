@@ -102,9 +102,36 @@ public class javafxTest extends Application{
 		commandPane.add(commandTextField, 1, 0);
 		commandTextField.setOnAction(new EventHandler<ActionEvent>(){
 			public void handle(ActionEvent e){
-				input = commandTextField.getText();
+				String input = commandTextField.getText();
 				actionTarget.setText("You entered \"" + commandTextField.getText() + "\"");
 				commandTextField.clear();
+				
+				//Verification of user inputs (parser/controller) here //---------------------
+				//For HANIF: Set a boolean value for each type of command, to be used in the instructions section below
+				//Example:
+				//	boolean isGoto = false;
+				//	boolean isAdd = false;
+				//	etc etc etc....
+				boolean isGoto = true;
+				//----------------------------------------------------------------------------
+				
+				//Carry out instructions here //----------------------------------------------
+				//Here is a sample for the -goto commands
+				if (isGoto == true){
+					if (input.equals("2")){
+						taskPanel.toBack();
+						helpPanel.toFront();
+					}
+					else if (input.equals("3")){
+						helpPanel.toBack();
+						settingPanel.toFront();
+					}
+					else {
+						settingPanel.toBack();
+						taskPanel.toFront();
+					}	
+				}
+				//----------------------------------------------------------------------------
 			}
 		});
 		
