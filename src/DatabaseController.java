@@ -51,7 +51,7 @@ public class DatabaseController {
 		TaskList taskListHashMap = retrieveTaskListFromStorage(FILENAME_ACTIVE_TASKLIST);	// retrieve TaskList from selected storage
 	}
 
-	private static TaskList retrieveTaskListFromStorage(String storageName)
+	public static TaskList retrieveTaskListFromStorage(String storageName)
 			throws IOException, ParseException, FileNotFoundException,
 			java.text.ParseException {
 		
@@ -79,15 +79,15 @@ public class DatabaseController {
 
 	private static Task convertJSONObjectToTask(JSONObject taskJSON)
 			throws java.text.ParseException {
-		int id = (Integer) taskJSON.get("ID");
+		int id = (int) (long) taskJSON.get("ID");
 		String description = (String) taskJSON.get("Description");
 //		String string_date = (String) taskJSON.get("Deadline");
 //		Date date = convertDateToString(string_date);
 		String type = (String) taskJSON.get("Type");
 		JSONArray tagsList = (JSONArray) taskJSON.get("tags");
 		ArrayList<String> tags = tagsList;
-		int priority = (Integer) taskJSON.get("Priority");
-		boolean archived = (Boolean) taskJSON.get("Archived");
+		int priority = (int) (long) taskJSON.get("Priority");
+		boolean archived = (boolean) taskJSON.get("Archived");
 
 		Task task = new Task(id, description, priority, tags);
 		if (archived == true) {
@@ -119,7 +119,7 @@ public class DatabaseController {
 		return taskListHashMap;
 	}
 
-	private static void writeTaskListToStorage(TaskList taskListHashMap, String storageName)
+	public static void writeTaskListToStorage(TaskList taskListHashMap, String storageName)
 			throws IOException {
 		JSONObject taskListJSON = convertHashmapToJSONObject(taskListHashMap);
 		writeJSONObjectToStorage(taskListJSON, storageName);
