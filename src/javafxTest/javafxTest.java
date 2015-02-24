@@ -45,7 +45,7 @@ public class javafxTest extends Application{
 		//mid section-------------------------------
 		Group mid = new Group();
 		
-		Group taskPanel = new Group();
+		final Group taskPanel = new Group();
         createPanel(taskPanel, 0, "Tasks", "49CEFF");
         
         //initialise and add task table here
@@ -66,10 +66,10 @@ public class javafxTest extends Application{
         //create an observable array list
         
          
-        Group helpPanel = new Group();
+        final Group helpPanel = new Group();
         createPanel(helpPanel, 300, "Commands", "41BAE5");
                 
-        Group settingPanel = new Group();
+        final Group settingPanel = new Group();
         createPanel(settingPanel, 600, "Settings", "369BBF");
          
         mid.getChildren().addAll(settingPanel, helpPanel, taskPanel);
@@ -89,12 +89,12 @@ public class javafxTest extends Application{
 		command.setFill(Color.WHITE);
 		commandPane.add(command, 0, 0);
 		
-		Text actionTarget = new Text();
+		final Text actionTarget = new Text();
 		actionTarget.setFont(Font.font("Tahmoma", FontWeight.BOLD, 25));
 		actionTarget.setFill(Color.web("123440"));
 		commandPane.add(actionTarget, 1, 2);
 				
-		TextField commandTextField = new TextField();
+		final TextField commandTextField = new TextField();
 		commandTextField.setPrefWidth(760); 
 		commandPane.add(commandTextField, 1, 0);
 		commandTextField.setOnAction(new EventHandler<ActionEvent>(){
