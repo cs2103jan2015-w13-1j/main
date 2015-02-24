@@ -79,15 +79,15 @@ public class DatabaseController {
 
 	private static Task convertJSONObjectToTask(JSONObject taskJSON)
 			throws java.text.ParseException {
-		int id = (int) (long) taskJSON.get("ID");
+		int id = (Integer) taskJSON.get("ID");
 		String description = (String) taskJSON.get("Description");
 //		String string_date = (String) taskJSON.get("Deadline");
 //		Date date = convertDateToString(string_date);
 		String type = (String) taskJSON.get("Type");
 		JSONArray tagsList = (JSONArray) taskJSON.get("tags");
 		ArrayList<String> tags = tagsList;
-		int priority = (int) (long) taskJSON.get("Priority");
-		boolean archived = (boolean) taskJSON.get("Archived");
+		int priority = (Integer) taskJSON.get("Priority");
+		boolean archived = (Boolean) taskJSON.get("Archived");
 
 		Task task = new Task(id, description, priority, tags);
 		if (archived == true) {
