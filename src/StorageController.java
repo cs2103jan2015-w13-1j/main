@@ -1,14 +1,11 @@
 import hashMaps.TaskList;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -17,6 +14,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import basicElements.Date;
 import basicElements.DeadlineTask;
 import basicElements.MeetingTask;
 import basicElements.Task;
@@ -58,6 +56,13 @@ public class StorageController implements InterfaceForStorage {
 	public static void main (String[] args) throws IOException {
 		StorageController control = new StorageController();
 		control.run();	
+//		Date now = new Date();
+//		System.out.println(now.getTime());
+//		
+//		Date later = new Date();
+//		later.setTime(now.getTime());
+//		
+//		System.out.println(later.getDate());
 //		writeTaskListToStorage(initialiseDummyDataForTesting(), FILENAME_ACTIVE_TASKLIST);	// takes in TaskList and write to storage
 //		
 //		TaskList taskListHashMap = retrieveTaskListFromStorage(FILENAME_ACTIVE_TASKLIST);	// retrieve TaskList from selected storage
@@ -65,6 +70,10 @@ public class StorageController implements InterfaceForStorage {
 	
 	public void run() throws IOException {
 		storage = getAllData();
+		System.out.println(storage.getActiveTaskList().size());
+		DeadlineTask dt = (DeadlineTask) storage.getActiveTaskList().getTaskbyId(1);
+		System.out.println(dt);
+		System.out.println(dt.getType());
 	}
 	
 	public String storeAllData(DATA data) {
@@ -76,7 +85,7 @@ public class StorageController implements InterfaceForStorage {
 		try {
 			storage = initializeStorage();
 			storage.setActiveTaskList(retrieveTasklistFromStorage(FILENAME_ACTIVE_TASKLIST));
-			storage.setArchivedTaskList(retrieveTasklistFromStorage(FILENAME_ARCHIVE_TASKLIST));
+			//storage.setArchivedTaskList(retrieveTasklistFromStorage(FILENAME_ARCHIVE_TASKLIST));
 //			storage.setDateList(retrieveDatelistFromStorage());
 //			storage.setPriorityList(retrievePrioritylistFromStorage());
 //			storage.setTagList(retrieveTaglistFromStorage());
@@ -104,19 +113,39 @@ public class StorageController implements InterfaceForStorage {
 		    	JSONObject taskJSON = (JSONObject) taskListJSON.get(pair.getKey()); 
 
 		    	// Generic Type attributes
-		    	int id = (int) (long) taskJSON.get("ID");
-				String description = (String) taskJSON.get("Description");
-				String type = (String) taskJSON.get("Type");
+		    	int id = (int) (long) taskJSON.get("id");
+				String description = (String) taskJSON.get("description");
+				String type = (String) taskJSON.get("type");
 				JSONArray tagsList = (JSONArray) taskJSON.get("tags");
 				ArrayList<String> tags = tagsList;
-				int priority = (int) (long) taskJSON.get("Priority");
-				boolean archived = (boolean) taskJSON.get("Archived");
+				
+				System.out.println(id + ": " + type + ", " + tags);
+				int priority = (int) (long) taskJSON.get("priority");
+				boolean archived = (boolean) taskJSON.get("archived");
 				
 				if (type.equals("DeadlineTask")) {
-					// Deadline Type
-					
+					long string_date = Long.parseLong((String) taskJSON.get("deadline"));
+					Date deadline = new Date();
+					deadline.setTime(string_date);
+					DeadlineTask deadlineTask = new DeadlineTask(id, description, deadline, priority, tags, archived);
+					//DeadlineTask deadlineTask = new DeadlineTask();
+					System.out.println(">> " + deadlineTask.getType());
+					taskListHashMap.addTask(deadlineTask.getId(), deadlineTask);
+					System.out.println("added deadline, " + type);
 				} else if (type.equals("MeetingTask")) {
 					// Meeting Type
+					long string_start_date = Long.parseLong((String) taskJSON.get("start"));
+					Date startDate = new Date();
+					startDate.setTime(string_start_date);
+					
+					long string_end_date = Long.parseLong((String) taskJSON.get("end"));
+					Date endDate = new Date();
+					endDate.setTime(string_end_date);
+					
+					MeetingTask meetingTask = new MeetingTask(id, description, startDate, endDate, priority, tags, archived);
+					taskListHashMap.addTask(meetingTask.getId(), meetingTask);
+					
+					System.out.println("added meeting, " + type);
 				} else {
 					// Generic type
 					Task task = new Task(id, description, priority, tags, archived);
