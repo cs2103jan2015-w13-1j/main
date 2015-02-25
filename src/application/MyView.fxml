@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxController.Controller">
+   <children>
+      <Label alignment="BOTTOM_LEFT" text="HeyBuddy!">
+         <font>
+            <Font size="59.0" />
+         </font>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </Label>
+      <TextField fx:id="commandField" layoutX="177.0" layoutY="630.0" onAction="#inputCommand" prefHeight="31.0" prefWidth="770.0" />
+      <Label layoutX="47.0" layoutY="628.0" text="Command:">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Group layoutX="74.0" layoutY="204.0">
+         <children>
+            <Group fx:id="settingsGroup">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8bb62" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="900.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8bb62" height="150.0" layoutX="573.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="300.0" />
+                  <Label layoutX="645.0" layoutY="-80.0" text="Settings">
+                     <font>
+                        <Font size="44.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Group>
+            <Group fx:id="helpGroup">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8d662" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="900.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8d662" height="150.0" layoutX="273.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="300.0" />
+                  <Label layoutX="313.0" layoutY="-80.0" text="Commands">
+                     <font>
+                        <Font size="44.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Group>
+            <Group fx:id="taskGroup">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff570" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="900.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff570" height="150.0" layoutX="-27.0" layoutY="-91.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="300.0" />
+                  <TableView layoutY="-3.0" prefHeight="400.0" prefWidth="850.0">
+                    <columns>
+                      <TableColumn maxWidth="550.0" minWidth="550.0" prefWidth="550.0" text="Tasks">
+                           <columns>
+                              <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" text="#ID" />
+                              <TableColumn maxWidth="275.0" minWidth="275.0" prefWidth="274.0" text="Description" />
+                              <TableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Due Date" />
+                           </columns>
+                        </TableColumn>
+                      <TableColumn maxWidth="300.0" minWidth="300.0" prefWidth="300.0" text="Archive">
+                           <columns>
+                              <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" text="#ID" />
+                              <TableColumn maxWidth="275.0" minWidth="274.0" prefWidth="275.0" text="Description" />
+                           </columns>
+                        </TableColumn>
+                    </columns>
+                  </TableView>
+                  <Label layoutX="60.0" layoutY="-80.0" text="Tasks">
+                     <font>
+                        <Font size="44.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Group>
+         </children>
+      </Group>
+   </children>
+</AnchorPane>
