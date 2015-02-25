@@ -79,8 +79,8 @@ public class Parser {
 			}
 		}
 		
-		//format for tasks: integer ID, String description, int priority, ArrayList<String> tags
-		Task newTask = new Task(newMaxID,description, priority,tags);
+		//format for tasks: integer ID, String description, int priority, ArrayList<String> tags,archived
+		Task newTask = new Task(newMaxID,description, priority,tags,false);
 		ToDoSortedList retrievedList = new ToDoSortedList();
 		retrievedList = logicController.addTask(newTask);
 		
