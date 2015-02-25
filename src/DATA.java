@@ -7,6 +7,8 @@ import treeSets.*;
  */
 public class DATA {
 	
+	private int serialNumber;
+	
 	//The hashMaps
 	private TaskList activeTaskList;
 	private TaskList archivedTaskList;
@@ -121,6 +123,19 @@ public class DATA {
 	 */
 	public void setToDoSortedList(TodoSortedList toDoSortedList) {
 		this.toDoSortedList = toDoSortedList;
+	}
+	
+	/**
+	 * @return the serialNumber
+	 */
+	public int getSerialNumber() {
+		return serialNumber;
+	}
+	/**
+	 * @param serialNumber the serialNumber to set
+	 */
+	public void setSerialNumber(int serialNumber) {
+		this.serialNumber = serialNumber;
 	}
 	
 
