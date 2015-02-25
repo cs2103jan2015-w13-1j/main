@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import basicElements.*;
 import hashMaps.*;
 import treeSets.*;
@@ -64,15 +66,28 @@ public class LogicController implements InterfaceForLogic{
 		return null;
 	}
 
-	public ToDoSortedList editDeadLine(DeadlineTask task, Date deadLine) {
-		task.changeDeadline(deadLine);
-		dateList.getTodoTaskIdOnDate(deadLine.getDateRepresentation())
+	public ToDoSortedList editDeadLine(DeadlineTask task, Date deadline) {
+		String originalDate = task.getTime().getDateRepresentation();
+		String newDate = deadline.getDateRepresentation();
+		
+		dateList.removeToDoTask(originalDate, task);
+		dateList.addToDoTask(newDate, task);
+		
+		task.changeDeadline(deadline);
+		toDoSortedList.updateTaskOrder(task);
+		
 		return toDoSortedList;
 	}
 
 	@Override
-	public ToDoSortedList addDeadLine(Task task, Date deadLine) {
-		// TODO Auto-generated method stub
+	public ToDoSortedList addDeadLine(Task task, Date deadline) {
+		String newDate = deadline.getDateRepresentation();
+		DeadlineTask newTask = new DeadlineTask(task, deadline);
+
+		deleteTask(task);
+		addTask(newTask);
+		
+		dateList.addToDoTask(newDate, newTask);
 		return null;
 	}
 
@@ -114,6 +129,42 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public ToDoSortedList modifyTask(Task task) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getSerialNumber() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ToDoSortedList addStartDate(Task task, Date start) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList addEndDate(Task task, Date start) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList editStartDate(MeetingTask task, Date start) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList editEndDate(MeetingTask task, Date end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Task> searchByPriority(int priority) {
 		// TODO Auto-generated method stub
 		return null;
 	}

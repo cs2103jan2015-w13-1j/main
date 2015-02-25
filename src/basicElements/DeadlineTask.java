@@ -29,6 +29,11 @@ public class DeadlineTask extends Task{
 		this.deadline = deadline;
 	}
 	
+	public DeadlineTask(Task task, Date deadline) {
+		super(task.getId(), task.getDescription(), task.getPriority(), task.getTags());
+		this.deadline = deadline;
+	}
+	
 	public Date getDeadline(){
 		return this.deadline;
 	}

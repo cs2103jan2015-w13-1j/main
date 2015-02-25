@@ -18,6 +18,10 @@ public class GeneralSearchList<K, V> extends HashMap<K, TaskByProperty>{
 		}
 	}
 	
+	public void removeToDoTask(K key, Task task) {
+		this.get(key).removeToDoTask(task.getId());
+	}
+	
 	public void addArchivedTask(K key, Task task) {
 		if (this.containsKey(key)) {
 			this.get(key).addArchivedTask(task.getId());
