@@ -1,5 +1,8 @@
 import basicElements.*;
+
 import java.util.*;
+
+import treeSets.*;
 
 public class Parser {
 	
@@ -13,12 +16,11 @@ public class Parser {
 		parseIn(command);
 	}
 
-	private boolean parseIn(String command) {
+	public ArrayList<String> parseIn(String command) {
 		
 		String[] splitCommand = command.split(" ");
 		String firstCommand = splitCommand[0];
-	
-		boolean passCheck = false;
+		ArrayList<String> result = new ArrayList<String>();
 		
 		//instead of searching whole string for command, maybe search only first
 		//word for command, then search sequentially down the string
@@ -26,16 +28,16 @@ public class Parser {
 		//check first word for command
 		if(firstCommand.charAt(0)=='-'){
 			//command found
-			commandCheck(firstCommand,splitCommand);
-			passCheck = true;
+			result = commandCheck(firstCommand,splitCommand);
 		}
 		
-		return passCheck;
+		return result;
 		
 	}
 
-	private void commandCheck(String command, String[] splitInput) {
-		// TODO Auto-generated method stub
+	private ArrayList<String> commandCheck(String command, String[] splitInput) {
+	
+		ArrayList<String> result = new ArrayList<String>();
 		switch(command){
 			case("-goto"):{
 				//look at next elements in string
@@ -43,15 +45,17 @@ public class Parser {
 			}
 			case("-add"):{
 				//run "add" functions
-				addCommand(splitInput);
+				result = addCommand(splitInput);
 				//look for next commands
-				break;
+				//break;
 			}
 		}
 		
+		return result;
+		
 	}
 	
-	private void addCommand(String[] input){
+	private ArrayList<String> addCommand(String[] input){
 		
 		//break the commands
 		String description = input[1];
@@ -59,6 +63,7 @@ public class Parser {
 		int currentInputPoint = 2;
 		int priority = -1;
 		ArrayList<String> tags = new ArrayList<String>();
+		ArrayList<String> taskListForUI = new ArrayList<String>();
 		
 		//date, priority and tags optional
 		//look through remaining input for more commands
@@ -74,10 +79,17 @@ public class Parser {
 			}
 		}
 		
-		//format for tasks: int ID, String description, int priority, ArrayList<String> tags
+		//format for tasks: integer ID, String description, int priority, ArrayList<String> tags
 		Task newTask = new Task(newMaxID,description, priority,tags);
-		//logicController.addTask(newTask);
+		ToDoSortedList retrievedList = new ToDoSortedList();
+		retrievedList = logicController.addTask(newTask);
+		
+		//convert ToDoSortedList from logicController into an ArrayList of String
+		for(Task task : retrievedList){
+			taskListForUI.add(task.toString());
+		}
 		newMaxID++;
+		return taskListForUI;
 	}
 	
 	
