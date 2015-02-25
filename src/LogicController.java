@@ -163,20 +163,42 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	@Override
+	// Only for tasks in the to do list
 	public ArrayList<Task> searchByDate(Date searchDate) {
-		// TODO Auto-generated method stub
+		String date = searchDate.getDateRepresentation();
+		if (dateList.hasDate(date)) {
+			ArrayList<Integer> ids = dateList.getTodoTaskIdOnDate(date);
+			return getActiveTasksByIds(ids);
+		}
+		return null;
+	}
+	
+	@Override
+	// Only for tasks in the to do list
+	public ArrayList<Task> searchByTag(String tag) {
+		if (tagList.hasTag(tag)) {
+			ArrayList<Integer> ids = tagList.getTodoTaskIdWithtag(tag);
+			return getActiveTasksByIds(ids);
+		}
+		return null;
+	}
+	
+	@Override
+	// Only for tasks in the to do list
+	public ArrayList<Task> searchByPriority(int priority) {
+		if (priorityList.hasPriority(priority)) {
+			ArrayList<Integer> ids = priorityList.getTodoTaskIdWithPriority(priority);
+			return getActiveTasksByIds(ids);
+		}
 		return null;
 	}
 
-	@Override
-	public ArrayList<Task> searchByTag(String tag) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public ArrayList<Task> searchByPriority(int priority) {
-		// TODO Auto-generated method stub
-		return null;
+	private ArrayList<Task> getActiveTasksByIds(ArrayList<Integer> ids) {
+		ArrayList<Task> requiredTasks = new ArrayList<Task>();
+		for (int id : ids) {
+			requiredTasks.add(activeTaskList.getTaskbyId(id));
+		}
+		return requiredTasks;
 	}
 
 	@Override
