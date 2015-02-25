@@ -48,7 +48,7 @@ public class LogicController implements InterfaceForLogic{
 		return toDoSortedList;
 	}
 
-
+	// Need to modify for archive task
 	private void addTaskWithTags(Task task) {
 		if (task.getTags()!=null) {
 			for (String tag : task.getTags()) {
@@ -56,7 +56,16 @@ public class LogicController implements InterfaceForLogic{
 			}
 		}
 	}
-
+	
+	// Need to modify for archive task
+	private void removeTaskWithTags(Task task) {
+		if (task.getTags()!=null) {
+			for (String tag : task.getTags()) {
+				tagList.removeToDoTask(tag, task);
+			}
+		}
+	}
+	
 	public String exitProgram() {
 		return DC.storeAllData(data);
 	}
@@ -91,23 +100,6 @@ public class LogicController implements InterfaceForLogic{
 		return null;
 	}
 
-	@Override
-	public GeneralSortedList searchByDate(Date searchDate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TaskByTag searchByTag(String tag) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public PrioritySortedList searchByPriority() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public ArchiveSortedList moveToArchive(Task task) {
@@ -123,9 +115,28 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public ToDoSortedList deleteTask(Task task) {
-		// TODO Auto-generated method stub
-		return null;
+		if (!task.isArchived()){
+			toDoSortedList.deleteTask(task);
+			
+			dateList.removeToDoTask(task.getTime().getDateRepresentation(), task);
+			priorityList.removeToDoTask(task.getPriority(), task);
+			activeTaskList.removeTaskbyId(task.getId());
+		}
+		else{
+			archiveSortedList.deleteTask(task);
+			
+			dateList.removeArchivedTask(task.getTime().getDateRepresentation(), task);
+			priorityList.removeArchivedTask(task.getPriority(), task);
+			archivedTaskList.removeTaskbyId(task.getId());
+		}
+		
+		prioritySortedList.deleteTask(task);
+		removeTaskWithTags(task);
+			
+		return toDoSortedList;
 	}
+
+
 
 	@Override
 	public ToDoSortedList modifyTask(Task task) {
@@ -150,7 +161,18 @@ public class LogicController implements InterfaceForLogic{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public ArrayList<Task> searchByDate(Date searchDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
+	public ArrayList<Task> searchByTag(String tag) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	@Override
 	public ArrayList<Task> searchByPriority(int priority) {
 		// TODO Auto-generated method stub
@@ -168,6 +190,8 @@ public class LogicController implements InterfaceForLogic{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
 
 }

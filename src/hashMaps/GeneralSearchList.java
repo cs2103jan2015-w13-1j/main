@@ -33,6 +33,10 @@ public class GeneralSearchList<K, V> extends HashMap<K, TaskByProperty>{
 		}
 	}
 	
+	public void removeArchivedTask(K key, Task task) {
+		this.get(key).removeArchivedTask(task.getId());
+	}
+	
 	public boolean hasProperty(K property){
 		return this.containsKey(property);
 	}
