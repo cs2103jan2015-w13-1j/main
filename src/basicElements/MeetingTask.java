@@ -96,4 +96,7 @@ public class MeetingTask extends Task{
 												getPriority(), getTags(), isArchived());
 	}
 	
+	public String getType() {
+		return this.type;
+	}
 }

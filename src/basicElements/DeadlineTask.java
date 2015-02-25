@@ -58,4 +58,8 @@ public class DeadlineTask extends Task{
 												getPriority(), getTags(), isArchived());
 	}
 	
+	public String getType() {
+		return this.type;
+	}
+	
 }
