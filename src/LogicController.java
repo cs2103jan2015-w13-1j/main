@@ -59,4 +59,64 @@ public class LogicController implements InterfaceForLogic{
 		return DC.storeAllData(data);
 	}
 
+	public ToDoSortedList editStartDate(Task task, Date start) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ToDoSortedList editDeadLine(DeadlineTask task, Date deadLine) {
+		task.changeDeadline(deadLine);
+		dateList.getTodoTaskIdOnDate(deadLine.getDateRepresentation())
+		return toDoSortedList;
+	}
+
+	@Override
+	public ToDoSortedList addDeadLine(Task task, Date deadLine) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GeneralSortedList searchByDate(Date searchDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TaskByTag searchByTag(String tag) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrioritySortedList searchByPriority() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArchiveSortedList moveToArchive(Task task) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArchiveSortedList viewArchiveTasks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList deleteTask(Task task) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList modifyTask(Task task) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

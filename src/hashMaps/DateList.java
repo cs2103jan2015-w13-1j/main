@@ -9,11 +9,11 @@ public class DateList extends GeneralSearchList<String, TaskByDate> {
 		return super.containsKey(date);
 	}
 	
-	public ArrayList<Integer> getTodoTaskIdOnDate(int date){
+	public ArrayList<Integer> getTodoTaskIdOnDate(String date){
 		return this.getTodoTaskIdOnDate(date);
 	}
 	
-	public ArrayList<Integer> getArchivedTaskIdOnDate(int date){
+	public ArrayList<Integer> getArchivedTaskIdOnDate(String date){
 		return this.getArchivedTaskIdOnDate(date);
 	}
 	
