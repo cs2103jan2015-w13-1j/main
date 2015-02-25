@@ -1,4 +1,3 @@
-package fxController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -9,12 +8,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.TextField;
 
-public class Controller implements Initializable {
+public class FXController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1){
 		
 	}
+		
+	Parser parser = new Parser();
 	
 	@FXML
 	private Group taskGroup;
