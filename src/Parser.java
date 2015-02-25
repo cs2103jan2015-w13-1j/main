@@ -1,4 +1,5 @@
 import basicElements.*;
+import java.util.*;
 
 public class Parser {
 	
@@ -16,6 +17,7 @@ public class Parser {
 		
 		String[] splitCommand = command.split(" ");
 		String firstCommand = splitCommand[0];
+	
 		boolean passCheck = false;
 		
 		//instead of searching whole string for command, maybe search only first
@@ -24,7 +26,7 @@ public class Parser {
 		//check first word for command
 		if(firstCommand.charAt(0)=='-'){
 			//command found
-			commandCheck(firstCommand);
+			commandCheck(firstCommand,splitCommand);
 			passCheck = true;
 		}
 		
@@ -32,16 +34,16 @@ public class Parser {
 		
 	}
 
-	private void commandCheck(String string) {
+	private void commandCheck(String command, String[] splitInput) {
 		// TODO Auto-generated method stub
-		switch(string){
+		switch(command){
 			case("-goto"):{
 				//look at next elements in string
 				break;
 			}
 			case("-add"):{
 				//run "add" functions
-				addCommand(string);
+				addCommand(splitInput);
 				//look for next commands
 				break;
 			}
@@ -49,10 +51,32 @@ public class Parser {
 		
 	}
 	
-	private void addCommand(String command){
-		//get date to generate ID
-		Task newTask = new Task(newMaxID,);
+	private void addCommand(String[] input){
+		
 		//break the commands
+		String description = input[1];
+		int inputLength = input.length;
+		int currentInputPoint = 2;
+		int priority = -1;
+		ArrayList<String> tags = new ArrayList<String>();
+		
+		//date, priority and tags optional
+		//look through remaining input for more commands
+		for(int i =currentInputPoint; i<inputLength;i++){
+			if(input[i] == "-priority"){
+				priority = Integer.parseInt(input[i+1]);
+			}else if(input[i] == "-tags"){
+				int pointAfterTag = i+1;
+				while(input[pointAfterTag].charAt(0)!= '-'){
+					tags.add(input[pointAfterTag]);
+					pointAfterTag++;
+				}
+			}
+		}
+		
+		//format for tasks: int ID, String description, int priority, ArrayList<String> tags
+		Task newTask = new Task(newMaxID,description, priority,tags);
+		//logicController.addTask(newTask);
 		newMaxID++;
 	}
 	
