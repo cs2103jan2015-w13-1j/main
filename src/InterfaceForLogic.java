@@ -9,8 +9,7 @@ public interface InterfaceForLogic {
 	ToDoSortedList addTask(Task task); //sorted by date
 	
 	ToDoSortedList addDeadLine(Task task, Date deadLine);
-	ToDoSortedList addStartTime(Task task, Date start);
-	ToDoSortedList addEndTime(Task task, Date start);
+	ToDoSortedList addStartAndEndTime(Task task, Date start,Date end);
 	
 	ToDoSortedList editStartDate(MeetingTask task, Date start);
 	ToDoSortedList editEndDate(MeetingTask task, Date end);
@@ -18,7 +17,7 @@ public interface InterfaceForLogic {
 	
 	ArrayList<Task> searchByDate(Date searchDate);
 	ArrayList<Task> searchByTag(String tag);	//not sure of return type and input type
-	ArrayList<Task> searchByPriority(int priority); //has no priority object? how to store priority?
+	ArrayList<Task> searchByPriority(int priority);
 
 
 	ArchiveSortedList moveToArchive(Task task); //not sure of the return type
