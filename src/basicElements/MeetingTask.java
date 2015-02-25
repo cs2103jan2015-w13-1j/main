@@ -32,6 +32,12 @@ public class MeetingTask extends Task{
 		this.endTime = end;
 	}
 	
+	public MeetingTask(Task task, Date start, Date end){
+		super(task.getId(), task.getDescription(), task.getPriority(), task.getTags(), task.isArchived());
+		this.startTime = start;
+		this.endTime = end;
+	}
+	
 	public Date getStartTime(){
 		return this.startTime;
 	}

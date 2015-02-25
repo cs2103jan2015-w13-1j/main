@@ -6,7 +6,6 @@ import treeSets.*;
 
 public class LogicController implements InterfaceForLogic{
 	
-	
 	private StorageController DC = new StorageController();
 	private DATA data;
 	
@@ -77,8 +76,9 @@ public class LogicController implements InterfaceForLogic{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public ToDoSortedList editDeadLine(DeadlineTask task, Date deadline) {
+	
+	@Override
+	public ToDoSortedList editDeadline(DeadlineTask task, Date deadline) {
 		String originalDate = task.getTime().getDateRepresentation();
 		String newDate = deadline.getDateRepresentation();
 		
@@ -93,32 +93,50 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public ToDoSortedList addDeadLine(Task task, Date deadline) {
-		String newDate = deadline.getDateRepresentation();
 		DeadlineTask newTask = new DeadlineTask(task, deadline);
 
 		deleteTask(task);
 		addTask(newTask);
-		
-		dateList.addToDoTask(newDate, newTask);
+
 		return null;
 	}
 
 	@Override
-	public ToDoSortedList addStartTime(Task task, Date start) {
+	public ToDoSortedList addStartAndEndTime(Task task, Date start, Date end) {
+		MeetingTask newTask = new MeetingTask(task, start, end);
+		
+		deleteTask(task);
+		addTask(newTask);
+
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList editStartTime(MeetingTask task, Date start) {
+		String originalStart = task.getTime().getDateRepresentation();
 		String newDate = start.getDateRepresentation();
-		DeadlineTask newTask = new DeadlineTask(task, deadline);
 		
-		deleteTask(task);
-		addTask(newTask);
+		dateList.removeToDoTask(originalStart, task);
+		dateList.addToDoTask(newDate, task);
 		
-		dateList.addToDoTask(newDate, newTask);
-		return null;
+		task.changeStartTime(start);
+		toDoSortedList.updateTaskOrder(task);
+		
+		return toDoSortedList;
 	}
-	
+
 	@Override
-	public ToDoSortedList addEndTime(Task task, Date start) {
-		// TODO Auto-generated method stub
-		return null;
+	public ToDoSortedList editEndTime(MeetingTask task, Date end) {
+		String originalEnd = task.getTime().getDateRepresentation();
+		String newDate = end.getDateRepresentation();
+		
+		dateList.removeToDoTask(originalEnd, task);
+		dateList.addToDoTask(newDate, task);
+		
+		task.changeEndTime(end);
+		toDoSortedList.updateTaskOrder(task);
+		
+		return toDoSortedList;
 	}
 	
 	@Override
@@ -132,7 +150,9 @@ public class LogicController implements InterfaceForLogic{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 
+	
 	@Override
 	public ToDoSortedList deleteTask(Task task) {
 		if (!task.isArchived()){
@@ -149,7 +169,6 @@ public class LogicController implements InterfaceForLogic{
 			priorityList.removeArchivedTask(task.getPriority(), task);
 			archivedTaskList.removeTaskbyId(task.getId());
 		}
-		
 		prioritySortedList.deleteTask(task);
 		removeTaskWithTags(task);
 			
@@ -169,17 +188,6 @@ public class LogicController implements InterfaceForLogic{
 		return serialNumber;
 	}
 
-	@Override
-	public ToDoSortedList editStartDate(MeetingTask task, Date start) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ToDoSortedList editEndDate(MeetingTask task, Date end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	// Only for tasks in the to do list
@@ -219,10 +227,5 @@ public class LogicController implements InterfaceForLogic{
 		}
 		return requiredTasks;
 	}
-
-
-
-
-
 
 }
