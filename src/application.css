@@ -1,1 +1,19 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.table-view {
+    -fx-base: #FFBD6C;
+    -fx-control-inner-background: #FFDF79;
+    -fx-background-color: #FFDF79;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-font-size: 15pt;
+    -fx-opacity: 1;
+}

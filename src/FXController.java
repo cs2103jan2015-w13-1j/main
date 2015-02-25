@@ -15,7 +15,7 @@ public class FXController implements Initializable {
 		
 	}
 		
-	Parser parser = new Parser();
+	//Parser parser = new Parser();
 	
 	@FXML
 	private Group taskGroup;
@@ -31,6 +31,7 @@ public class FXController implements Initializable {
 	
 	public void inputCommand(ActionEvent event){
 		String input = commandField.getText();
+		//parser.parseIn(input);
 		commandField.clear();
 		if (input.equals("1")){
 			taskGroup.toFront();

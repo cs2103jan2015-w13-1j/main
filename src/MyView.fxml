@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.shape.*?>
@@ -10,9 +11,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #FFDF79;" styleClass="test" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXController">
    <children>
-      <Label alignment="BOTTOM_LEFT" text="HeyBuddy!">
+      <Label alignment="BOTTOM_LEFT" style="-fx-font-weight: BOLD;" text="HeyBuddy!" textFill="#e8a21d">
          <font>
             <Font size="59.0" />
          </font>
@@ -21,7 +22,7 @@
          </padding>
       </Label>
       <TextField fx:id="commandField" layoutX="177.0" layoutY="630.0" onAction="#inputCommand" prefHeight="31.0" prefWidth="770.0" />
-      <Label layoutX="47.0" layoutY="628.0" text="Command:">
+      <Label layoutX="47.0" layoutY="628.0" style="-fx-font-weight: BOLD; -fx-font-size: 24;" text="Command:">
          <font>
             <Font size="24.0" />
          </font>
@@ -30,9 +31,9 @@
          <children>
             <Group fx:id="settingsGroup">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8bb62" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="900.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8bb62" height="150.0" layoutX="573.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="300.0" />
-                  <Label layoutX="645.0" layoutY="-80.0" text="Settings">
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8bb62" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="900.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8bb62" height="150.0" layoutX="573.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="300.0" />
+                  <Label layoutX="645.0" layoutY="-80.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Settings">
                      <font>
                         <Font size="44.0" />
                      </font>
@@ -41,9 +42,9 @@
             </Group>
             <Group fx:id="helpGroup">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8d662" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="900.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8d662" height="150.0" layoutX="273.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="300.0" />
-                  <Label layoutX="313.0" layoutY="-80.0" text="Commands">
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8d662" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="900.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8d662" height="150.0" layoutX="273.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="300.0" />
+                  <Label layoutX="307.0" layoutY="-80.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Commands">
                      <font>
                         <Font size="44.0" />
                      </font>
@@ -52,26 +53,27 @@
             </Group>
             <Group fx:id="taskGroup">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff570" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="900.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff570" height="150.0" layoutX="-27.0" layoutY="-91.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" width="300.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff570" height="419.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="900.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff570" height="150.0" layoutX="-27.0" layoutY="-91.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="300.0" />
                   <TableView layoutY="-3.0" prefHeight="400.0" prefWidth="850.0">
                     <columns>
-                      <TableColumn maxWidth="550.0" minWidth="550.0" prefWidth="550.0" text="Tasks">
+                      <TableColumn maxWidth="550.0" minWidth="550.0" prefWidth="550.0" text="To-Do">
                            <columns>
-                              <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" text="#ID" />
+                              <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
                               <TableColumn maxWidth="275.0" minWidth="275.0" prefWidth="274.0" text="Description" />
-                              <TableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Due Date" />
+                              <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Priority" />
+                              <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Due Date" />
                            </columns>
                         </TableColumn>
                       <TableColumn maxWidth="300.0" minWidth="300.0" prefWidth="300.0" text="Archive">
                            <columns>
-                              <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" text="#ID" />
+                              <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
                               <TableColumn maxWidth="275.0" minWidth="274.0" prefWidth="275.0" text="Description" />
                            </columns>
                         </TableColumn>
                     </columns>
                   </TableView>
-                  <Label layoutX="60.0" layoutY="-80.0" text="Tasks">
+                  <Label layoutX="60.0" layoutY="-80.0" style="-fx-font-weight: bold; -fx-font-size: 44;" text="Tasks">
                      <font>
                         <Font size="44.0" />
                      </font>
