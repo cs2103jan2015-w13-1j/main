@@ -26,7 +26,7 @@ public class Task {
 	 * @param tags
 	 * 			null if not specified
 	 */
-	public Task(int id, String description, int priority, ArrayList<String> tags){
+	public Task(int id, String description, int priority, ArrayList<String> tags, boolean archived){
 		this.id = id;
 		this.description = description;
 		if (priority > 0){
@@ -35,6 +35,7 @@ public class Task {
 		if (tags != null){
 			this.tags = tags;
 		}
+		this.archived = archived;
 	}
 	
 	// Default constructor

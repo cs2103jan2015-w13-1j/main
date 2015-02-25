@@ -24,13 +24,13 @@ public class DeadlineTask extends Task{
 	 * @param tags
 	 * 			null if not specified
 	 */
-	public DeadlineTask(int id, String description, Date deadline, int priority, ArrayList<String> tags){
-		super(id, description, priority, tags);
+	public DeadlineTask(int id, String description, Date deadline, int priority, ArrayList<String> tags, boolean archived){
+		super(id, description, priority, tags, archived);
 		this.deadline = deadline;
 	}
 	
 	public DeadlineTask(Task task, Date deadline) {
-		super(task.getId(), task.getDescription(), task.getPriority(), task.getTags());
+		super(task.getId(), task.getDescription(), task.getPriority(), task.getTags(), task.isArchived());
 		this.deadline = deadline;
 	}
 	
