@@ -158,7 +158,6 @@ public class LogicController implements InterfaceForLogic{
 		return archiveSortedList;
 	}
 	
-
 	
 	@Override
 	public ToDoSortedList deleteTask(Task task) {
@@ -180,14 +179,6 @@ public class LogicController implements InterfaceForLogic{
 		removeTaskWithTags(task);
 			
 		return toDoSortedList;
-	}
-
-
-
-	@Override
-	public ToDoSortedList modifyTask(Task task) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	
@@ -233,5 +224,47 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public int getSerialNumber() {
 		return serialNumber;
+	}
+
+	@Override
+	public ToDoSortedList editDescription(Task task, String newDescription) {
+		task.changeDescription(newDescription);
+		return toDoSortedList;
+	}
+
+	@Override
+	public ToDoSortedList editPriority(Task task, int priority) {
+		int originalPriority = task.getPriority();
+		task.changePriority(priority);
+		if (!task.isArchived()) {
+			prioritySortedList.updateTaskOrder(task);
+			priorityList.removeToDoTask(originalPriority, task);
+			priorityList.addToDoTask(originalPriority, task);
+		}
+		return toDoSortedList;
+	}
+
+	@Override
+	public ToDoSortedList addTag(Task task, String tag) {
+		task.addTag(tag);
+		if(!task.isArchived()) {
+			tagList.addToDoTask(tag, task);
+		}
+		else {
+			tagList.addArchivedTask(tag, task);
+		}
+		return toDoSortedList;
+	}
+	
+	@Override
+	public ToDoSortedList removeTag(Task task, String tag) {
+		task.removeTag(tag);
+		if(!task.isArchived()) {
+			tagList.removeToDoTask(tag, task);
+		}
+		else {
+			tagList.removeArchivedTask(tag, task);
+		}
+		return toDoSortedList;
 	}
 }
