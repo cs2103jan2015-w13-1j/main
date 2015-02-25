@@ -11,9 +11,9 @@ public interface InterfaceForLogic {
 	ToDoSortedList addDeadLine(Task task, Date deadLine);
 	ToDoSortedList addStartAndEndTime(Task task, Date start,Date end);
 	
-	ToDoSortedList editStartDate(MeetingTask task, Date start);
-	ToDoSortedList editEndDate(MeetingTask task, Date end);
-	ToDoSortedList editDeadLine(DeadlineTask task, Date deadLine);
+	ToDoSortedList editStartTime(MeetingTask task, Date start);
+	ToDoSortedList editEndTime(MeetingTask task, Date end);
+	ToDoSortedList editDeadline(DeadlineTask task, Date deadLine);
 	
 	ArrayList<Task> searchByDate(Date searchDate);
 	ArrayList<Task> searchByTag(String tag);	//not sure of return type and input type
