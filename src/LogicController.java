@@ -17,7 +17,7 @@ public class LogicController implements InterfaceForLogic{
 	//The treeSets
 	private ArchiveSortedList archiveSortedList;
 	private PrioritySortedList prioritySortedList;
-	private TodoSortedList toDoSortedList;
+	private ToDoSortedList toDoSortedList;
 	
 	public void initialise() {
 		data = DC.getAllData();
@@ -33,10 +33,28 @@ public class LogicController implements InterfaceForLogic{
 		toDoSortedList = data.getToDoSortedList();
 	}
 	
-	public String addTask(Task task) {
-		return null;
+	public ToDoSortedList addTask(Task task) {
+		toDoSortedList.add(task);
+		prioritySortedList.add(task);
+		
+		activeTaskList.addTask(task.getId(), task);
+		priorityList.addToDoTask(task.getPriority(), task);
+		dateList.addToDoTask(task.getTime().getDateRepresentation(), task);
+
+		addTaskWithTags(task);
+		
+		return toDoSortedList;
 	}
-	
+
+
+	private void addTaskWithTags(Task task) {
+		if (task.getTags()!=null) {
+			for (String tag : task.getTags()) {
+				tagList.addToDoTask(tag, task);
+			}
+		}
+	}
+
 	public String exitProgram() {
 		return DC.storeAllData(data);
 	}
