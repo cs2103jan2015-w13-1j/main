@@ -33,7 +33,7 @@ import basicElements.Task;
  * 
  */
 
-public class DatabaseController implements InterfaceForStorage {
+public class StorageController implements InterfaceForStorage {
 
 	private static final String STRING_FORMAT_FOR_DATE = "MM/dd/yyyy HH:mm:ss";
 	private static final String FILENAME_ACTIVE_TASKLIST = "tables/activeTaskList.json";

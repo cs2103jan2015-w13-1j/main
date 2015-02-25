@@ -4,7 +4,7 @@ import treeSets.*;
 
 public class LogicController implements InterfaceForLogic{
 	
-	private DatabaseController DC = new DatabaseController();
+	private StorageController DC = new StorageController();
 	private DATA data;
 	public DATA initialise() {
 		return DC.getAllData();
