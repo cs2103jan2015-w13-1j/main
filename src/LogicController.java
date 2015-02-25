@@ -72,10 +72,6 @@ public class LogicController implements InterfaceForLogic{
 		return DC.storeAllData(data);
 	}
 
-	public ToDoSortedList editStartDate(Task task, Date start) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	public ToDoSortedList editDeadline(DeadlineTask task, Date deadline) {
@@ -140,15 +136,26 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	@Override
-	public ArchiveSortedList moveToArchive(Task task) {
-		// TODO Auto-generated method stub
-		return null;
+	public ToDoSortedList moveToArchive(Task task) {
+		task.moveToArchive();
+		int id = task.getId();
+		
+		dateList.get(task.getTime()).moveToArchive(id);
+		priorityList.get(task.getPriority()).moveToArchive(id);
+		
+		activeTaskList.removeTaskbyId(id);
+		archivedTaskList.addTask(id, task);
+		
+		toDoSortedList.deleteTask(task);
+		archiveSortedList.addTask(task);
+		prioritySortedList.deleteTask(task);
+		
+		return toDoSortedList;
 	}
 
 	@Override
 	public ArchiveSortedList viewArchiveTasks() {
-		// TODO Auto-generated method stub
-		return null;
+		return archiveSortedList;
 	}
 	
 
@@ -181,11 +188,6 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList modifyTask(Task task) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public int getSerialNumber() {
-		return serialNumber;
 	}
 
 	
@@ -228,4 +230,8 @@ public class LogicController implements InterfaceForLogic{
 		return requiredTasks;
 	}
 
+	@Override
+	public int getSerialNumber() {
+		return serialNumber;
+	}
 }

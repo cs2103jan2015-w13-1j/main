@@ -20,7 +20,7 @@ public interface InterfaceForLogic {
 	ArrayList<Task> searchByPriority(int priority);
 
 
-	ArchiveSortedList moveToArchive(Task task); //not sure of the return type
+	ToDoSortedList moveToArchive(Task task); //not sure of the return type
 	ArchiveSortedList viewArchiveTasks();
 	
 	ToDoSortedList modifyTask(Task task);//not sure of input type
