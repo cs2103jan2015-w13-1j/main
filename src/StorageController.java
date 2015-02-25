@@ -3,13 +3,10 @@ import hashMaps.TaskList;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -18,6 +15,9 @@ import basicElements.Date;
 import basicElements.DeadlineTask;
 import basicElements.MeetingTask;
 import basicElements.Task;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /*
  * @author: Esmond Peh
@@ -71,9 +71,7 @@ public class StorageController implements InterfaceForStorage {
 	public void run() throws IOException {
 		storage = getAllData();
 		System.out.println(storage.getActiveTaskList().size());
-		DeadlineTask dt = (DeadlineTask) storage.getActiveTaskList().getTaskbyId(1);
-		System.out.println(dt);
-		System.out.println(dt.getType());
+		System.out.println(storage.getArchivedTaskList().size());
 	}
 	
 	public String storeAllData(DATA data) {
@@ -85,7 +83,7 @@ public class StorageController implements InterfaceForStorage {
 		try {
 			storage = initializeStorage();
 			storage.setActiveTaskList(retrieveTasklistFromStorage(FILENAME_ACTIVE_TASKLIST));
-			//storage.setArchivedTaskList(retrieveTasklistFromStorage(FILENAME_ARCHIVE_TASKLIST));
+			storage.setArchivedTaskList(retrieveTasklistFromStorage(FILENAME_ARCHIVE_TASKLIST));
 //			storage.setDateList(retrieveDatelistFromStorage());
 //			storage.setPriorityList(retrievePrioritylistFromStorage());
 //			storage.setTagList(retrieveTaglistFromStorage());
@@ -99,9 +97,10 @@ public class StorageController implements InterfaceForStorage {
 	}
 
 	private TaskList retrieveTasklistFromStorage(String storageName) {
-		JSONParser parser = new JSONParser(); 
+		JSONParser parser = new JSONParser();
+		Gson gson = new Gson();
 		Object obj = null;
-
+		
 		TaskList taskListHashMap = new TaskList();
 		try {
 			obj = parser.parse(new FileReader(storageName));
@@ -113,39 +112,32 @@ public class StorageController implements InterfaceForStorage {
 		    	JSONObject taskJSON = (JSONObject) taskListJSON.get(pair.getKey()); 
 
 		    	// Generic Type attributes
-		    	int id = (int) (long) taskJSON.get("id");
-				String description = (String) taskJSON.get("description");
-				String type = (String) taskJSON.get("type");
-				JSONArray tagsList = (JSONArray) taskJSON.get("tags");
-				ArrayList<String> tags = tagsList;
-				
-				System.out.println(id + ": " + type + ", " + tags);
-				int priority = (int) (long) taskJSON.get("priority");
-				boolean archived = (boolean) taskJSON.get("archived");
+		    	int id = gson.fromJson(String.valueOf(taskJSON.get("id")) , int.class);
+		    	String description = String.valueOf(taskJSON.get("description"));
+				String type = String.valueOf(taskJSON.get("type"));
+				ArrayList<String> tags = gson.fromJson(String.valueOf(taskJSON.get("tags")) , new TypeToken<ArrayList<String>>() {}.getType());
+				int priority = gson.fromJson(String.valueOf(taskJSON.get("priority")) , int.class);
+				boolean archived = gson.fromJson(String.valueOf(taskJSON.get("archived")) , boolean.class);
 				
 				if (type.equals("DeadlineTask")) {
-					long string_date = Long.parseLong((String) taskJSON.get("deadline"));
+					// Deadline Type
+					long string_date = gson.fromJson(String.valueOf(taskJSON.get("deadline")) , long.class);
 					Date deadline = new Date();
 					deadline.setTime(string_date);
 					DeadlineTask deadlineTask = new DeadlineTask(id, description, deadline, priority, tags, archived);
-					//DeadlineTask deadlineTask = new DeadlineTask();
-					System.out.println(">> " + deadlineTask.getType());
 					taskListHashMap.addTask(deadlineTask.getId(), deadlineTask);
-					System.out.println("added deadline, " + type);
 				} else if (type.equals("MeetingTask")) {
 					// Meeting Type
-					long string_start_date = Long.parseLong((String) taskJSON.get("start"));
+					long long_start_date = gson.fromJson(String.valueOf(taskJSON.get("start")) , long.class);
 					Date startDate = new Date();
-					startDate.setTime(string_start_date);
+					startDate.setTime(long_start_date);
 					
-					long string_end_date = Long.parseLong((String) taskJSON.get("end"));
+					long long_end_date = gson.fromJson(String.valueOf(taskJSON.get("end")) , long.class);
 					Date endDate = new Date();
-					endDate.setTime(string_end_date);
+					endDate.setTime(long_end_date);
 					
 					MeetingTask meetingTask = new MeetingTask(id, description, startDate, endDate, priority, tags, archived);
 					taskListHashMap.addTask(meetingTask.getId(), meetingTask);
-					
-					System.out.println("added meeting, " + type);
 				} else {
 					// Generic type
 					Task task = new Task(id, description, priority, tags, archived);
@@ -156,50 +148,11 @@ public class StorageController implements InterfaceForStorage {
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  
-	    
+		}
 		return taskListHashMap;
 	}
 	
-//	private static TaskList convertJSONObjectToHashMap(JSONObject taskListJSON) throws java.text.ParseException {
-//		TaskList taskListHashMap = new TaskList();
-//		
-//		Iterator it = taskListJSON.entrySet().iterator();
-//	    while (it.hasNext()) {
-//	    	Map.Entry pair = (Map.Entry)it.next();
-//	    	JSONObject taskJSON = (JSONObject) taskListJSON.get(pair.getKey()); 
-//            Task task = convertJSONObjectToTask(taskJSON);
-//    		taskListHashMap.addTask(task.getId(), task);
-//	    	it.remove(); // avoids a ConcurrentModificationException
-//        }
-//	    
-//	    return taskListHashMap;
-//	}
-//
-//	private static Task convertJSONObjectToTask(JSONObject taskJSON) throws java.text.ParseException {
-//		int id = (int) (long) taskJSON.get("ID");
-//		String description = (String) taskJSON.get("Description");
-////		String string_date = (String) taskJSON.get("Deadline");
-////		Date date = convertDateToString(string_date);
-//		String type = (String) taskJSON.get("Type");
-//		JSONArray tagsList = (JSONArray) taskJSON.get("tags");
-//		ArrayList<String> tags = tagsList;
-//		int priority = (int) (long) taskJSON.get("Priority");
-//		boolean archived = (boolean) taskJSON.get("Archived");
-//
-//		Task task = new Task(id, description, priority, tags);
-//		if (archived == true) {
-//			task.moveToArchive();
-//		}
-//		return task;
-//	}
-//
-//	private static Date convertDateToString(String string) throws java.text.ParseException {
-//		DateFormat format = new SimpleDateFormat(STRING_FORMAT_FOR_DATE);
-//		Date date = format.parse(string);
-//		return date;
-//	}
-//	
+
 //	private static TaskList initialiseDummyDataForTesting() {
 //		TaskList taskListHashMap = new TaskList();
 //		
@@ -215,7 +168,7 @@ public class StorageController implements InterfaceForStorage {
 //		taskListHashMap.addTask(dummyTask3.getId(), dummyTask3);
 //		return taskListHashMap;
 //	}
-//
+	
 //	public static void writeTaskListToStorage(TaskList taskListHashMap, String storageName)
 //			throws IOException {
 //		JSONObject taskListJSON = convertHashmapToJSONObject(taskListHashMap);
@@ -240,76 +193,6 @@ public class StorageController implements InterfaceForStorage {
 //		fileWriter.write(jsonObject.toJSONString());  
 //		fileWriter.flush();  
 //		fileWriter.close();
-//	}
-//	
-//	private static String convertDateToString(DeadlineTask task) {
-//		DateFormat df = new SimpleDateFormat(STRING_FORMAT_FOR_DATE);
-//		Date today = task.getDeadline();
-//		String reportDate = df.format(today);
-//		return reportDate;
-//	}
-//	
-//	private static String convertStartDateToString(MeetingTask task) {
-//		DateFormat df = new SimpleDateFormat(STRING_FORMAT_FOR_DATE);
-//		Date today = task.getStartTime();
-//		String reportDate = df.format(today);
-//		return reportDate;
-//	}
-//	
-//	private static String convertEndDateToString(MeetingTask task) {
-//		DateFormat df = new SimpleDateFormat(STRING_FORMAT_FOR_DATE);
-//		Date today = task.getEndTime();
-//		String reportDate = df.format(today);
-//		return reportDate;
-//	}
-//
-//	// overloading method: add task to JSON object
-//	@SuppressWarnings("unchecked")
-//	private static void addTaskToTaskListJSON(Task task, JSONObject taskListJSON) {
-//		JSONObject newTask = new JSONObject();
-//		newTask.put("ID", task.getId());
-//		newTask.put("Description", task.getDescription());
-//		newTask.put("Type", task.getType());
-//		newTask.put("Priority", task.getPriority());
-//		newTask.put("Tags", task.getTags().toString());
-//		newTask.put("Archived", task.isArchived());	
-//		taskListJSON.put(task.getId(), newTask);
-//	}
-//	
-//	// overloading method: add deadline task to JSON object
-//	@SuppressWarnings("unchecked")
-//	private static void addTaskToTaskListJSON(DeadlineTask task, JSONObject taskListJSON) {
-//		
-//		String reportDate = convertDateToString(task);
-//		
-//		JSONObject newTask = new JSONObject();
-//		newTask.put("ID", task.getId());
-//		newTask.put("Description", task.getDescription());
-//		newTask.put("Deadline", reportDate);
-//		newTask.put("Type", task.getType());
-//		newTask.put("Priority", task.getPriority());
-//		newTask.put("Tags", task.getTags().toString());
-//		newTask.put("Archived", task.isArchived());	
-//		taskListJSON.put(task.getId(), newTask);
-//	}
-//	
-//	// overloading method: add meeting task to JSON object
-//	@SuppressWarnings("unchecked")
-//	private static void addTaskToTaskListJSON(MeetingTask task, JSONObject taskListJSON) {
-//		
-//		String startDate = convertStartDateToString(task);
-//		String endDate = convertEndDateToString(task);
-//		
-//		JSONObject newTask = new JSONObject();
-//		newTask.put("ID", task.getId());
-//		newTask.put("Description", task.getDescription());
-//		newTask.put("StartDate", startDate);
-//		newTask.put("EndDate", endDate);
-//		newTask.put("Type", task.getType());
-//		newTask.put("Priority", task.getPriority());
-//		newTask.put("Tags", task.getTags().toString());
-//		newTask.put("Archived", task.isArchived());	
-//		taskListJSON.put(task.getId(), newTask);
 //	}
 
 	// this method will create the JSON files for the storage

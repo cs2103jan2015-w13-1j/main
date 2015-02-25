@@ -8,7 +8,7 @@ import java.util.*;
 public class Task {
 	
 	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \n"
-														+ "Priority : %3$s \nTags : %4$s \nArchived : %6$s";
+														+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s";
 	
 	protected static String type = "GenericTask";
 	private int id;
