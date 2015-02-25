@@ -200,4 +200,16 @@ public class DatabaseController implements InterfaceForStorage {
 			storageFile.getParentFile().mkdirs();
 		}
 	}
+
+	@Override
+	public DATA getAllData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String storeAllData(DATA data) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

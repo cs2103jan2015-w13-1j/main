@@ -3,6 +3,6 @@ public interface InterfaceForStorage {
 	
 	DATA getAllData();
 	
-	String storeAllData();
+	String storeAllData(DATA data); 
 	
 }
