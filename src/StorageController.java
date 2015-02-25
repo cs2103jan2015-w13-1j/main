@@ -1,6 +1,8 @@
 import hashMaps.TaskList;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -64,6 +66,8 @@ public class StorageController implements InterfaceForStorage {
 	
 	public void run() throws IOException {
 		storage = getAllData();
+//		System.out.println(storage.getActiveTaskList());
+//		System.out.println(storage.getArchivedTaskList());
 		System.out.println(storeAllData(storage));
 	}
 	
@@ -102,6 +106,11 @@ public class StorageController implements InterfaceForStorage {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private boolean writeTaskListToStorage(TaskList taskList, String fileName) {
+		// do nothing if task list is empty 
+		if (taskList.isEmpty()) {
+			return true;
+		}
+		
 		Gson gson = new Gson();
 		JSONParser parser = new JSONParser();
 		JSONObject taskListJSON = new JSONObject();
@@ -143,6 +152,19 @@ public class StorageController implements InterfaceForStorage {
 
 	@SuppressWarnings("rawtypes")
 	private TaskList retrieveTasklistFromStorage(String storageName) {
+		
+		// do nothing if task list is empty 
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(storageName));
+			if (br.readLine() == null) {
+			    System.out.println(storageName + " is empty");
+			    return new TaskList();
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}     
+		
+		
 		JSONParser parser = new JSONParser();
 		Gson gson = new Gson();
 		Object obj = null;
