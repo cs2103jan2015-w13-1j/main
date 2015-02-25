@@ -8,7 +8,7 @@ import java.util.*;
 public class Task {
 	
 	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \n"
-														+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s";
+														+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s\nType : %6$s";
 	
 	protected static String type = "GenericTask";
 	private int id;
@@ -122,7 +122,7 @@ public class Task {
 	
 	public String toString() {
 		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(),
-												getPriority(), getTags(), isArchived());
+												getPriority(), getTags(), isArchived(), getType());
 	}
 
 }

@@ -9,7 +9,7 @@ public class MeetingTask extends Task{
 	
 	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \n"
 														+ "StartTime : %3$s \nEndTime: %4$s \n"
-														+ "Priority : %5$s \nTags : %5$s \nArchived : %6$s";
+														+ "Priority : %5$s \nTags : %6$s \nArchived : %7$s\nType : %8$s";
 	
 	private Date startTime;
 	private Date endTime;
@@ -93,7 +93,7 @@ public class MeetingTask extends Task{
 	public String toString() {
 		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(), 
 												getStartTime(), getEndTime(),
-												getPriority(), getTags(), isArchived());
+												getPriority(), getTags(), isArchived(), getType());
 	}
 	
 	public String getType() {

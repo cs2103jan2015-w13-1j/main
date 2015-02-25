@@ -8,7 +8,7 @@ import java.util.*;
 public class DeadlineTask extends Task{
 	
 	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \nDeadline : %3$s \n"
-														+ "Priority : %4$s \nTags : %5$s \nArchived : %6$s";
+														+ "Priority : %4$s \nTags : %5$s \nArchived : %6$s\nType : %7$s";
 	
 	private Date deadline;
 	protected static String type = "DeadlineTask";
@@ -55,7 +55,7 @@ public class DeadlineTask extends Task{
 	
 	public String toString() {
 		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(), getDeadline(),
-												getPriority(), getTags(), isArchived());
+												getPriority(), getTags(), isArchived(), getType());
 	}
 	
 	public String getType() {
