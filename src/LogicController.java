@@ -140,18 +140,6 @@ public class LogicController implements InterfaceForLogic{
 	}
 
 	@Override
-	public ToDoSortedList addStartDate(Task task, Date start) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ToDoSortedList addEndDate(Task task, Date start) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ToDoSortedList editStartDate(MeetingTask task, Date start) {
 		// TODO Auto-generated method stub
 		return null;
@@ -165,6 +153,18 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public ArrayList<Task> searchByPriority(int priority) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList addStartTime(Task task, Date start) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList addEndTime(Task task, Date start) {
 		// TODO Auto-generated method stub
 		return null;
 	}

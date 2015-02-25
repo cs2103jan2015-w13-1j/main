@@ -9,8 +9,8 @@ public interface InterfaceForLogic {
 	ToDoSortedList addTask(Task task); //sorted by date
 	
 	ToDoSortedList addDeadLine(Task task, Date deadLine);
-	ToDoSortedList addStartDate(Task task, Date start);
-	ToDoSortedList addEndDate(Task task, Date start);
+	ToDoSortedList addStartTime(Task task, Date start);
+	ToDoSortedList addEndTime(Task task, Date start);
 	
 	ToDoSortedList editStartDate(MeetingTask task, Date start);
 	ToDoSortedList editEndDate(MeetingTask task, Date end);
