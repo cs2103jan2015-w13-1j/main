@@ -6,9 +6,11 @@ import treeSets.*;
 
 public class LogicController implements InterfaceForLogic{
 	
+	
 	private StorageController DC = new StorageController();
 	private DATA data;
 	
+	private int serialNumber;
 	//The hashMaps
 	private TaskList activeTaskList;
 	private TaskList archivedTaskList;
@@ -24,6 +26,7 @@ public class LogicController implements InterfaceForLogic{
 	public void initialise() {
 		data = DC.getAllData();
 		
+		serialNumber = data.getSerialNumber();
 		activeTaskList = data.getActiveTaskList();
 		archivedTaskList = data.getArchivedTaskList();
 		tagList = data.getTagList();
@@ -100,7 +103,24 @@ public class LogicController implements InterfaceForLogic{
 		return null;
 	}
 
-
+	@Override
+	public ToDoSortedList addStartTime(Task task, Date start) {
+		String newDate = start.getDateRepresentation();
+		DeadlineTask newTask = new DeadlineTask(task, deadline);
+		
+		deleteTask(task);
+		addTask(newTask);
+		
+		dateList.addToDoTask(newDate, newTask);
+		return null;
+	}
+	
+	@Override
+	public ToDoSortedList addEndTime(Task task, Date start) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public ArchiveSortedList moveToArchive(Task task) {
 		// TODO Auto-generated method stub
@@ -146,8 +166,7 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public int getSerialNumber() {
-		// TODO Auto-generated method stub
-		return 0;
+		return serialNumber;
 	}
 
 	@Override
@@ -201,17 +220,7 @@ public class LogicController implements InterfaceForLogic{
 		return requiredTasks;
 	}
 
-	@Override
-	public ToDoSortedList addStartTime(Task task, Date start) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public ToDoSortedList addEndTime(Task task, Date start) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 
