@@ -3,26 +3,22 @@ import java.util.*;
 
 import basicElements.TaskByDate;
 
-public class DateList extends HashMap<String, TaskByDate> {
+public class DateList extends GeneralSearchList<String, TaskByDate> {
 	
 	public boolean hasDate(String date){
-		return this.containsKey(date);
-	}
-	
-	private TaskByDate getTaskOnDate(int date){
-		return this.get(date);
+		return super.containsKey(date);
 	}
 	
 	public ArrayList<Integer> getTodoTaskIdOnDate(int date){
-		return this.getTaskOnDate(date).getToDoTaskIds();
+		return this.getTodoTaskIdOnDate(date);
 	}
 	
 	public ArrayList<Integer> getArchivedTaskIdOnDate(int date){
-		return this.getTaskOnDate(date).getArchivedTaskIds();
+		return this.getArchivedTaskIdOnDate(date);
 	}
 	
 	public void addNewDate(String date, TaskByDate taskByDate){
-		this.put(date, taskByDate);		
+		super.put(date, taskByDate);		
 	}
 	
 }

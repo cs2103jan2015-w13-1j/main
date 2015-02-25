@@ -12,7 +12,7 @@ public class TaskByProperty {
 	private ArrayList<Integer> toDoList = new ArrayList<Integer>();
 	private ArrayList<Integer> archivedtaskList = new ArrayList<Integer>();
 	
-	protected TaskByProperty() {}
+	public TaskByProperty() {}
 	
 	public ArrayList<Integer> getToDoTaskIds(){
 		return this.toDoList;

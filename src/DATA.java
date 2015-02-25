@@ -19,7 +19,7 @@ public class DATA {
 	//The treeSets
 	private ArchiveSortedList archiveSortedList;
 	private PrioritySortedList prioritySortedList;
-	private TodoSortedList toDoSortedList;
+	private ToDoSortedList toDoSortedList;
 	
 	/**
 	 * @return the activeTaskList
@@ -115,13 +115,13 @@ public class DATA {
 	/**
 	 * @return the toDoSortedList
 	 */
-	public TodoSortedList getToDoSortedList() {
+	public ToDoSortedList getToDoSortedList() {
 		return toDoSortedList;
 	}
 	/**
 	 * @param toDoSortedList the toDoSortedList to set
 	 */
-	public void setToDoSortedList(TodoSortedList toDoSortedList) {
+	public void setToDoSortedList(ToDoSortedList toDoSortedList) {
 		this.toDoSortedList = toDoSortedList;
 	}
 	

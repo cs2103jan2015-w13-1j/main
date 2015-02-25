@@ -8,7 +8,7 @@ import basicElements.Task;
  * Support add, delete, update, and extract top_n tasks.
  * @author Yichen
  */
-public class TodoSortedList extends GeneralSortedList implements Comparator<Task>{
+public class ToDoSortedList extends GeneralSortedList implements Comparator<Task>{
 
 	/**
 	 * Compare the tasks in the todo list. A task is 'smaller' if it has an earlier date.
