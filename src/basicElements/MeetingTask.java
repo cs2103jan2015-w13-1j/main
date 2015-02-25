@@ -26,8 +26,8 @@ public class MeetingTask extends Task{
 	 * @param tags
 	 * 			null if not specified
 	 */
-	public MeetingTask(int id, String description, Date start, Date end, int priority, ArrayList<String> tags){
-		super(id, description, priority, tags);
+	public MeetingTask(int id, String description, Date start, Date end, int priority, ArrayList<String> tags, boolean archived){
+		super(id, description, priority, tags, archived);
 		this.startTime = start;
 		this.endTime = end;
 	}
