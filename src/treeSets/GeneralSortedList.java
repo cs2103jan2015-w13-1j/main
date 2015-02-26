@@ -10,6 +10,10 @@ import basicElements.Task;
  */
 public class GeneralSortedList extends TreeSet<Task>{
 	
+	protected GeneralSortedList(Comparator<Task> c) {
+		super(c);
+	}
+	
 	public void addTask(Task task) {
 		this.add(task);
 	}

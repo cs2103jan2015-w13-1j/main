@@ -1,5 +1,4 @@
 package treeSets;
-import java.util.*;
 
 import basicElements.Task;
 
@@ -8,8 +7,8 @@ import basicElements.Task;
  * Support add, delete, update, and extract top_n tasks.
  * @author Yichen
  */
-public class ArchiveSortedList extends GeneralSortedList implements Comparator<Task>{
-	
+public class ArchiveSortedList extends GeneralSortedList{
+
 	/**
 	 * Compare the tasks in the archive list. A task is 'smaller' if it has an later date.
 	 * If two tasks has the same date, the task with higher priority is 'smaller'
@@ -18,13 +17,7 @@ public class ArchiveSortedList extends GeneralSortedList implements Comparator<T
 	 * @param t2
 	 * @return an integer indicating the comparison result of t1 and t2
 	 */
-	public int compare(Task t1, Task t2) {
-		int dateCompare = t2.getTime().compareTo(t1.getTime());
-		if(dateCompare != 0) {
-			return dateCompare;
-		}
-		else {
-			return t2.getPriority()-t1.getPriority();
-		}
+	public ArchiveSortedList(){
+		super(Task.reverseDateThenPriority);
 	}
 }

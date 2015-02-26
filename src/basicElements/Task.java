@@ -5,7 +5,7 @@ import java.util.*;
  * Use to represent one single Task
  * @author Yichen
  */
-public class Task {
+public class Task implements Comparable<Task>{
 	
 	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \n"
 														+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s\nType : %6$s";
@@ -125,4 +125,44 @@ public class Task {
 												getPriority(), getTags(), isArchived(), getType());
 	}
 
+	public static Comparator<Task> dateThenPriority = new Comparator<Task>(){
+		public int compare(Task t1, Task t2) {
+			int dateCompare = t1.getTime().compareTo(t2.getTime());
+			if(dateCompare != 0) {
+				return dateCompare;
+			}
+			else {
+				return t2.getPriority()-t1.getPriority();
+			}
+		}
+	};
+	
+	public static Comparator<Task> reverseDateThenPriority = new Comparator<Task>(){
+		public int compare(Task t1, Task t2) {
+			int dateCompare = t2.getTime().compareTo(t1.getTime());
+			if(dateCompare != 0) {
+				return dateCompare;
+			}
+			else {
+				return t2.getPriority()-t1.getPriority();
+			}
+		}
+	};
+	
+	public static Comparator<Task> priorityThenDate = new Comparator<Task>(){
+		public int compare(Task t1, Task t2) {
+			int priorityCompare = t2.getPriority()-t1.getPriority();
+			if(priorityCompare != 0) {
+				return priorityCompare;
+			}
+			else {
+				return t1.getTime().compareTo(t2.getTime());
+			}
+		}
+	};
+
+	@Override
+	public int compareTo(Task other) {
+		return this.getDescription().compareTo(other.getDescription());
+	}
 }
