@@ -84,19 +84,20 @@ public class StorageController implements InterfaceForStorage {
 	public String storeAllData(DATA data) {
 		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
 		boolean archivedTaskList = writeTaskListToStorage(data.getArchivedTaskList(), FILENAME_ARCHIVE_TASKLIST);
+		boolean dateList = writeDateListToStorage(data.getDateList(), FILENAME_DATE_LIST);
+		boolean priorityList = writePriorityListToStorage(data.getPriorityList(), FILENAME_PRIORITY_LIST);
+		boolean tagList = writeTagListToStorage(data.getTagList(), FILENAME_TAG_LIST);
 //		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
 //		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
 //		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
-//		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
-//		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
-//		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
-		if (activeTaskList && archivedTaskList) {
+		
+		if (activeTaskList && archivedTaskList && dateList && priorityList & tagList) {
 			return "success";
 		} else {
 			return "failure";
 		}
 	}
-	
+
 	public DATA getAllData() {
 		try {
 			storage = initializeStorage();
@@ -112,6 +113,58 @@ public class StorageController implements InterfaceForStorage {
 			e.printStackTrace();
 		}
 		return storage;
+	}
+	
+	private boolean writeTagListToStorage(TagList tagList, String fileName) {
+		Gson gson = new Gson();
+		File file = new File(fileName);
+		long timeBeforeModification = file.lastModified();
+		long timeAfterModification = -1;
+		try {
+			FileWriter fileWriter = new FileWriter(fileName);
+			fileWriter.write(gson.toJson(tagList));
+			fileWriter.flush();  
+			fileWriter.close();
+			timeAfterModification = file.lastModified();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return timeAfterModification > timeBeforeModification;
+	}
+	
+	private boolean writePriorityListToStorage(PriorityList priorityList, String fileName) {
+		Gson gson = new Gson();
+		File file = new File(fileName);
+		long timeBeforeModification = file.lastModified();
+		long timeAfterModification = -1;
+		try {
+			FileWriter fileWriter = new FileWriter(fileName);
+			fileWriter.write(gson.toJson(priorityList));
+			fileWriter.flush();  
+			fileWriter.close();
+			timeAfterModification = file.lastModified();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return timeAfterModification > timeBeforeModification;
+	}
+	
+	private boolean writeDateListToStorage(DateList dateList, String fileName) {
+		// TODO Auto-generated method stub
+		Gson gson = new Gson();
+		File file = new File(fileName);
+		long timeBeforeModification = file.lastModified();
+		long timeAfterModification = -1;
+		try {
+			FileWriter fileWriter = new FileWriter(fileName);
+			fileWriter.write(gson.toJson(dateList));
+			fileWriter.flush();  
+			fileWriter.close();
+			timeAfterModification = file.lastModified();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return timeAfterModification > timeBeforeModification;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -148,16 +201,19 @@ public class StorageController implements InterfaceForStorage {
 			}
 	        it.remove(); // avoids a ConcurrentModificationException
 	    }
-	    
+	    File file = new File(fileName);
+		long timeBeforeModification = file.lastModified();
+		long timeAfterModification = -1;
 		try {
 			FileWriter fileWriter = new FileWriter(fileName);
 			fileWriter.write(taskListJSON.toJSONString());
 			fileWriter.flush();  
 			fileWriter.close();
+			timeAfterModification = file.lastModified();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return taskList.isEmpty();
+		return timeAfterModification > timeBeforeModification;
 	}
 
 	@SuppressWarnings("rawtypes")
