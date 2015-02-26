@@ -68,17 +68,15 @@ public class StorageController implements InterfaceForStorage {
 
 	public static void main (String[] args) throws IOException {
 		StorageController control = new StorageController();
-		control.run();	
-//		Date now = new Date();
-//		System.out.println(now.getTime());
+		control.run();
 	}
 	
 	public void run() throws IOException {
-		initialiseDummyDataForTesting();
-//		storage = getAllData();
-//		System.out.println(storage.getActiveTaskList());
-//		System.out.println(storage.getArchivedTaskList());
+		initialiseDummyDataForTesting();	// generate dummy tasks for testing, creates a DATA object and store in storage
+		Gson gson = new Gson();
 		System.out.println(storeAllData(storage));
+		storage = getAllData();
+		System.out.println(gson.toJson(storage));
 	}
 	
 	public String storeAllData(DATA data) {
@@ -99,22 +97,134 @@ public class StorageController implements InterfaceForStorage {
 	}
 
 	public DATA getAllData() {
+		Gson gson = new Gson();
 		try {
 			storage = initializeStorage();
 			storage.setActiveTaskList(retrieveTasklistFromStorage(FILENAME_ACTIVE_TASKLIST));
 			storage.setArchivedTaskList(retrieveTasklistFromStorage(FILENAME_ARCHIVE_TASKLIST));
-//			storage.setDateList(retrieveDatelistFromStorage());
-//			storage.setPriorityList(retrievePrioritylistFromStorage());
-//			storage.setTagList(retrieveTaglistFromStorage());
+			storage.setDateList(retrieveDatelistFromStorage());
+			storage.setPriorityList(retrievePrioritylistFromStorage());
+			storage.setTagList(retrieveTaglistFromStorage());
 //			storage.setToDoSortedList(retrieveSortedToDoFromStorage());
 //			storage.setArchiveSortedList(retrieveSortedArchiveFromStorage());
 //			storage.setPrioritySortedList(retrieveSortedPriorityFromStorage());
+			
+//			System.out.println(gson.toJson(storage));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return storage;
 	}
 	
+	@SuppressWarnings({ "resource", "rawtypes" })
+	private TagList retrieveTaglistFromStorage() {
+		// do nothing if task list is empty 
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(FILENAME_TAG_LIST));
+			if (br.readLine() == null) {
+				System.out.println(FILENAME_TAG_LIST + " is empty");
+				return new TagList();
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		JSONParser parser = new JSONParser();
+		Gson gson = new Gson();
+		Object obj = null;
+
+		TagList tagList = new TagList();
+		try {
+			obj = parser.parse(new FileReader(FILENAME_TAG_LIST));
+			JSONObject tagListJSON = (JSONObject) obj; 
+
+			Iterator it = tagListJSON.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry)it.next();
+				JSONObject tagJSON = (JSONObject) tagListJSON.get(pair.getKey());
+				TaskByTag tempTaskByTagObject = gson.fromJson(tagJSON.toJSONString(), TaskByTag.class);
+				tagList.addNewTag(tempTaskByTagObject.getTag(), tempTaskByTagObject);
+				it.remove(); // avoids a ConcurrentModificationException
+			}
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
+		return tagList;
+	}
+
+	@SuppressWarnings({ "resource", "rawtypes" })
+	private PriorityList retrievePrioritylistFromStorage() {
+		// do nothing if task list is empty 
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(FILENAME_PRIORITY_LIST));
+			if (br.readLine() == null) {
+				System.out.println(FILENAME_PRIORITY_LIST + " is empty");
+				return new PriorityList();
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		JSONParser parser = new JSONParser();
+		Gson gson = new Gson();
+		Object obj = null;
+
+		PriorityList priorityList = new PriorityList();
+		try {
+			obj = parser.parse(new FileReader(FILENAME_PRIORITY_LIST));
+			JSONObject priorityListJSON = (JSONObject) obj; 
+
+			Iterator it = priorityListJSON.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry)it.next();
+				JSONObject priorityJSON = (JSONObject) priorityListJSON.get(pair.getKey());
+				TaskByPriority tempTaskByPriorityObject = gson.fromJson(priorityJSON.toJSONString(), TaskByPriority.class);
+				priorityList.addNewPriority(tempTaskByPriorityObject.getProirity(), tempTaskByPriorityObject);
+				it.remove(); // avoids a ConcurrentModificationException
+			}
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
+		return priorityList;
+	}
+
+	@SuppressWarnings({ "resource", "rawtypes" })
+	private DateList retrieveDatelistFromStorage() {
+		// do nothing if task list is empty 
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(FILENAME_DATE_LIST));
+			if (br.readLine() == null) {
+			    System.out.println(FILENAME_DATE_LIST + " is empty");
+			    return new DateList();
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		JSONParser parser = new JSONParser();
+		Gson gson = new Gson();
+		Object obj = null;
+		
+		DateList dateList = new DateList();
+		try {
+			obj = parser.parse(new FileReader(FILENAME_DATE_LIST));
+			JSONObject dateListJSON = (JSONObject) obj; 
+			
+			Iterator it = dateListJSON.entrySet().iterator();
+		    while (it.hasNext()) {
+		    	Map.Entry pair = (Map.Entry)it.next();
+		    	JSONObject dateJSON = (JSONObject) dateListJSON.get(pair.getKey());
+		    	TaskByDate tempTaskByDateObject = gson.fromJson(dateJSON.toJSONString(), TaskByDate.class);
+		    	dateList.addNewDate(tempTaskByDateObject.getDate(), tempTaskByDateObject);
+		    	it.remove(); // avoids a ConcurrentModificationException
+	        }
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
+		return dateList;
+	}
+
 	private boolean writeTagListToStorage(TagList tagList, String fileName) {
 		Gson gson = new Gson();
 		File file = new File(fileName);
@@ -150,7 +260,6 @@ public class StorageController implements InterfaceForStorage {
 	}
 	
 	private boolean writeDateListToStorage(DateList dateList, String fileName) {
-		// TODO Auto-generated method stub
 		Gson gson = new Gson();
 		File file = new File(fileName);
 		long timeBeforeModification = file.lastModified();
@@ -216,7 +325,7 @@ public class StorageController implements InterfaceForStorage {
 		return timeAfterModification > timeBeforeModification;
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "resource" })
 	private TaskList retrieveTasklistFromStorage(String storageName) {
 		
 		// do nothing if task list is empty 
@@ -228,8 +337,7 @@ public class StorageController implements InterfaceForStorage {
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
-		}     
-		
+		}
 		
 		JSONParser parser = new JSONParser();
 		Gson gson = new Gson();
@@ -333,11 +441,9 @@ public class StorageController implements InterfaceForStorage {
 	}
 	
 	private void initialiseDummyDataForTesting() {
-		Gson gson = new Gson();
 		try {
 			storage = initializeStorage();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// dummy GenericTask
@@ -385,6 +491,8 @@ public class StorageController implements InterfaceForStorage {
 		dummyMeetingTask3.changeEndTime(deadline3);
 		dummyMeetingTask3.addTag("Work");
 		dummyMeetingTask3.addTag("Personal");
+		
+		storage.setSerialNumber(10); // hard-coded serial number
 		
 		storage.getActiveTaskList().addTask(dummyGenericTask1.getId(), dummyGenericTask1);
 		storage.getActiveTaskList().addTask(dummyGenericTask3.getId(), dummyGenericTask3);
@@ -499,7 +607,6 @@ public class StorageController implements InterfaceForStorage {
 			java.util.Date myDate = new SimpleDateFormat("yyyyMMdd").parse(stringDate);
 			date.setTime(myDate.getTime());
 		} catch (java.text.ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return date.getTime();
