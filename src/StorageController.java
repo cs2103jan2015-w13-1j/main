@@ -72,11 +72,9 @@ public class StorageController implements InterfaceForStorage {
 	}
 	
 	public void run() throws IOException {
-		initialiseDummyDataForTesting();	// generate dummy tasks for testing, creates a DATA object and store in storage
-		Gson gson = new Gson();
-		System.out.println(storeAllData(storage));
-		storage = getAllData();
-		System.out.println(gson.toJson(storage));
+//		initialiseDummyDataForTesting();			// generates dummy tasks for testing, creates a DATA object and store in storage
+		storage = getAllData();						// retrieves all data from JSON and save into storage
+		System.out.println(storeAllData(storage));	// stores all data from storage into JSON
 	}
 	
 	public String storeAllData(DATA data) {
@@ -339,6 +337,8 @@ public class StorageController implements InterfaceForStorage {
 			e1.printStackTrace();
 		}
 		
+		System.out.println("Retrieving from " + storageName);
+		
 		JSONParser parser = new JSONParser();
 		Gson gson = new Gson();
 		Object obj = null;
@@ -389,6 +389,7 @@ public class StorageController implements InterfaceForStorage {
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
+		System.out.println(gson.toJson(taskListHashMap));
 		return taskListHashMap;
 	}
 
