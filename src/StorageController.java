@@ -1,11 +1,14 @@
+import hashMaps.DateList;
+import hashMaps.PriorityList;
+import hashMaps.TagList;
 import hashMaps.TaskList;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,10 +17,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import treeSets.ArchiveSortedList;
+import treeSets.PrioritySortedList;
+import treeSets.ToDoSortedList;
 import basicElements.Date;
 import basicElements.DeadlineTask;
 import basicElements.MeetingTask;
 import basicElements.Task;
+import basicElements.TaskByDate;
+import basicElements.TaskByPriority;
+import basicElements.TaskByTag;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -65,7 +74,8 @@ public class StorageController implements InterfaceForStorage {
 	}
 	
 	public void run() throws IOException {
-		storage = getAllData();
+		initialiseDummyDataForTesting();
+//		storage = getAllData();
 //		System.out.println(storage.getActiveTaskList());
 //		System.out.println(storage.getArchivedTaskList());
 		System.out.println(storeAllData(storage));
@@ -217,26 +227,9 @@ public class StorageController implements InterfaceForStorage {
 		}
 		return taskListHashMap;
 	}
-	
-
-//	private static TaskList initialiseDummyDataForTesting() {
-//		TaskList taskListHashMap = new TaskList();
-//		
-//		Task dummyTask = new Task(1, "dummy 1", 1, null);
-//		Task dummyTask2 = new Task(2, "dummy 2", 2, null);
-//		Task dummyTask3 = new Task(3, "dummy 3", 3, null);
-//		dummyTask.addTag("Personal");
-//		dummyTask3.addTag("Work");
-//		dummyTask3.addTag("School");
-//		
-//		taskListHashMap.addTask(dummyTask.getId(), dummyTask);
-//		taskListHashMap.addTask(dummyTask2.getId(), dummyTask2);
-//		taskListHashMap.addTask(dummyTask3.getId(), dummyTask3);
-//		return taskListHashMap;
-//	}
 
 	// this method will create the JSON files for the storage
-	private static DATA initializeStorage() throws IOException {
+	private DATA initializeStorage() throws IOException {
 		processStorage(FILENAME_ACTIVE_TASKLIST);
 		processStorage(FILENAME_ARCHIVE_TASKLIST);
 		processStorage(FILENAME_DATE_LIST);
@@ -246,7 +239,17 @@ public class StorageController implements InterfaceForStorage {
 		processStorage(FILENAME_ARCHIVE_SORTED_LIST);
 		processStorage(FILENAME_PRIORITY_SORTED_LIST);
 		
-		return new DATA();
+		storage = new DATA();
+		storage.setActiveTaskList(new TaskList());
+		storage.setArchivedTaskList(new TaskList());
+		storage.setArchiveSortedList(new ArchiveSortedList());
+		storage.setDateList(new DateList());
+		storage.setPriorityList(new PriorityList());
+		storage.setPrioritySortedList(new PrioritySortedList());
+		storage.setTagList(new TagList());
+		storage.setToDoSortedList(new ToDoSortedList());
+		
+		return storage;
 	}
 
 	// check if JSON file exists, if not, create the JSON file.
@@ -271,5 +274,178 @@ public class StorageController implements InterfaceForStorage {
 		if (storageFile.getParentFile() != null) {
 			storageFile.getParentFile().mkdirs();
 		}
+	}
+	
+	private void initialiseDummyDataForTesting() {
+		Gson gson = new Gson();
+		try {
+			storage = initializeStorage();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// dummy GenericTask
+		Task dummyGenericTask1 = new Task(1, "dummyGenericTask 1", 1, null, false);
+		dummyGenericTask1.addTag("Personal");
+		Task dummyGenericTask2 = new Task(2, "dummyGenericTask 2", 2, null, true);
+		dummyGenericTask2.addTag("Work");
+		Task dummyGenericTask3 = new Task(3, "dummyGenericTask 3", 3, null, false);
+		dummyGenericTask3.addTag("School");
+		// dummy DeadlineTask
+		DeadlineTask dummyDeadlineTask1 = new DeadlineTask(4, "dummyDeadlineTask 1", null, 2, null, true);
+		long deadlinetime1 = Long.valueOf("1424361600000"); // date: 20/02/2015
+		Date deadline1 = new Date();
+		deadline1.setTime(deadlinetime1);
+		dummyDeadlineTask1.changeDeadline(deadline1);
+		dummyDeadlineTask1.addTag("Personal");
+		dummyDeadlineTask1.addTag("Work");
+		DeadlineTask dummyDeadlineTask2 = new DeadlineTask(5, "dummyDeadlineTask 2", null, 2, null, false);
+		long deadlinetime2 = Long.valueOf("1424797200000"); // date: 25/02/2015
+		Date deadline2 = new Date();
+		deadline2.setTime(deadlinetime2);
+		dummyDeadlineTask2.changeDeadline(deadline2);
+		dummyDeadlineTask2.addTag("Work");
+		dummyDeadlineTask2.addTag("School");
+		DeadlineTask dummyDeadlineTask3 = new DeadlineTask(6, "dummyDeadlineTask 3", null, 2, null, false);
+		long deadlinetime3 = Long.valueOf("1425056400000"); // date: 28/02/2015 1 am
+		Date deadline3 = new Date();
+		deadline3.setTime(deadlinetime3);
+		dummyDeadlineTask3.changeDeadline(deadline3);
+		dummyDeadlineTask3.addTag("Personal");
+		dummyDeadlineTask3.addTag("School");
+		// dummy MeetingTask
+		MeetingTask dummyMeetingTask1 = new MeetingTask(7, "dummyMeetingTask 1", null, null, 3, null, false);
+		dummyMeetingTask1.changeStartTime(deadline2);
+		dummyMeetingTask1.changeEndTime(deadline3);
+		dummyMeetingTask1.addTag("Work");
+		dummyMeetingTask1.addTag("Personal");
+		MeetingTask dummyMeetingTask2 = new MeetingTask(8, "dummyMeetingTask 2", null, null, 3, null, true);
+		dummyMeetingTask2.changeStartTime(deadline1);
+		dummyMeetingTask2.changeEndTime(deadline2);
+		dummyMeetingTask2.addTag("Personal");
+		dummyMeetingTask2.addTag("School");
+		MeetingTask dummyMeetingTask3 = new MeetingTask(9, "dummyMeetingTask 3", null, null, 3, null, false);
+		dummyMeetingTask3.changeStartTime(deadline1);
+		dummyMeetingTask3.changeEndTime(deadline3);
+		dummyMeetingTask3.addTag("Work");
+		dummyMeetingTask3.addTag("Personal");
+		
+		storage.getActiveTaskList().addTask(dummyGenericTask1.getId(), dummyGenericTask1);
+		storage.getActiveTaskList().addTask(dummyGenericTask3.getId(), dummyGenericTask3);
+		storage.getActiveTaskList().addTask(dummyDeadlineTask2.getId(), dummyDeadlineTask2);
+		storage.getActiveTaskList().addTask(dummyDeadlineTask3.getId(), dummyDeadlineTask3);
+		storage.getActiveTaskList().addTask(dummyMeetingTask1.getId(), dummyMeetingTask1);
+		storage.getActiveTaskList().addTask(dummyMeetingTask3.getId(), dummyMeetingTask3);
+		
+		storage.getArchivedTaskList().addTask(dummyGenericTask2.getId(), dummyGenericTask2);
+		storage.getArchivedTaskList().addTask(dummyDeadlineTask1.getId(), dummyDeadlineTask1);
+		storage.getArchivedTaskList().addTask(dummyMeetingTask2.getId(), dummyMeetingTask2);
+		
+//		System.out.println(gson.toJson(storage.getActiveTaskList()));
+//		System.out.println(gson.toJson(storage.getArchivedTaskList()));
+		
+		String newDate20150225 = new SimpleDateFormat("yyyyMMdd").format(convertStringToLong("20150225"));
+		String newDate20150220 = new SimpleDateFormat("yyyyMMdd").format(convertStringToLong("20150220"));
+		String newDate20150228 = new SimpleDateFormat("yyyyMMdd").format(convertStringToLong("20150228"));
+		
+		TaskByDate tbd20150220 = new TaskByDate(newDate20150220);
+		tbd20150220.addToDoTask(9);
+		tbd20150220.addArchivedTask(1);
+		tbd20150220.addArchivedTask(8);
+		storage.getDateList().addNewDate(newDate20150220, tbd20150220);
+		TaskByDate tbd20150225 = new TaskByDate(newDate20150225);
+		tbd20150225.addToDoTask(5);
+		tbd20150225.addToDoTask(7);
+		storage.getDateList().addNewDate(newDate20150225, tbd20150225);
+		TaskByDate tbd20150228 = new TaskByDate(newDate20150228);
+		tbd20150228.addToDoTask(6);
+		storage.getDateList().addNewDate(newDate20150228, tbd20150228);
+		
+//		System.out.println(gson.toJson(storage.getDateList()));
+		
+		TaskByPriority tbp1 = new TaskByPriority(1);
+		tbp1.addToDoTask(1);
+		TaskByPriority tbp2 = new TaskByPriority(2);
+		tbp2.addArchivedTask(2);
+		tbp2.addArchivedTask(4);
+		tbp2.addToDoTask(5);
+		tbp2.addToDoTask(6);
+		TaskByPriority tbp3 = new TaskByPriority(3);
+		tbp3.addToDoTask(3);
+		tbp3.addToDoTask(7);
+		tbp3.addToDoTask(9);
+		tbp3.addArchivedTask(8);
+		
+		storage.getPriorityList().addNewPriority(1, tbp1);
+		storage.getPriorityList().addNewPriority(2, tbp2);
+		storage.getPriorityList().addNewPriority(3, tbp3);
+		
+//		System.out.println(gson.toJson(storage.getPriorityList()));
+		
+		TaskByTag tbtPersonal = new TaskByTag("Personal");
+		tbtPersonal.addToDoTask(1);
+		tbtPersonal.addToDoTask(6);
+		tbtPersonal.addToDoTask(7);
+		tbtPersonal.addToDoTask(9);
+		tbtPersonal.addArchivedTask(4);
+		tbtPersonal.addArchivedTask(8);
+		TaskByTag tbtWork = new TaskByTag("Work");
+		tbtWork.addToDoTask(5);
+		tbtWork.addToDoTask(7);
+		tbtWork.addToDoTask(9);
+		tbtWork.addArchivedTask(2);
+		tbtWork.addArchivedTask(4);
+		TaskByTag tbtSchool = new TaskByTag("School");
+		tbtSchool.addToDoTask(3);
+		tbtSchool.addToDoTask(5);
+		tbtSchool.addToDoTask(6);
+		tbtSchool.addArchivedTask(8);
+		
+		storage.getTagList().addNewTag("Personal", tbtPersonal);
+		storage.getTagList().addNewTag("Work", tbtWork);
+		storage.getTagList().addNewTag("School", tbtSchool);
+		
+//		System.out.println(gson.toJson(storage.getTagList()));
+		
+//		storage.getToDoSortedList().add(dummyGenericTask1);
+//		storage.getToDoSortedList().add(dummyGenericTask3);
+//		storage.getToDoSortedList().add(dummyDeadlineTask2);
+//		storage.getToDoSortedList().addTask(dummyDeadlineTask3);
+//		storage.getToDoSortedList().addTask(dummyMeetingTask1);
+//		storage.getToDoSortedList().addTask(dummyMeetingTask3);
+		
+//		System.out.println(gson.toJson(storage.getToDoSortedList()));
+		
+//		storage.getArchiveSortedList().addTask(dummyGenericTask2);
+//		storage.getArchiveSortedList().addTask(dummyDeadlineTask1);
+//		storage.getArchiveSortedList().addTask(dummyMeetingTask2);
+		
+//		System.out.println(gson.toJson(storage.getArchiveSortedList()));
+		
+//		storage.getPrioritySortedList().add(dummyGenericTask1);
+//		storage.getPrioritySortedList().add(dummyGenericTask2);
+//		storage.getPrioritySortedList().add(dummyGenericTask3);
+//		storage.getPrioritySortedList().add(dummyDeadlineTask1);
+//		storage.getPrioritySortedList().add(dummyDeadlineTask2);
+//		storage.getPrioritySortedList().add(dummyDeadlineTask3);
+//		storage.getPrioritySortedList().add(dummyMeetingTask1);
+//		storage.getPrioritySortedList().add(dummyMeetingTask2);
+//		storage.getPrioritySortedList().add(dummyMeetingTask3);
+
+//		System.out.println(gson.toJson(storage.getPrioritySortedList()));
+		
+//		System.out.println(gson.toJson(storage));
+	}
+	
+	private long convertStringToLong(String stringDate) {
+		Date date = new Date();
+		try {
+			java.util.Date myDate = new SimpleDateFormat("yyyyMMdd").parse(stringDate);
+			date.setTime(myDate.getTime());
+		} catch (java.text.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date.getTime();
 	}
 }
