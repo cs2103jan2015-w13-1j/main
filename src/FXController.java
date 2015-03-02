@@ -102,14 +102,14 @@ public class FXController implements Initializable {
 	
 	public void inputCommand(ActionEvent event){
 		
-		boolean goTo = true;
-		boolean initialise = true;
+		String input = commandField.getText();
+		commandField.clear();
+		
+		//input = parser.parseIn(input);
+		boolean goTo = false;
 		boolean add = true;
 		
-		String input = commandField.getText();
-		//input = parser.parseIn(input);
 		if (goTo == true){
-			commandField.clear();
 			if (input.equals("tasks")){
 				taskGroup.toFront();
 			}
@@ -120,8 +120,22 @@ public class FXController implements Initializable {
 				settingsGroup.toFront();
 			}
 		}
-		if (add == true){
+		else if (add == true){
 			
+			int id = taskNumber++;
+			String description = input.substring(0, input.indexOf(" "));
+			input = input.substring(input.indexOf(" ") + 1);
+			String priority = input.substring(0, input.indexOf(" "));
+			input = input.substring(input.indexOf(" ") + 1);
+			String start = input.substring(0, input.indexOf(" "));
+			input = input.substring(input.indexOf(" ") + 1);
+			String end = input.substring(0, input.indexOf(" "));
+			input = input.substring(input.indexOf(" ") + 1);
+			String due = input;
+			
+			FXTable entry = new FXTable(id, description, priority, start, end, due);
+			
+			tasks.add(entry);
 		}
 	}
 	
