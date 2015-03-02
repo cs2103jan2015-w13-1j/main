@@ -106,21 +106,14 @@ public class FXController implements Initializable {
 		commandField.clear();
 		
 		//input = parser.parseIn(input);
-		boolean goTo = false;
-		boolean add = true;
+		boolean isGoTo = false;
+		boolean isAdd = false;
+		boolean isArchive = true; 
 		
-		if (goTo == true){
-			if (input.equals("tasks")){
-				taskGroup.toFront();
-			}
-			if (input.equals("commands")){
-				helpGroup.toFront();
-			}
-			if (input.equals("settings")) {
-				settingsGroup.toFront();
-			}
+		if (isGoTo){
+			executeGoTo(input);
 		}
-		else if (add == true){
+		else if (isAdd){
 			
 			int id = taskNumber++;
 			String description = input.substring(0, input.indexOf(" "));
@@ -136,6 +129,32 @@ public class FXController implements Initializable {
 			FXTable entry = new FXTable(id, description, priority, start, end, due);
 			
 			tasks.add(entry);
+			
+		}
+		else if (isArchive){
+			
+			int deleteIndex = Integer.parseInt(input);
+			FXTable entry = tasks.get(deleteIndex-1);
+			entry.setId(archiveNumber++);
+			taskNumber--;
+			tasks.remove(deleteIndex-1);
+			archive.add(entry);
+			for(int i = deleteIndex-1; i < tasks.size(); i++){
+				tasks.get(i).setId(i+1);
+			}
+		}
+		
+	}
+
+	private void executeGoTo(String input) {
+		if (input.equals("tasks")){
+			taskGroup.toFront();
+		}
+		if (input.equals("commands")){
+			helpGroup.toFront();
+		}
+		if (input.equals("settings")) {
+			settingsGroup.toFront();
 		}
 	}
 	
