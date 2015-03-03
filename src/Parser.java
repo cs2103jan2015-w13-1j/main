@@ -26,8 +26,6 @@ public class Parser {
 		String firstCommand = splitCommand[0];
 		ArrayList<String> result = new ArrayList<String>();
 		
-		//instead of searching whole string for command, maybe search only first
-		//word for command, then search sequentially down the string
 		
 		//check first word for command
 		if(firstCommand.charAt(0)=='-'){
@@ -109,10 +107,12 @@ public class Parser {
 			//cannot be more than 2
 			//start and end time
 			isMeetingTask = true;
-			SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
+			SimpleDateFormat timeFormat = new SimpleDateFormat("DDMMYYYYHHmm");
 			try {
-				startTime = (Date) timeFormat.parse(dateAsString.get(0));
-				endTime = (Date) timeFormat.parse(dateAsString.get(1));
+				java.util.Date tempDate = timeFormat.parse(dateAsString.get(0));
+				startTime.setTime(tempDate.getTime());
+				tempDate = timeFormat.parse(dateAsString.get(1));
+				endTime.setTime(tempDate.getTime());
 				
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -135,16 +135,16 @@ public class Parser {
 		//format for tasks: integer ID, String description, int priority, ArrayList<String> tags,archived
 		if(isGenericTask){
 		//floating task
-		Task newTask = new Task(newMaxID,description, priority,tags,false);
-		//retrievedList = logicController.addTask(newTask);
+			Task newTask = new Task(newMaxID,description, priority,tags,false);
+			retrievedList = logicController.addTask(newTask);
 		}else if(isDeadlineTask){
 		//deadline task
-		Task newDeadlineTask = new DeadlineTask(newMaxID, description,deadLine, priority,tags,false);
-		//retrievedList = logicController.addTask(newDeadlineTask);
+			Task newDeadlineTask = new DeadlineTask(newMaxID, description,deadLine, priority,tags,false);
+			retrievedList = logicController.addTask(newDeadlineTask);
 		}else if(isMeetingTask){
 		//meeting task
-		Task newMeetingTask = new MeetingTask(newMaxID, description,startTime,endTime, priority,tags,false);
-		//retrievedList = logicController.addTask(newMeetingTask);
+			Task newMeetingTask = new MeetingTask(newMaxID, description,startTime,endTime, priority,tags,false);
+			retrievedList = logicController.addTask(newMeetingTask);
 		}
 		
 
