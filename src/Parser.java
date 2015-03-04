@@ -17,7 +17,7 @@ public class Parser {
 		Parser run = new Parser();
 		//read in command from ui
 		//get current max ID
-		String command = "-add this generic task";
+		String command = "-add this -date 0800 0900";
 		
 		run.parseIn(command);
 	}
@@ -84,19 +84,23 @@ public class Parser {
 				priority = Integer.parseInt(input[i+1]);
 			}else if(input[i].equalsIgnoreCase("-tags")){
 				int pointAfterTag = i+1;
-				while(input[pointAfterTag].charAt(0)!= '-'){
-					tags.add(input[pointAfterTag]);
-					pointAfterTag++;
+				for(int j=pointAfterTag;j<inputLength;j++){
+					if(input[pointAfterTag].charAt(0)!='-'){
+						tags.add(input[pointAfterTag]);
+					}
 				}
+				break;
+				
 			}else if(input[i].equalsIgnoreCase("-date")){
 
 				int pointAfterTag=i+1;
-				while(input[pointAfterTag].charAt(0)!='-' && pointAfterTag < inputLength){
-					dateAsString.add(input[pointAfterTag]);
-					pointAfterTag++;
-					//need to introduce a break
+				for(int j=pointAfterTag;j<inputLength;j++){
+					if(input[pointAfterTag].charAt(0)!='-'){
+						dateAsString.add(input[pointAfterTag]);
+					}
 				}
 				isGenericTask = false;
+				break;
 			}else{
 				//i.e no other command, add the rest as description
 				description = description.concat(" " + input[i]).trim();
@@ -110,10 +114,12 @@ public class Parser {
 			//cannot be more than 2
 			//start and end time
 			isMeetingTask = true;
-			SimpleDateFormat timeFormat = new SimpleDateFormat("DDMMYYYYHHmm");
+			SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
 			try {
 				java.util.Date tempDate = timeFormat.parse(dateAsString.get(0));
+				System.out.println(tempDate.getTime());
 				startTime.setTime(tempDate.getTime());
+				System.out.println(startTime);
 				tempDate = timeFormat.parse(dateAsString.get(1));
 				endTime.setTime(tempDate.getTime());
 				
