@@ -18,11 +18,12 @@ public class Parser {
 		//read in command from ui
 		//get current max ID
 		String command = "-add this generic task";
-		logicController.initialise();
+		
 		run.parseIn(command);
 	}
 
 	public ArrayList<Task> parseIn(String command) {
+		logicController.initialise();
 		
 		String[] splitCommand = command.split(" ");
 		String firstCommand = splitCommand[0];
@@ -142,7 +143,6 @@ public class Parser {
 		if(isGenericTask){
 		//floating task
 			Task newTask = new Task(newMaxID,description, priority,tags,false);
-			System.out.println(newTask);
 			retrievedList = logicController.addTask(newTask);
 		}else if(isDeadlineTask){
 		//deadline task
