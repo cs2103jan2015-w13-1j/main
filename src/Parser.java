@@ -9,14 +9,16 @@ import treeSets.*;
 
 public class Parser {
 	
-	LogicController logicController = new LogicController();
+	private static LogicController logicController = new LogicController();
+	
 	public int newMaxID = 0; //logicController.getMaxID()+1;
 
 	public static void main(String[] args){
 		Parser run = new Parser();
 		//read in command from ui
 		//get current max ID
-		String command = "-add this is a test command";
+		String command = "-add this generic task";
+		logicController.initialise();
 		run.parseIn(command);
 	}
 
@@ -81,22 +83,26 @@ public class Parser {
 		//date, priority and tags optional
 		//look through remaining input for more commands
 		for(int i =currentInputPoint; i<inputLength;i++){
-			if(input[i] == "-priority"){
+			if(input[i].equalsIgnoreCase("-priority")){
 				priority = Integer.parseInt(input[i+1]);
-			}else if(input[i] == "-tags"){
+			}else if(input[i].equalsIgnoreCase("-tags")){
 				int pointAfterTag = i+1;
 				while(input[pointAfterTag].charAt(0)!= '-'){
 					tags.add(input[pointAfterTag]);
 					pointAfterTag++;
 				}
-			}else if(input[i]=="-date"){
+			}else if(input[i].equalsIgnoreCase("-date")){
 
 				int pointAfterTag=i+1;
-				while(input[pointAfterTag].charAt(0)!='-'){
+				while(input[pointAfterTag].charAt(0)!='-' && pointAfterTag < inputLength){
 					dateAsString.add(input[pointAfterTag]);
 					pointAfterTag++;
+					//need to introduce a break
 				}
 				isGenericTask = false;
+			}else{
+				//i.e no other command, add the rest as description
+				description = description.concat(" " + input[i]).trim();
 			}
 		}
 		
@@ -119,7 +125,7 @@ public class Parser {
 				e.printStackTrace();
 			}
 				
-		}else{
+		}else if(dateAsString.size()==1){
 		
 			isDeadlineTask = true;
 			SimpleDateFormat dateFormat = new SimpleDateFormat("DD/MM/YYYY");
@@ -136,15 +142,17 @@ public class Parser {
 		if(isGenericTask){
 		//floating task
 			Task newTask = new Task(newMaxID,description, priority,tags,false);
+			System.out.println(newTask);
 			retrievedList = logicController.addTask(newTask);
 		}else if(isDeadlineTask){
 		//deadline task
 			Task newDeadlineTask = new DeadlineTask(newMaxID, description,deadLine, priority,tags,false);
-			retrievedList = logicController.addTask(newDeadlineTask);
+			System.out.println(deadLine);
+			//retrievedList = logicController.addTask(newDeadlineTask);
 		}else if(isMeetingTask){
 		//meeting task
 			Task newMeetingTask = new MeetingTask(newMaxID, description,startTime,endTime, priority,tags,false);
-			retrievedList = logicController.addTask(newMeetingTask);
+			//retrievedList = logicController.addTask(newMeetingTask);
 		}
 		
 
