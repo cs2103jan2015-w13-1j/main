@@ -1,13 +1,9 @@
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-
-
-
-
-
-
+import basicElements.*;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -23,7 +19,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class FXController implements Initializable {
 		
-	//Parser parser = new Parser();
+	Parser parser = new Parser();
+	
+	private static ArrayList<Task> list = new ArrayList<Task>();
 	
 	@FXML
 	private Group taskGroup;
@@ -60,7 +58,7 @@ public class FXController implements Initializable {
 	private int archiveNumber = 1;
 	
 	final ObservableList<FXTable> tasks = FXCollections.observableArrayList(
-			new FXTable(taskNumber++, "Do JavaFX", "L", "NIL", "NIL", "3/2/2015"),
+			/*new FXTable(taskNumber++, "Do JavaFX", "L", "NIL", "NIL", "3/2/2015"),
 			new FXTable(taskNumber++, "Sleep", "H", "NIL", "NIL", "3/2/2015"),
 			new FXTable(taskNumber++, "Eat", "H", "NIL", "NIL", "3/2/2015"),
 			new FXTable(taskNumber++, "Do JavaFX", "L", "NIL", "NIL", "3/2/2015"),
@@ -74,18 +72,18 @@ public class FXController implements Initializable {
 			new FXTable(taskNumber++, "Eat", "H", "NIL", "NIL", "3/2/2015"),
 			new FXTable(taskNumber++, "Do JavaFX", "L", "NIL", "NIL", "3/2/2015"),
 			new FXTable(taskNumber++, "Sleep", "H", "NIL", "NIL", "3/2/2015"),
-			new FXTable(taskNumber++, "Eat", "H", "NIL", "NIL", "3/2/2015")
+			new FXTable(taskNumber++, "Eat", "H", "NIL", "NIL", "3/2/2015")*/
 	);
 	
 	final ObservableList<FXTable> archive = FXCollections.observableArrayList(
-			new FXTable(archiveNumber++, "Do JavaFX", "L", "NIL", "NIL", "3/2/2015"),
+			/*new FXTable(archiveNumber++, "Do JavaFX", "L", "NIL", "NIL", "3/2/2015"),
 			new FXTable(archiveNumber++, "Sleep", "H", "NIL", "NIL", "3/2/2015"),
-			new FXTable(archiveNumber++, "Eat", "H", "NIL", "NIL", "3/2/2015")
+			new FXTable(archiveNumber++, "Eat", "H", "NIL", "NIL", "3/2/2015")*/
 	);
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources){
-		
+	
 		taskId.setCellValueFactory(new PropertyValueFactory<FXTable, Integer>("id"));
 		taskDescription.setCellValueFactory(new PropertyValueFactory<FXTable, String>("description"));
 		taskPriority.setCellValueFactory(new PropertyValueFactory<FXTable, String>("priority"));
@@ -98,6 +96,8 @@ public class FXController implements Initializable {
 		archiveDescription.setCellValueFactory(new PropertyValueFactory<FXTable, String>("description"));
 		archiveTable.setItems(archive);
 		
+		//call initialise function from Parser HERE
+		
 	}
 	
 	public void inputCommand(ActionEvent event){
@@ -105,33 +105,40 @@ public class FXController implements Initializable {
 		String input = commandField.getText();
 		commandField.clear();
 		
-		//input = parser.parseIn(input);
-		boolean isGoTo = false;
-		boolean isAdd = false;
-		boolean isArchive = true; 
+		String[] splitCommand = input.split(" ");
+		String firstCommand = splitCommand[0];
 		
-		if (isGoTo){
-			executeGoTo(input);
+		list = parser.parseIn(input);
+		
+		//TEST---------------------------------------------------------------
+		//list.clear();
+		//for(int i = 0; i < 10; i++){
+		//	list.add(new Task(0, "test " + i, -1, null, false));
+		//}
+		//-----------------------------------------------------------------------
+
+		if (firstCommand.equals("-goto")){
+			System.out.println(splitCommand[1]);
+			executeGoTo(splitCommand[1]);
 		}
-		else if (isAdd){
+		else if (firstCommand.equals("-add")){
 			
-			int id = taskNumber++;
-			String description = input.substring(0, input.indexOf(" "));
-			input = input.substring(input.indexOf(" ") + 1);
-			String priority = input.substring(0, input.indexOf(" "));
-			input = input.substring(input.indexOf(" ") + 1);
-			String start = input.substring(0, input.indexOf(" "));
-			input = input.substring(input.indexOf(" ") + 1);
-			String end = input.substring(0, input.indexOf(" "));
-			input = input.substring(input.indexOf(" ") + 1);
-			String due = input;
+			tasks.clear();
 			
-			FXTable entry = new FXTable(id, description, priority, start, end, due);
-			
-			tasks.add(entry);
+			for(int i = 0; i < list.size(); i++){
+				int id = i+1;
+				String description = list.get(i).getDescription();
+				String priority = Integer.toString(list.get(i).getPriority());
+				String start = "";
+				String end = "";
+				String due = "";
+				FXTable entry = new FXTable(id, description, priority, start, end, due);
+				tasks.add(entry);
+				System.out.println("added: " + description + priority + start + end + due);
+			}
 			
 		}
-		else if (isArchive){
+		else if (firstCommand.equals("archive")){
 			
 			int deleteIndex = Integer.parseInt(input);
 			FXTable entry = tasks.get(deleteIndex-1);

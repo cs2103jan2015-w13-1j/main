@@ -44,10 +44,6 @@ public class Parser {
 	
 		ArrayList<Task> result = new ArrayList<Task>();
 		switch(command){
-			case("-goto"):{
-				//look at next elements in string
-				break;
-			}
 			case("-add"):{
 				//run "add" functions
 				result = addCommand(splitInput);
