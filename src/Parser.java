@@ -22,11 +22,11 @@ public class Parser {
 		run.parseIn(command);
 	}
 
-	public ArrayList<String> parseIn(String command) {
+	public ArrayList<Task> parseIn(String command) {
 		
 		String[] splitCommand = command.split(" ");
 		String firstCommand = splitCommand[0];
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<Task> result = new ArrayList<Task>();
 		
 		
 		//check first word for command
@@ -39,9 +39,9 @@ public class Parser {
 		
 	}
 
-	private ArrayList<String> commandCheck(String command, String[] splitInput) {
+	private ArrayList<Task> commandCheck(String command, String[] splitInput) {
 	
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<Task> result = new ArrayList<Task>();
 		switch(command){
 			case("-goto"):{
 				//look at next elements in string
@@ -62,7 +62,7 @@ public class Parser {
 		
 	}
 	
-	private ArrayList<String> addCommand(String[] input){
+	private ArrayList<Task> addCommand(String[] input){
 		
 		//break the commands
 		String description = input[1];
@@ -77,7 +77,7 @@ public class Parser {
 		boolean isMeetingTask = false;
 		ToDoSortedList retrievedList = new ToDoSortedList();
 		ArrayList<String> tags = new ArrayList<String>();
-		ArrayList<String> taskListForUI = new ArrayList<String>();
+		ArrayList<Task> taskListForUI = new ArrayList<Task>();
 		ArrayList<String> dateAsString = new ArrayList<String>();
 		
 		//date, priority and tags optional
@@ -159,7 +159,7 @@ public class Parser {
 		
 		//convert ToDoSortedList from logicController into an ArrayList of String
 		for(Task task : retrievedList){
-			taskListForUI.add(task.toString());
+			taskListForUI.add(task);
 		}
 		newMaxID++;
 		return taskListForUI;
