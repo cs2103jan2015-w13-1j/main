@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import basicElements.*;
 import hashMaps.*;
@@ -10,16 +11,10 @@ public class LogicController implements InterfaceForLogic{
 	private DATA data;
 	
 	private int serialNumber;
-	//The hashMaps
+
 	private TaskList activeTaskList;
 	private TaskList archivedTaskList;
-	private TagList tagList;
-	private DateList dateList;
-	private PriorityList priorityList;
-	
-	//The treeSets
-	private ArchiveSortedList archiveSortedList;
-	private PrioritySortedList prioritySortedList;
+
 	private ToDoSortedList toDoSortedList;
 	
 	public void initialise() {
@@ -28,156 +23,100 @@ public class LogicController implements InterfaceForLogic{
 		serialNumber = data.getSerialNumber();
 		activeTaskList = data.getActiveTaskList();
 		archivedTaskList = data.getArchivedTaskList();
-		tagList = data.getTagList();
-		dateList = data.getDateList();
-		priorityList = data.getPriorityList();
-		
-		archiveSortedList = data.getArchiveSortedList();
-		prioritySortedList = data.getPrioritySortedList();
-		toDoSortedList = data.getToDoSortedList();
+
+		toDoSortedList = new ToDoSortedList();
+		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
+			toDoSortedList.addTask(e.getValue());
+		}
 	}
 	
 	public ToDoSortedList addTask(Task task) {
 		toDoSortedList.add(task);
-		prioritySortedList.add(task);
-		
 		activeTaskList.addTask(task.getId(), task);
-		priorityList.addToDoTask(task.getPriority(), task);
-		dateList.addToDoTask(task.getTime().getDateRepresentation(), task);
-
-		addTaskWithTags(task);
-		
 		return toDoSortedList;
-	}
-
-	// Need to modify for archive task
-	private void addTaskWithTags(Task task) {
-		if (task.getTags()!=null) {
-			for (String tag : task.getTags()) {
-				tagList.addToDoTask(tag, task);
-			}
-		}
-	}
-	
-	// Need to modify for archive task
-	private void removeTaskWithTags(Task task) {
-		if (task.getTags()!=null) {
-			for (String tag : task.getTags()) {
-				tagList.removeToDoTask(tag, task);
-			}
-		}
 	}
 	
 	public String exitProgram() {
 		return DC.storeAllData(data);
 	}
 
+	public ToDoSortedList addDeadLine(Task task, Date deadline) {
+		if (task.getType() == "generic") {
+			task.addDeadline(deadline);
+			task.setType("deadline");
+			toDoSortedList.updateTaskOrder(task);
+			return toDoSortedList;
+		}
+		else {
+			return null;
+		}
+	}
 	
-	@Override
-	public ToDoSortedList editDeadline(DeadlineTask task, Date deadline) {
-		String originalDate = task.getTime().getDateRepresentation();
-		String newDate = deadline.getDateRepresentation();
-		
-		dateList.removeToDoTask(originalDate, task);
-		dateList.addToDoTask(newDate, task);
-		
+	public ToDoSortedList editDeadline(Task task, Date deadline) {
+		if (task.getType() != "deadline") {
+			return null;
+		}
 		task.changeDeadline(deadline);
 		toDoSortedList.updateTaskOrder(task);
-		
 		return toDoSortedList;
 	}
 
-	@Override
-	public ToDoSortedList addDeadLine(Task task, Date deadline) {
-		DeadlineTask newTask = new DeadlineTask(task, deadline);
-
-		deleteTask(task);
-		addTask(newTask);
-
-		return null;
-	}
-
-	@Override
 	public ToDoSortedList addStartAndEndTime(Task task, Date start, Date end) {
-		MeetingTask newTask = new MeetingTask(task, start, end);
-		
-		deleteTask(task);
-		addTask(newTask);
-
-		return null;
+		if (task.getType() == "generic") {
+			task.addStartAndEndTime(start, end);
+			task.setType("meeting");
+			toDoSortedList.updateTaskOrder(task);
+			return toDoSortedList;
+		}
+		else {
+			return null;
+		}
 	}
 
-	@Override
-	public ToDoSortedList editStartTime(MeetingTask task, Date start) {
-		String originalStart = task.getTime().getDateRepresentation();
-		String newDate = start.getDateRepresentation();
-		
-		dateList.removeToDoTask(originalStart, task);
-		dateList.addToDoTask(newDate, task);
-		
+	public ToDoSortedList editStartTime(Task task, Date start) {	
+		if (task.getType() != "meeting") {
+			return null;
+		}
 		task.changeStartTime(start);
 		toDoSortedList.updateTaskOrder(task);
-		
 		return toDoSortedList;
 	}
 
-	@Override
-	public ToDoSortedList editEndTime(MeetingTask task, Date end) {
-		String originalEnd = task.getTime().getDateRepresentation();
-		String newDate = end.getDateRepresentation();
-		
-		dateList.removeToDoTask(originalEnd, task);
-		dateList.addToDoTask(newDate, task);
-		
+	public ToDoSortedList editEndTime(Task task, Date end) {
+		if (task.getType() != "meeting") {
+			return null;
+		}
 		task.changeEndTime(end);
-		toDoSortedList.updateTaskOrder(task);
-		
 		return toDoSortedList;
 	}
+
 	
-	@Override
-	public ToDoSortedList moveToArchive(Task task) {
-		task.moveToArchive();
+	public ToDoSortedList moveToArchive(Task task, Date finishedTime) {
+		task.moveToArchive(finishedTime);
 		int id = task.getId();
-		
-		dateList.get(task.getTime()).moveToArchive(id);
-		priorityList.get(task.getPriority()).moveToArchive(id);
-		
 		activeTaskList.removeTaskbyId(id);
 		archivedTaskList.addTask(id, task);
-		
 		toDoSortedList.deleteTask(task);
-		archiveSortedList.addTask(task);
-		prioritySortedList.deleteTask(task);
-		
 		return toDoSortedList;
 	}
 
-	@Override
 	public ArchiveSortedList viewArchiveTasks() {
+		ArchiveSortedList archiveSortedList = new ArchiveSortedList();
+		for (Entry<Integer, Task> e: archivedTaskList.entrySet()) {
+			archiveSortedList.addTask(e.getValue());
+		}
 		return archiveSortedList;
 	}
 	
-	
-	@Override
+
 	public ToDoSortedList deleteTask(Task task) {
 		if (!task.isArchived()){
 			toDoSortedList.deleteTask(task);
-			
-			dateList.removeToDoTask(task.getTime().getDateRepresentation(), task);
-			priorityList.removeToDoTask(task.getPriority(), task);
 			activeTaskList.removeTaskbyId(task.getId());
 		}
 		else{
-			archiveSortedList.deleteTask(task);
-			
-			dateList.removeArchivedTask(task.getTime().getDateRepresentation(), task);
-			priorityList.removeArchivedTask(task.getPriority(), task);
 			archivedTaskList.removeTaskbyId(task.getId());
 		}
-		prioritySortedList.deleteTask(task);
-		removeTaskWithTags(task);
-			
 		return toDoSortedList;
 	}
 
@@ -186,39 +125,47 @@ public class LogicController implements InterfaceForLogic{
 	// Only for tasks in the to do list
 	public ArrayList<Task> searchByDate(Date searchDate) {
 		String date = searchDate.getDateRepresentation();
-		if (dateList.hasDate(date)) {
-			ArrayList<Integer> ids = dateList.getTodoTaskIdOnDate(date);
-			return getActiveTasksByIds(ids);
+		ArrayList<Task> taskOnDate = new ArrayList<Task>();
+		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
+			Task task = e.getValue();
+			Date dateOfTask = task.getTime();
+			if (dateOfTask != null) {
+				if (dateOfTask.getDateRepresentation() == date) {
+					taskOnDate.add(task);
+				}
+				else {
+					if (task.getEndTime().getDateRepresentation() == date) {
+						taskOnDate.add(task);
+					}
+				}
+			}
 		}
-		return null;
-	}
-	
-	@Override
-	// Only for tasks in the to do list
-	public ArrayList<Task> searchByTag(String tag) {
-		if (tagList.hasTag(tag)) {
-			ArrayList<Integer> ids = tagList.getTodoTaskIdWithtag(tag);
-			return getActiveTasksByIds(ids);
-		}
-		return null;
-	}
-	
-	@Override
-	// Only for tasks in the to do list
-	public ArrayList<Task> searchByPriority(int priority) {
-		if (priorityList.hasPriority(priority)) {
-			ArrayList<Integer> ids = priorityList.getTodoTaskIdWithPriority(priority);
-			return getActiveTasksByIds(ids);
-		}
-		return null;
+		return taskOnDate;
 	}
 
-	private ArrayList<Task> getActiveTasksByIds(ArrayList<Integer> ids) {
-		ArrayList<Task> requiredTasks = new ArrayList<Task>();
-		for (int id : ids) {
-			requiredTasks.add(activeTaskList.getTaskbyId(id));
+	// Only for tasks in the to do list
+	public ArrayList<Task> searchByTag(String tag) {
+		ArrayList<Task> taskByTag = new ArrayList<Task>();
+		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
+			Task task = e.getValue();
+			ArrayList<String> tags = task.getTags();
+			if (tags.contains(tag)) {
+				taskByTag.add(task);
+			}
 		}
-		return requiredTasks;
+		return taskByTag;
+	}
+	
+	// Only for tasks in the to do list
+	public ArrayList<Task> searchByPriority(int priority) {
+		ArrayList<Task> taskByPriority = new ArrayList<Task>();
+		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
+			Task task = e.getValue();
+			if (task.getPriority() == priority) {
+				taskByPriority.add(task);
+			}
+		}
+		return taskByPriority;
 	}
 
 	@Override
@@ -234,37 +181,41 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public ToDoSortedList editPriority(Task task, int priority) {
-		int originalPriority = task.getPriority();
 		task.changePriority(priority);
-		if (!task.isArchived()) {
-			prioritySortedList.updateTaskOrder(task);
-			priorityList.removeToDoTask(originalPriority, task);
-			priorityList.addToDoTask(originalPriority, task);
-		}
+		toDoSortedList.updateTaskOrder(task);
 		return toDoSortedList;
 	}
 
 	@Override
 	public ToDoSortedList addTag(Task task, String tag) {
+		if (task.getTags().contains(tag)) {
+			return null;
+		}
 		task.addTag(tag);
-		if(!task.isArchived()) {
-			tagList.addToDoTask(tag, task);
-		}
-		else {
-			tagList.addArchivedTask(tag, task);
-		}
 		return toDoSortedList;
 	}
 	
 	@Override
 	public ToDoSortedList removeTag(Task task, String tag) {
+		if (!task.getTags().contains(tag)) {
+			return null;
+		}
 		task.removeTag(tag);
-		if(!task.isArchived()) {
-			tagList.removeToDoTask(tag, task);
+		return toDoSortedList;
+	}
+
+	@Override
+	public PrioritySortedList sortByPriority() {
+		PrioritySortedList prioritySortedList = new PrioritySortedList();
+		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {			
+			Task task = e.getValue();
+			prioritySortedList.addTask(task);
 		}
-		else {
-			tagList.removeArchivedTask(tag, task);
-		}
+		return prioritySortedList;
+	}
+
+	@Override
+	public ToDoSortedList sortByTime() {
 		return toDoSortedList;
 	}
 }
