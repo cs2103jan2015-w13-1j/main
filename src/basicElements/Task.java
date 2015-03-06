@@ -8,10 +8,12 @@ import java.util.*;
 public class Task implements Comparable<Task>{
 	
 	/*
-	 * Need to be edited here
+	 * Might need to be edited here
 	 */
 	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \n"
-														+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s\nType : %6$s";
+								+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s \nType : %6$s"
+								+ "Deadline : %6$s \nStartTime : %7$s \n"
+								+ "EndTime : %8$s \nfinishedTime : %10$s\n";
 	
 	private String type = "generic";
 	private int id;
@@ -260,7 +262,8 @@ public class Task implements Comparable<Task>{
 	
 	public String toString() {
 		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(),
-												getPriority(), getTags(), isArchived(), getType());
+								getPriority(), getTags(), isArchived(), getType(),
+							getDeadline(), getStartTime(), getEndTime(), getFinishedTime());
 	}
 
 	/**
