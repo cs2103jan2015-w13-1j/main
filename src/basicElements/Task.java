@@ -33,7 +33,7 @@ public class Task implements Comparable<Task>{
 	 * @param tags
 	 * 			null if not specified
 	 */
-	public Task(int id, String description, int priority, ArrayList<String> tags, boolean archived){
+	public Task(int id, String description, int priority, ArrayList<String> tags){
 		this.id = id;
 		this.description = description;
 		if (priority > 0){
@@ -42,7 +42,6 @@ public class Task implements Comparable<Task>{
 		if (tags != null){
 			this.tags = tags;
 		}
-		this.archived = archived;
 	}
 	
 	/**
@@ -55,8 +54,8 @@ public class Task implements Comparable<Task>{
 	 * @param tags
 	 * @param archived
 	 */
-	public Task(int id, String description, Date start, Date end, int priority, ArrayList<String> tags, boolean archived){
-		this(id, description, priority, tags, archived);
+	public Task(int id, String description, Date start, Date end, int priority, ArrayList<String> tags){
+		this(id, description, priority, tags);
 		this.startTime = start;
 		this.endTime = end;
 		this.setType("meeting");
@@ -71,8 +70,8 @@ public class Task implements Comparable<Task>{
 	 * @param tags
 	 * @param archived
 	 */
-	public Task(int id, String description, Date deadline, int priority, ArrayList<String> tags, boolean archived){
-		this(id, description, priority, tags, archived);
+	public Task(int id, String description, Date deadline, int priority, ArrayList<String> tags){
+		this(id, description, priority, tags);
 		this.deadline = deadline;
 		this.setType("deadline");
 	}
@@ -264,6 +263,9 @@ public class Task implements Comparable<Task>{
 												getPriority(), getTags(), isArchived(), getType());
 	}
 
+	/**
+	 * Comparator for the todo list sorted by deadline or starting time, then priority
+	 */
 	public static Comparator<Task> dateThenPriority = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
 			if (t2.getTime() == null) {
@@ -289,6 +291,9 @@ public class Task implements Comparable<Task>{
 		}
 	};
 	
+	/**
+	 * Comparator for the archive list sorted by finished time, then priority
+	 */
 	public static Comparator<Task> reverseDateThenPriority = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
 			int dateCompare = t2.getFinishedTime().compareTo(t1.getFinishedTime());
@@ -301,6 +306,9 @@ public class Task implements Comparable<Task>{
 		}
 	};
 	
+	/**
+	 * Comparator for the todo list sorted by priority, then date
+	 */
 	public static Comparator<Task> priorityThenDate = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
 			int priorityCompare = t2.getPriority()-t1.getPriority();
@@ -330,8 +338,4 @@ public class Task implements Comparable<Task>{
 	public int compareTo(Task other) {
 		return this.getDescription().compareTo(other.getDescription());
 	}
-
-
-
-
 }
