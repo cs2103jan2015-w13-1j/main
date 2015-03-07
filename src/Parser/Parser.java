@@ -192,23 +192,23 @@ public class Parser implements InterfaceForParser {
 		if(isGenericTask){
 		//floating task
 			Task newTask = new Task(newMaxID,description, priority,tags);
-			retrievedList = logicController.addTask(newTask);
+			//retrievedList = logicController.addTask(newTask);
 		}else if(isDeadlineTask){
 		//deadline task
 			Task newDeadlineTask = new Task(newMaxID, description,deadLine, priority,tags);
-			retrievedList = logicController.addTask(newDeadlineTask);
+			//retrievedList = logicController.addTask(newDeadlineTask);
 		}else if(isMeetingTask){
 		//meeting task
 			Task newMeetingTask = new Task(newMaxID, description, startTime, endTime, priority, tags);
-			retrievedList = logicController.addTask(newMeetingTask);
+			//retrievedList = logicController.addTask(newMeetingTask);
 		}
 		
 
 		
 		//convert ToDoSortedList from logicController into an ArrayList of String
-		for(Task task : retrievedList){
+		/*for(Task task : retrievedList){
 			taskListForUI.add(task);
-		}
+		}*/
 		newMaxID++;
 		return taskListForUI;
 	}

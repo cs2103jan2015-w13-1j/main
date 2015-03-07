@@ -48,7 +48,7 @@ public interface InterfaceForLogic {
 	ToDoSortedList moveToArchive(Task task, Date finishedTime);
 	ArchiveSortedList viewArchiveTasks();
 	
-	ToDoSortedList viewActiveTasks();	//Added this, GUI needs it for initialisation
+	ToDoSortedList viewActiveTasks();
 	
 	ToDoSortedList deleteTask(Task task);
 	
