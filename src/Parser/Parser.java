@@ -102,10 +102,8 @@ public class Parser implements InterfaceForParser {
 	}
 	
 	private String searchCommand(String[] splitInput) {
-
 		// check input for what to search for (date/tag/priority/desc)
 		String result = new String();
-		/*
 		String searchParameter = splitInput[1];
 		retrievedTasks.clear();
 		switch(searchParameter){
@@ -148,9 +146,8 @@ public class Parser implements InterfaceForParser {
 				break;
 			}
 		}
-		*/
-		return result;
 		
+		return result;
 	}
 
 	private String addCommand(String[] input){
