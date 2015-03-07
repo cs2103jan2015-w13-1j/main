@@ -210,6 +210,18 @@ public class Parser implements InterfaceForParser {
 		newMaxID++;
 		return taskListForUI;
 	}
+
+	@Override
+	public ArrayList<Task> returnTasks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Task> returnArchive() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }
