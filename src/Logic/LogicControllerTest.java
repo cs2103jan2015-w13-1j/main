@@ -225,6 +225,9 @@ public class LogicControllerTest {
 		assertEquals("2\n1\n", lc.sortByPriority().toString());
 		assertEquals(d1, t1.getDeadline());
 		lc.editEndTime(t2, d3);
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals("2\n1\n", lc.toDoSortedList.toString());
 	}
 	
 	/**
