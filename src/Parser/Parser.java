@@ -27,7 +27,13 @@ public class Parser implements InterfaceForParser {
 	
 	public ArrayList<Task> initialiseTasks(){
 		//Upon application start-up, fetch the current tasklist
+		ToDoSortedList retrievedCurrent = new ToDoSortedList();
 		ArrayList<Task> taskListForUI = new ArrayList<Task>();
+		
+		retrievedCurrent = logicController.viewActiveTasks();
+		for(Task task : retrievedCurrent){
+			taskListForUI.add(task);
+		}
 		
 		return taskListForUI;
 	}
@@ -186,19 +192,15 @@ public class Parser implements InterfaceForParser {
 		if(isGenericTask){
 		//floating task
 			Task newTask = new Task(newMaxID,description, priority,tags);
-			//System.out.println(newTask);
-			//retrievedList = logicController.addTask(newTask);
+			retrievedList = logicController.addTask(newTask);
 		}else if(isDeadlineTask){
 		//deadline task
 			Task newDeadlineTask = new Task(newMaxID, description,deadLine, priority,tags);
-			//retrievedList = logicController.addTask(newDeadlineTask);
+			retrievedList = logicController.addTask(newDeadlineTask);
 		}else if(isMeetingTask){
 		//meeting task
 			Task newMeetingTask = new Task(newMaxID, description, startTime, endTime, priority, tags);
-			System.out.println(newMeetingTask);
-			System.out.println(startTime);
-			System.out.println(endTime);
-			//retrievedList = logicController.addTask(newMeetingTask);
+			retrievedList = logicController.addTask(newMeetingTask);
 		}
 		
 
