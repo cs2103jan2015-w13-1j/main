@@ -33,7 +33,8 @@ public interface InterfaceForLogic {
 	// Returns null if the tag was not there
 	ToDoSortedList removeTag(Task task, String tag);
 	
-	ArrayList<Task> searchByDate(Date searchDate);
+	// The search date should be in the format yyyyMMdd
+	ArrayList<Task> searchByDate(String searchDate);
 	ArrayList<Task> searchByTag(String tag);
 	ArrayList<Task> searchByPriority(int priority);
 

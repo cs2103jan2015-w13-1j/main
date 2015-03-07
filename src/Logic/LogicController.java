@@ -129,8 +129,7 @@ public class LogicController implements InterfaceForLogic{
 	
 	@Override
 	// Only for tasks in the to do list
-	public ArrayList<Task> searchByDate(Date searchDate) {
-		String date = searchDate.getDateRepresentation();
+	public ArrayList<Task> searchByDate(String date) {
 		ArrayList<Task> taskOnDate = new ArrayList<Task>();
 		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
 			Task task = e.getValue();
