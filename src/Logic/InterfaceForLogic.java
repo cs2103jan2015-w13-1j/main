@@ -12,6 +12,10 @@ public interface InterfaceForLogic {
 
 	int getSerialNumber();
 	
+	/**
+	 * @param task
+	 * @return null if the task is already inside the todolist
+	 */
 	ToDoSortedList addTask(Task task); //sorted by date
 	
 	// Returns null if the task was not 'generic'
@@ -34,6 +38,11 @@ public interface InterfaceForLogic {
 	ToDoSortedList removeTag(Task task, String tag);
 	
 	// The search date should be in the format yyyyMMdd
+	/**
+	 * Search tasks on a particular date, the format of the string should be yyyyMMdd
+	 * @param searchDate
+	 * @return Tasks on the specified date
+	 */
 	ArrayList<Task> searchByDate(String searchDate);
 	ArrayList<Task> searchByTag(String tag);
 	ArrayList<Task> searchByPriority(int priority);

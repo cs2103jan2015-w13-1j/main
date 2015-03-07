@@ -38,6 +38,9 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	public ToDoSortedList addTask(Task task) {
+		if (toDoSortedList.contains(task)) {
+			return null;
+		}
 		toDoSortedList.add(task);
 		activeTaskList.addTask(task.getId(), task);
 		return toDoSortedList;
@@ -143,18 +146,23 @@ public class LogicController implements InterfaceForLogic{
 
 	
 	@Override
-	// Only for tasks in the to do list
 	public ArrayList<Task> searchByDate(String date) {
 		ArrayList<Task> taskOnDate = new ArrayList<Task>();
 		for (Task task: toDoSortedList) {
 			Date dateOfTask = task.getTime();
 			if (dateOfTask != null) {
-				if (dateOfTask.getDateRepresentation() == date) {
+				if (dateOfTask.getDateRepresentation().equals(date)) {
 					taskOnDate.add(task);
 				}
 				else {
-					if (task.getEndTime().getDateRepresentation() == date) {
-						taskOnDate.add(task);
+					if (task.getEndTime() != null) {
+						if (task.getEndTime().getDateRepresentation().equals(date)) {
+							taskOnDate.add(task);
+						}
+						if (task.getStartTime().getDateRepresentation().compareTo(date)<0 &&
+							task.getEndTime().getDateRepresentation().compareTo(date)>0) {
+							taskOnDate.add(task);
+						}
 					}
 				}
 			}

@@ -36,12 +36,12 @@ public class LogicControllerTest {
 	static Task t1;
 	static Task t2;
 	static Task t3;
-	
 	static Task t4;
 	static Task t5;
 	static Task t6;
 	static Task t7;
 	static Task t8;
+	static Task t9;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -88,6 +88,7 @@ public class LogicControllerTest {
 		t6 = new Task(6, "f deadline", d3, 7, null);
 		t7 = new Task(7, "g meeting", d5, d3, 2, tags4);
 		t8 = new Task(8, "h deadline", d6, 4, tags4);
+		t9 = new Task(9, "i deadline", d3, 9, null);
 	}
 	
 	@After
@@ -284,10 +285,64 @@ public class LogicControllerTest {
 		assertEquals(t1, result4.get(1));
 	}
 	
+	/**
+	 * remove tag
+	 */
+	@Test
+	public void testRemoveTag() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		lc.addTask(t5);
+		lc.removeTag(t5, tag1);
+		ArrayList<Task> result4= lc.searchByTag(tag1);
+		assertEquals(1, result4.size());
+		assertEquals(t3, result4.get(0));
+	}
 	
+	/**
+	 * search by date
+	 */
+	@Test
+	public void testSearchDate() {
+		lc.addTask(t4);
+		lc.addTask(t5);
+		lc.addTask(t6);
+		lc.addTask(t7);
+		lc.addTask(t8);
+		lc.addTask(t9);
+		ArrayList<Task> result = lc.searchByDate("19700110");
+		assertEquals(4, result.size());
+		assertEquals(t8, result.get(0));
+		assertEquals(t7, result.get(1));
+		assertEquals(t9, result.get(2));
+		assertEquals(t6, result.get(3));
+		ArrayList<Task> result2 = lc.searchByDate("19700103");
+		assertEquals(2, result2.size());
+		assertEquals(t5, result2.get(0));
+		assertEquals(t4, result2.get(1));
+	}
 	
-	
-	
-	
-	
+	/**
+	 * Sort by date or priority
+	 */
+	@Test
+	public void testSort() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		lc.addTask(t4);
+		lc.addTask(t5);
+		lc.addTask(t6);
+		lc.addTask(t7);
+		lc.addTask(t8);
+		lc.addTask(t9);
+		PrioritySortedList priorityLsit = lc.sortByPriority();
+		assertEquals(9, priorityLsit.size());
+		assertEquals("9\n6\n2\n4\n8\n1\n5\n7\n3\n",priorityLsit.toString());
+		
+		ToDoSortedList todoSorted = lc.sortByTime();
+		assertEquals(9, todoSorted.size());
+		assertEquals("5\n4\n8\n7\n9\n6\n2\n1\n3\n",todoSorted.toString());
+	}
 }
