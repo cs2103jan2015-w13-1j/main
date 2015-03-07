@@ -51,7 +51,7 @@ public class LogicController implements InterfaceForLogic{
 		if (task.getType() == "generic") {
 			task.addDeadline(deadline);
 			task.setType("deadline");
-			toDoSortedList.updateTaskOrder(task);
+			toDoSortedList.updateTaskOrder(activeTaskList);
 			return toDoSortedList;
 		}
 		else {
@@ -64,7 +64,7 @@ public class LogicController implements InterfaceForLogic{
 			return null;
 		}
 		task.changeDeadline(deadline);
-		toDoSortedList.updateTaskOrder(task);
+		toDoSortedList.updateTaskOrder(activeTaskList);
 		return toDoSortedList;
 	}
 
@@ -72,7 +72,7 @@ public class LogicController implements InterfaceForLogic{
 		if (task.getType() == "generic") {
 			task.addStartAndEndTime(start, end);
 			task.setType("meeting");
-			toDoSortedList.updateTaskOrder(task);
+			toDoSortedList.updateTaskOrder(activeTaskList);
 			return toDoSortedList;
 		}
 		else {
@@ -89,7 +89,7 @@ public class LogicController implements InterfaceForLogic{
 			throw new InvalidParameterException("Start time cannot be earlier than end time!");
 		}
 		task.changeStartTime(start);
-		toDoSortedList.updateTaskOrder(task);
+		toDoSortedList.updateTaskOrder(activeTaskList);
 		return toDoSortedList;
 	}
 
@@ -107,7 +107,12 @@ public class LogicController implements InterfaceForLogic{
 		int id = task.getId();
 		activeTaskList.removeTaskbyId(id);
 		archivedTaskList.addTask(id, task);
-		toDoSortedList.deleteTask(task);
+		try {
+			toDoSortedList.deleteTask(task);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return toDoSortedList;
 	}
 
@@ -122,7 +127,12 @@ public class LogicController implements InterfaceForLogic{
 
 	public ToDoSortedList deleteTask(Task task) {
 		if (!task.isArchived()){
-			toDoSortedList.deleteTask(task);
+			try {
+				toDoSortedList.deleteTask(task);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			activeTaskList.removeTaskbyId(task.getId());
 		}
 		else{
@@ -200,7 +210,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList editPriority(Task task, int priority) {
 		task.changePriority(priority);
-		toDoSortedList.updateTaskOrder(task);
+		toDoSortedList.updateTaskOrder(activeTaskList);
 		return toDoSortedList;
 	}
 

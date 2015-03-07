@@ -11,8 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-
-
 public class LogicControllerTest {
 	LogicController lc = new LogicController();
 	
@@ -28,12 +26,12 @@ public class LogicControllerTest {
 	static ArrayList<String> tags5 = new ArrayList<String>();
 	
 	
-	static Date d1 = new Date();
-	static Date d2 = new Date();
-	static Date d3 = new Date();
-	static Date d4 = new Date();
-	static Date d5 = new Date();
-	static Date d6 = new Date();
+	static Date d1;
+	static Date d2;
+	static Date d3;
+	static Date d4;
+	static Date d5;
+	static Date d6;
 	
 	static Task t1;
 	static Task t2;
@@ -69,12 +67,12 @@ public class LogicControllerTest {
 
 		tags5.add(tag2);
 		
-		Date d1 = new Date();
-		Date d2 = new Date();
-		Date d3 = new Date();
-		Date d4 = new Date();
-		Date d5 = new Date();
-		Date d6 = new Date();
+		d1 = new Date();
+		d2 = new Date();
+		d3 = new Date();
+		d4 = new Date();
+		d5 = new Date();
+		d6 = new Date();
 		d1.setTime(111111111);
 		d2.setTime(222222222);
 		d3.setTime(777777777);
@@ -194,5 +192,62 @@ public class LogicControllerTest {
 		assertEquals(0, lc.archivedTaskList.size());
 		assertEquals("2\n1\n", lc.sortByPriority().toString());
 		assertEquals(d1, t1.getDeadline());
+	}
+	
+	/**
+	 * Edit meeting
+	 */
+	@Test
+	public void testEditMeeting() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+   		lc.addDeadLine(t1, d1);
+		lc.addStartAndEndTime(t2, d1, d2);
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(t2, lc.activeTaskList.get(2));
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals("2\n1\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+		assertEquals("2\n1\n", lc.sortByPriority().toString());
+		assertEquals(d1, t1.getDeadline());
+		lc.editEndTime(t2, d3);
+	}
+	
+	/**
+	 * Edit deadline
+	 */
+	@Test
+	public void testEditDeadline() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addDeadLine(t1, d1);
+		assertEquals(d1, t1.getDeadline());
+		lc.editDeadline(t1, d3);
+		assertEquals("1\n2\n", lc.toDoSortedList.toString());
+		assertEquals(d3, t1.getDeadline());
+	}
+	
+	/**
+	 * Edit priority
+	 */
+	@Test
+	public void testEditPriority() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		assertEquals(3, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(t2, lc.activeTaskList.get(2));
+		assertEquals(3, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals(true, lc.toDoSortedList.contains(t3));
+		assertEquals("2\n1\n3\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+		lc.editPriority(t3, 7);
+		assertEquals("3\n2\n1\n", lc.toDoSortedList.toString());
 	}
 }

@@ -1,5 +1,7 @@
 package Common;
+import java.security.InvalidKeyException;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * General sorted list used to store the tasks in sorted order when the program is running
@@ -16,18 +18,42 @@ public class GeneralSortedList extends TreeSet<Task>{
 		this.add(task);
 	}
 
-	public void deleteTask(Task task) {
-		this.remove(task);
+	public void deleteTaskById(int id) throws InvalidKeyException {
+		Iterator<Task> taskIterator = this.iterator();
+		Task toBeDeleted = null;
+		while (taskIterator.hasNext()) {
+			Task task = taskIterator.next();
+			
+			if (task.getId() == id) {
+				toBeDeleted = task;
+				break;
+			}
+		}
+		if (toBeDeleted != null) {
+			this.remove(toBeDeleted);
+		}
+		else {
+			throw new InvalidKeyException("Id dose not exist");
+		}
+	}
+	
+	public void deleteTask(Task task) throws Exception {
+		boolean removed = this.remove(task);
+		if (!removed) {
+			throw new Exception("Task not inside the sorted list");
+		}
 	}
 	
 	/**
-	 * When a task is updated in certain priority, 
+	 * When a task is updated in certain property, 
 	 * we need to re-insert the task so that the order remains correct
 	 * @param task
 	 */
-	public void updateTaskOrder(Task task) {
-		this.deleteTask(task);
-		this.addTask(task);
+	public void updateTaskOrder(TaskList taskList) {
+		this.clear();
+		for (Entry<Integer, Task> entry: taskList.entrySet()) {
+			this.addTask(entry.getValue());
+		}
 	}
 	
 	public ArrayList<Task> getTopNTasks(int n) {
