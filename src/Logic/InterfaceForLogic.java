@@ -37,12 +37,18 @@ public interface InterfaceForLogic {
 	ArrayList<Task> searchByDate(String searchDate);
 	ArrayList<Task> searchByTag(String tag);
 	ArrayList<Task> searchByPriority(int priority);
+	
+	// This was in the v0.0 manual, I add here first, see if want to implement
+	ArrayList<Task> searchByDesc(String description);
+	
 
 	PrioritySortedList sortByPriority();
 	ToDoSortedList sortByTime();
 
 	ToDoSortedList moveToArchive(Task task, Date finishedTime);
 	ArchiveSortedList viewArchiveTasks();
+	
+	ToDoSortedList viewActiveTasks();	//Added this, GUI needs it for initialisation
 	
 	ToDoSortedList deleteTask(Task task);
 	
