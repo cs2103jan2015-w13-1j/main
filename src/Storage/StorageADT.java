@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class StorageADT {
 	
-	StorageController2 program = new StorageController2();
+	StorageController program = new StorageController();
 	
 	@Before
 	public void initialise() {
