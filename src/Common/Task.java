@@ -11,9 +11,9 @@ public class Task implements Comparable<Task>{
 	 * Might need to be edited here
 	 */
 	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \n"
-								+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s \nType : %6$s"
-								+ "Deadline : %6$s \nStartTime : %7$s \n"
-								+ "EndTime : %8$s \nfinishedTime : %10$s\n";
+								+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s \nType : %6$s\n"
+								+ "Deadline : %7$s \nStartTime : %8$s \n"
+								+ "EndTime : %9$s \nfinishedTime : %10$s\n";
 	
 	private String type = "generic";
 	private int id;
@@ -54,7 +54,6 @@ public class Task implements Comparable<Task>{
 	 * @param end
 	 * @param priority
 	 * @param tags
-	 * @param archived
 	 */
 	public Task(int id, String description, Date start, Date end, int priority, ArrayList<String> tags){
 		this(id, description, priority, tags);
@@ -70,7 +69,6 @@ public class Task implements Comparable<Task>{
 	 * @param deadline
 	 * @param priority
 	 * @param tags
-	 * @param archived
 	 */
 	public Task(int id, String description, Date deadline, int priority, ArrayList<String> tags){
 		this(id, description, priority, tags);
