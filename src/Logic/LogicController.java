@@ -1,9 +1,15 @@
+package Logic;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import basicElements.*;
-import hashMaps.*;
-import treeSets.*;
+import Common.ArchiveSortedList;
+import Common.DATA;
+import Common.Date;
+import Common.PrioritySortedList;
+import Common.Task;
+import Common.TaskList;
+import Common.ToDoSortedList;
+import Storage.StorageController;
 
 public class LogicController implements InterfaceForLogic{
 	

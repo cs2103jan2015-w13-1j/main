@@ -1,6 +1,5 @@
-package treeSets;
+package Common;
 
-import basicElements.Task;
 
 /**
  * Used to store the tasks in sorted order when the program is running for the priority-sorted list.

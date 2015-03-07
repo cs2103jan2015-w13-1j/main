@@ -1,4 +1,4 @@
-package basicElements;
+package Common;
 import java.text.SimpleDateFormat;
 
 public class Date extends java.util.Date{
