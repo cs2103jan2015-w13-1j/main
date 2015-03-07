@@ -38,8 +38,8 @@ public interface InterfaceForLogic {
 	ArrayList<Task> searchByTag(String tag);
 	ArrayList<Task> searchByPriority(int priority);
 	
-	// This was in the v0.0 manual, I add here first, see if want to implement
-	ArrayList<Task> searchByDesc(String description);
+	// Done this for V0.1, may need to improve later
+	ArrayList<Task> searchByDesc(String keyword);
 	
 
 	PrioritySortedList sortByPriority();
