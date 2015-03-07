@@ -1,4 +1,5 @@
 package Logic;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
@@ -79,9 +80,13 @@ public class LogicController implements InterfaceForLogic{
 		}
 	}
 
-	public ToDoSortedList editStartTime(Task task, Date start) {	
+	public ToDoSortedList editStartTime(Task task, Date start) {
+		
 		if (task.getType() != "meeting") {
 			return null;
+		}
+		if (start.compareTo(task.getEndTime()) >= 0){
+			throw new InvalidParameterException("Start time cannot be earlier than end time!");
 		}
 		task.changeStartTime(start);
 		toDoSortedList.updateTaskOrder(task);
@@ -171,6 +176,17 @@ public class LogicController implements InterfaceForLogic{
 	}
 
 	@Override
+	public ArrayList<Task> searchByDesc(String keyword) {
+		ArrayList<Task> taskByKeyword = new ArrayList<Task>();
+		for (Task task: toDoSortedList) {
+			if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+				taskByKeyword.add(task);
+			}
+		}
+		return taskByKeyword;	
+	}
+	
+	@Override
 	public int getSerialNumber() {
 		return serialNumber;
 	}
@@ -218,6 +234,11 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public ToDoSortedList sortByTime() {
+		return toDoSortedList;
+	}
+
+	@Override
+	public ToDoSortedList viewActiveTasks() {
 		return toDoSortedList;
 	}
 }
