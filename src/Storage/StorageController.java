@@ -1,5 +1,9 @@
+<<<<<<< HEAD:src/StorageController.java
 import hashMaps.TaskList;
 
+=======
+package Storage;
+>>>>>>> origin/master:src/Storage/StorageController.java
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -14,11 +18,21 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+<<<<<<< HEAD:src/StorageController.java
 import treeSets.ArchiveSortedList;
 import treeSets.PrioritySortedList;
 import treeSets.ToDoSortedList;
 import basicElements.Date;
 import basicElements.Task;
+=======
+import Common.ArchiveSortedList;
+import Common.DATA;
+import Common.Date;
+import Common.PrioritySortedList;
+import Common.Task;
+import Common.TaskList;
+import Common.ToDoSortedList;
+>>>>>>> origin/master:src/Storage/StorageController.java
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -64,7 +78,7 @@ public class StorageController implements InterfaceForStorage {
 	}
 	
 	public void run() throws IOException {
-//		initialiseDummyDataForTesting();			// generates dummy tasks for testing, creates a DATA object and store in storage
+		initialiseDummyDataForTesting();			// generates dummy tasks for testing, creates a DATA object and store in storage
 		storage = getAllData();						// retrieves all data from JSON and save into storage
 		System.out.println(storeAllData(storage));	// stores all data from storage into JSON
 	}

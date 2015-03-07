@@ -1,5 +1,4 @@
-import hashMaps.*;
-import treeSets.*;
+package Common;
 
 /**
  * To store all the data

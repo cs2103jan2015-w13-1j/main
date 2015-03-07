@@ -1,3 +1,7 @@
+package Storage;
+
+import Common.DATA;
+
 
 public interface InterfaceForStorage {
 	

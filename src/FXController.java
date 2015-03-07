@@ -1,11 +1,9 @@
 
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import basicElements.*;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,6 +14,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import Common.Task;
+import Parser.Parser;
 
 public class FXController implements Initializable {
 		

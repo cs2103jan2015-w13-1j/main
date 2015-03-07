@@ -1,11 +1,12 @@
-import basicElements.*;
-import basicElements.Date;
-
+package Parser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
 
-import treeSets.*;
+import Common.Date;
+import Common.Task;
+import Common.ToDoSortedList;
+import Logic.LogicController;
 
 public class Parser {
 	
