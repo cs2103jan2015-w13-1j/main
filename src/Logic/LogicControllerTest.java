@@ -6,6 +6,7 @@ import java.util.*;
 import Common.*;
 import Common.Date;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,7 +25,6 @@ public class LogicControllerTest {
 	static ArrayList<String> tags3 = new ArrayList<String>();
 	static ArrayList<String> tags4 = new ArrayList<String>();	
 	static ArrayList<String> tags5 = new ArrayList<String>();
-	
 	
 	static Date d1;
 	static Date d2;
@@ -45,27 +45,6 @@ public class LogicControllerTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-	}
-	@Before
-	public void setUp() throws Exception {
-		
-		lc.activeTaskList = new TaskList();
-		lc.archivedTaskList = new TaskList();
-		lc.toDoSortedList = new ToDoSortedList();
-
-		tags1.add(tag1);
-		
-		tags2.add(tag1);
-		tags2.add(tag2);
-		
-		tags3.add(tag1);
-		tags3.add(tag4);
-
-		tags4.add(tag2);
-		tags4.add(tag3);
-		tags4.add(tag4);
-
-		tags5.add(tag2);
 		
 		d1 = new Date();
 		d2 = new Date();
@@ -80,6 +59,27 @@ public class LogicControllerTest {
 		d5.setTime(777677777);
 		d6.setTime(776677777);
 		
+	}
+	@Before
+	public void setUp() throws Exception {
+		tags1.add(tag1);
+		
+		tags2.add(tag1);
+		tags2.add(tag2);
+		
+		tags3.add(tag1);
+		tags3.add(tag4);
+
+		tags4.add(tag2);
+		tags4.add(tag3);
+		tags4.add(tag4);
+
+		tags5.add(tag2);
+		
+		lc.activeTaskList = new TaskList();
+		lc.archivedTaskList = new TaskList();
+		lc.toDoSortedList = new ToDoSortedList();
+		
 		t1 = new Task(1, "do a", 3, null);
 		t2 = new Task(2, "get b", 6, null);
 		t3 = new Task(3, "c waht", 2, tags1);
@@ -89,6 +89,16 @@ public class LogicControllerTest {
 		t7 = new Task(7, "g meeting", d5, d3, 2, tags4);
 		t8 = new Task(8, "h deadline", d6, 4, tags4);
 	}
+	
+	@After
+	public void clear() throws Exception {
+		tags1.clear();
+		tags2.clear();
+		tags3.clear();
+		tags4.clear();
+		tags5.clear();
+	}
+	
 	/**
 	 * Adding one task
 	 */
@@ -250,4 +260,34 @@ public class LogicControllerTest {
 		lc.editPriority(t3, 7);
 		assertEquals("3\n2\n1\n", lc.toDoSortedList.toString());
 	}
+	
+	/**
+	 * add tag
+	 */
+	@Test
+	public void testAddTag() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		lc.addTask(t5);
+		ArrayList<Task> result1 = lc.searchByTag(tag1);
+		assertEquals(2, result1.size());
+		assertEquals(t5, result1.get(0));
+		ArrayList<Task> result2 = lc.searchByTag(tag2);
+		assertEquals(0, result2.size());
+		ArrayList<Task> result3 = lc.searchByTag(tag4);
+		assertEquals(1, result3.size());
+		lc.addTag(t1, tag1);
+		ArrayList<Task> result4= lc.searchByTag(tag1);
+		assertEquals(3, result4.size());
+		assertEquals(t5, result4.get(0));
+		assertEquals(t1, result4.get(1));
+	}
+	
+	
+	
+	
+	
+	
+	
 }
