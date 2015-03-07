@@ -51,6 +51,11 @@ public class DATA {
 		this.serialNumber = serialNumber;
 	}
 	
-
+	/**
+	 * @return increment serialNumber
+	 */
+	public void incrementSerialNumber() {
+		this.serialNumber ++;
+	}
 	
 }
