@@ -131,8 +131,7 @@ public class LogicController implements InterfaceForLogic{
 	// Only for tasks in the to do list
 	public ArrayList<Task> searchByDate(String date) {
 		ArrayList<Task> taskOnDate = new ArrayList<Task>();
-		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
-			Task task = e.getValue();
+		for (Task task: toDoSortedList) {
 			Date dateOfTask = task.getTime();
 			if (dateOfTask != null) {
 				if (dateOfTask.getDateRepresentation() == date) {
@@ -151,8 +150,7 @@ public class LogicController implements InterfaceForLogic{
 	// Only for tasks in the to do list
 	public ArrayList<Task> searchByTag(String tag) {
 		ArrayList<Task> taskByTag = new ArrayList<Task>();
-		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
-			Task task = e.getValue();
+		for (Task task: toDoSortedList) {
 			ArrayList<String> tags = task.getTags();
 			if (tags.contains(tag)) {
 				taskByTag.add(task);
@@ -164,8 +162,7 @@ public class LogicController implements InterfaceForLogic{
 	// Only for tasks in the to do list
 	public ArrayList<Task> searchByPriority(int priority) {
 		ArrayList<Task> taskByPriority = new ArrayList<Task>();
-		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
-			Task task = e.getValue();
+		for (Task task: toDoSortedList) {
 			if (task.getPriority() == priority) {
 				taskByPriority.add(task);
 			}
