@@ -7,7 +7,7 @@ public interface InterfaceForParser {
 	
 	public ArrayList<Task> initialiseTasks();
 	public ArrayList<Task> initialiseArchives();
-	public ArrayList<Task> parseIn(String command);
+	public String parseIn(String command);
 	public ArrayList<Task> returnTasks();
 	public ArrayList<Task> returnArchive();
 	

@@ -2,6 +2,7 @@ package Parser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import Common.ArchiveSortedList;
 import Common.Date;
@@ -14,16 +15,14 @@ public class Parser implements InterfaceForParser {
 	private static LogicController logicController = new LogicController();
 	
 	public int newMaxID = 0; //logicController.getMaxID()+1;
-
+	private ArrayList<Task> retrievedTasks = new ArrayList<Task>();
+	private ArrayList<Task> retrievedArchives = new ArrayList<Task>();
+	
 	public static void main(String[] args){
-		Parser run = new Parser();
-		//read in command from ui
-		//get current max ID
-		
-		run.parseIn("-add this generic task");
-		run.parseIn("-add this deadline task -date 7/3/2015");
-		run.parseIn("-add this meeting task -date 7/3/2015 1200 1300");
+		Parser parser = new Parser();
+		parser.parseIn("-search date 21/04/1992");
 	}
+
 	
 	public ArrayList<Task> initialiseTasks(){
 		//Upon application start-up, fetch the current tasklist
@@ -35,7 +34,8 @@ public class Parser implements InterfaceForParser {
 			taskListForUI.add(task);
 		}
 		
-		return taskListForUI;
+		return taskListForUI;		
+		
 	}
 	
 	public ArrayList<Task> initialiseArchives(){
@@ -48,15 +48,25 @@ public class Parser implements InterfaceForParser {
 			archiveListForUI.add(task);
 		}
 		
-		return archiveListForUI;
+		return archiveListForUI;		
+	}
+	
+	public ArrayList<Task> returnTasks(){
+
+		return retrievedTasks;
+	}
+	
+	public ArrayList<Task> returnArchive(){
+		
+		return retrievedArchives;
 	}
 
-	public ArrayList<Task> parseIn(String command) {
+	public String parseIn(String command) {
 		//logicController.initialise();
 		
 		String[] splitCommand = command.split(" ");
 		String firstCommand = splitCommand[0];
-		ArrayList<Task> result = new ArrayList<Task>();
+		String result = new String();
 		
 		
 		//check first word for command
@@ -69,9 +79,9 @@ public class Parser implements InterfaceForParser {
 		
 	}
 
-	private ArrayList<Task> commandCheck(String command, String[] splitInput) {
+	private String commandCheck(String command, String[] splitInput) {
 	
-		ArrayList<Task> result = new ArrayList<Task>();
+		String result = new String();
 		switch(command){
 			case("-add"):{
 				//run "add" functions
@@ -91,18 +101,62 @@ public class Parser implements InterfaceForParser {
 		
 	}
 	
-	private ArrayList<Task> searchCommand(String[] splitInput) {
+	private String searchCommand(String[] splitInput) {
+
 		// check input for what to search for (date/tag/priority/desc)
-		int inputLength = splitInput.length;
-		for(int i=1;i<inputLength;i++){
-			
+		String result = new String();
+		/*
+		String searchParameter = splitInput[1];
+		retrievedTasks.clear();
+		switch(searchParameter){
+			case("today"):{
+				//search by date, today's date
+				Calendar today = Calendar.getInstance();
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+				//retrievedTasks = logicController.searchByDate(formatter.format(today));
+				result = "Searched by date: today";
+				break;
+			}case("tmr"):{
+				//search by date, tomorrow's date
+				Calendar tomorrow = Calendar.getInstance();
+				tomorrow.add(Calendar.DATE, 1);
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+				//retrievedTasks = logicController.searchByDate(formatter.format(today));
+				result = "Searched by date: tomorrow";
+				break;				
+			}case("date"):{
+				SimpleDateFormat dateInput = new SimpleDateFormat("dd/MM/yyyy");
+				SimpleDateFormat dateOutput = new SimpleDateFormat("yyyyMMdd");
+				try {
+					java.util.Date tempDate = dateInput.parse(splitInput[2]);
+					String dateOutputString = dateOutput.format(tempDate);
+					//retrievedTasks = logicController.searchByDate(dateOutputString);
+					result = "Searched by date: " + splitInput[2];
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			}case("tag"):{
+				//retrievedTasks = logicController.searchByTag(splitInput[2]);
+				result = "Searched by tag: " + splitInput[2];
+				break;
+			}case("priority"):{
+				int priority = Integer.parseInt(splitInput[2]);
+				//retrievedTasks = logicController.searchByPriority(priority);
+				result = "Searched by priority: " + splitInput[2];
+				break;
+			}
 		}
-		return null;
+		*/
+		return result;
+		
 	}
 
-	private ArrayList<Task> addCommand(String[] input){
+	private String addCommand(String[] input){
 		
 		//break the commands
+		String result = new String();
 		String description = input[1];
 		int inputLength = input.length;
 		int currentInputPoint = 2;
@@ -115,7 +169,6 @@ public class Parser implements InterfaceForParser {
 		boolean isMeetingTask = false;
 		ToDoSortedList retrievedList = new ToDoSortedList();
 		ArrayList<String> tags = new ArrayList<String>();
-		ArrayList<Task> taskListForUI = new ArrayList<Task>();
 		ArrayList<String> dateAsString = new ArrayList<String>();
 		
 		//date, priority and tags optional
@@ -203,27 +256,18 @@ public class Parser implements InterfaceForParser {
 			//retrievedList = logicController.addTask(newMeetingTask);
 		}
 		
-
+		result = "New task added: " + description;
+		//clear the locally stored tasklist to add the new results
+		//retrievedTasks.clear();
 		
 		//convert ToDoSortedList from logicController into an ArrayList of String
 		/*for(Task task : retrievedList){
-			taskListForUI.add(task);
+			retrievedTasks.add(task);
 		}*/
 		newMaxID++;
-		return taskListForUI;
+		return result;
 	}
 
-	@Override
-	public ArrayList<Task> returnTasks() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public ArrayList<Task> returnArchive() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	
 }
