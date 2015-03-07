@@ -53,14 +53,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class StorageController implements InterfaceForStorage {
 
-	private static final String FILENAME_ACTIVE_TASKLIST = "tables/list_activeTask.json";
-	private static final String FILENAME_ARCHIVE_TASKLIST = "tables/list_archiveTask.json";
-	private static final String FILENAME_DATE_LIST = "tables/list_date.json";
-	private static final String FILENAME_PRIORITY_LIST = "tables/list_priority.json";
-	private static final String FILENAME_TAG_LIST = "tables/list_tag.json";
-	private static final String FILENAME_TODO_SORTED_LIST = "tables/sorted_todo.json";
-	private static final String FILENAME_ARCHIVE_SORTED_LIST= "tables/sorted_archive.json";
-	private static final String FILENAME_PRIORITY_SORTED_LIST = "tables/sorted_priority.json";
+	private static final String FILENAME = "tables/storage.json";
 	
 	private DATA storage;
 
@@ -76,11 +69,11 @@ public class StorageController implements InterfaceForStorage {
 	}
 	
 	public String storeAllData(DATA data) {
-		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
-		boolean archivedTaskList = writeTaskListToStorage(data.getArchivedTaskList(), FILENAME_ARCHIVE_TASKLIST);
-		boolean dateList = writeDateListToStorage(data.getDateList(), FILENAME_DATE_LIST);
-		boolean priorityList = writePriorityListToStorage(data.getPriorityList(), FILENAME_PRIORITY_LIST);
-		boolean tagList = writeTagListToStorage(data.getTagList(), FILENAME_TAG_LIST);
+//		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
+//		boolean archivedTaskList = writeTaskListToStorage(data.getArchivedTaskList(), FILENAME_ARCHIVE_TASKLIST);
+//		boolean dateList = writeDateListToStorage(data.getDateList(), FILENAME_DATE_LIST);
+//		boolean priorityList = writePriorityListToStorage(data.getPriorityList(), FILENAME_PRIORITY_LIST);
+//		boolean tagList = writeTagListToStorage(data.getTagList(), FILENAME_TAG_LIST);
 //		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
 //		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
 //		boolean activeTaskList = writeTaskListToStorage(data.getActiveTaskList(), FILENAME_ACTIVE_TASKLIST);
