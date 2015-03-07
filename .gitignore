@@ -5,3 +5,5 @@
 /bin/
 
 src/Testing.java
+
+src/LogicControllerTest.java

@@ -1,6 +1,3 @@
-import hashMaps.DateList;
-import hashMaps.PriorityList;
-import hashMaps.TagList;
 import hashMaps.TaskList;
 
 import java.io.BufferedReader;
@@ -21,12 +18,7 @@ import treeSets.ArchiveSortedList;
 import treeSets.PrioritySortedList;
 import treeSets.ToDoSortedList;
 import basicElements.Date;
-import basicElements.DeadlineTask;
-import basicElements.MeetingTask;
 import basicElements.Task;
-import basicElements.TaskByDate;
-import basicElements.TaskByPriority;
-import basicElements.TaskByTag;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

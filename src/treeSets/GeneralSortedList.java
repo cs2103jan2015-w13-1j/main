@@ -43,4 +43,14 @@ public class GeneralSortedList extends TreeSet<Task>{
 		}
 		return taskList;
 	}
+	
+	@Override
+	public String toString() {
+		String output = "";
+		Iterator<Task> taskIterator = this.iterator();
+		while (taskIterator.hasNext()) {
+			output += taskIterator.next().getId() + "\n";
+		}
+		return output;
+	}
 }
