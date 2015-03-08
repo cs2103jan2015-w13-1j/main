@@ -78,16 +78,16 @@ public class FXController implements Initializable {
 		taskTable.setItems(tasks);
 		
 		//null pointer exception here------------------------------------------
-		//taskList = parser.initialiseTasks();
-		//addToTaskDisplay();
+		taskList = parser.initialiseTasks();
+		addToTaskDisplay();
 		
 		archiveId.setCellValueFactory(new PropertyValueFactory<FXTable, Integer>("id"));
 		archiveDescription.setCellValueFactory(new PropertyValueFactory<FXTable, String>("description"));
 		archiveTable.setItems(archive);
 		
 		//null pointer exception here------------------------------------------
-		//archiveList = parser.initialiseArchives();
-		//addToArchiveDisplay();
+		archiveList = parser.initialiseArchives();
+		addToArchiveDisplay();
 		
 	}
 	
@@ -124,15 +124,11 @@ public class FXController implements Initializable {
 		}
 		else if (firstCommand.equals("-add")){
 			
-			tasks.clear();
-			
 			System.out.println("Ading tasks in progress...");
 			taskList = parser.returnTasks();
-			
-			System.out.println(taskList);
-			
 			addToTaskDisplay();
 			
+			System.out.println(taskList);			
 		}
 		else if (firstCommand.equals("archive")){
 			
@@ -180,16 +176,20 @@ public class FXController implements Initializable {
 	}
 	
 	private void addToTaskDisplay() {
+		tasks.clear();
 		for(int i = 0; i < taskList.size(); i++){
 			int id = i+1;
 			String description = taskList.get(i).getDescription();
 			String priority = Integer.toString(taskList.get(i).getPriority());
-			String start = taskList.get(i).getStartTime().getDateRepresentation();
-			String end = taskList.get(i).getEndTime().getDateRepresentation();
-			String due = taskList.get(i).getDeadline().getDateRepresentation();
+			//String start = taskList.get(i).getStartTime().getDateRepresentation();
+			//String end = taskList.get(i).getEndTime().getDateRepresentation();
+			//String due = taskList.get(i).getDeadline().getDateRepresentation();
+			String start = "";
+			String end = "";
+			String due = "";
 			FXTable entry = new FXTable(id, description, priority, start, end, due);
 			tasks.add(entry);
-			System.out.println("added: " + description + priority + start + end + due);
+			System.out.println("added: " + id + " " + description + priority + start + end + due);
 		}
 	}
 	
@@ -198,9 +198,12 @@ public class FXController implements Initializable {
 			int id = i+1;
 			String description = archiveList.get(i).getDescription();
 			String priority = Integer.toString(archiveList.get(i).getPriority());
-			String start = archiveList.get(i).getStartTime().getDateRepresentation();
-			String end = archiveList.get(i).getEndTime().getDateRepresentation();
-			String due = archiveList.get(i).getDeadline().getDateRepresentation();
+			//String start = archiveList.get(i).getStartTime().getDateRepresentation();
+			//String end = archiveList.get(i).getEndTime().getDateRepresentation();
+			//String due = archiveList.get(i).getDeadline().getDateRepresentation();
+			String start = "";
+			String end = "";
+			String due = "";
 			FXTable entry = new FXTable(id, description, priority, start, end, due);
 			archive.add(entry);
 			System.out.println("Initialized: " + description + priority + start + end + due);
