@@ -1,5 +1,6 @@
 package GUI;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -15,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.DirectoryChooser;
 import Common.Task;
 import Parser.Parser;
 
@@ -87,6 +89,22 @@ public class FXController implements Initializable {
 		//archiveList = parser.initialiseArchives();
 		//addToArchiveDisplay();
 		
+	}
+	
+	public void chooseDirectory(ActionEvent event){
+		
+		String directoryPath;
+		
+		System.out.println("Directory button clicked");
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		File selectedDirectory = directoryChooser.showDialog(null);
+		if (selectedDirectory == null){
+			System.out.println("No directory selected");
+		}
+		else {
+			directoryPath = selectedDirectory.getAbsolutePath();
+			System.out.println(directoryPath);
+		}
 	}
 	
 	public void inputCommand(ActionEvent event){

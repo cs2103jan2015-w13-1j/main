@@ -38,6 +38,16 @@
                         <Font size="44.0" />
                      </font>
                   </Label>
+                  <Button fx:id="directoryChooserBtn" layoutX="355.0" layoutY="67.0" mnemonicParsing="false" onAction="#chooseDirectory" prefHeight="15.0" prefWidth="337.0" style="-fx-background-radius: 10;" text="Open...">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Button>
+                  <Text layoutX="390.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose storage location:">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Text>
                </children>
             </Group>
             <Group fx:id="helpGroup">
