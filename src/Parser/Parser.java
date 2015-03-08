@@ -19,34 +19,62 @@ public class Parser implements InterfaceForParser {
 	private ArrayList<Task> retrievedArchives = new ArrayList<Task>();
 	
 	public static void main(String[] args){
-		Parser parser = new Parser();
-		parser.parseIn("-search date 21/04/1992");
+		//Parser parser = new Parser();
+		//System.out.println(parser.parseIn("-add this generic task"));
+		//System.out.println(parser.returnTasks());
+		//parser.initialiseTasks();
 	}
 
 	
 	public ArrayList<Task> initialiseTasks(){
+		//logicController.initialise();
 		//Upon application start-up, fetch the current tasklist
 		ToDoSortedList retrievedCurrent = new ToDoSortedList();
 		ArrayList<Task> taskListForUI = new ArrayList<Task>();
 		
+		//Dummy data
+		ArrayList<String> dummyTags = new ArrayList<String>();
+		SimpleDateFormat dummyDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		java.util.Date tempDummyDate = new Date();
+		Date dummyDate = new Date();
+		dummyDate.setTime(tempDummyDate.getTime());
+
+		
+		taskListForUI.add(new Task(1,"test generic",-1,dummyTags));
+		taskListForUI.add(new Task(2,"test deadline", dummyDate,-1,dummyTags));
+		taskListForUI.add(new Task(3,"test meeting", dummyDate, dummyDate, -1, dummyTags));
+		/*
 		retrievedCurrent = logicController.viewActiveTasks();
 		for(Task task : retrievedCurrent){
 			taskListForUI.add(task);
 		}
-		
+		*/
 		return taskListForUI;		
 		
 	}
 	
 	public ArrayList<Task> initialiseArchives(){
 		//Upon application start-up, fetch the archived tasks to display
-		ArchiveSortedList retrievedArchive = new ArchiveSortedList();
+		ArchiveSortedList retrievedArchiveFromLogic = new ArchiveSortedList();
 		ArrayList<Task> archiveListForUI = new ArrayList<Task>();
 		
-		retrievedArchive = logicController.viewArchiveTasks();
-		for(Task task : retrievedArchive){
+		//Dummy Data
+		ArrayList<String> dummyTags = new ArrayList<String>();
+		SimpleDateFormat dummyDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		java.util.Date tempDummyDate = new Date();
+		Date dummyDate = new Date();
+		dummyDate.setTime(tempDummyDate.getTime());
+
+		
+		archiveListForUI.add(new Task(1,"test generic",-1,dummyTags));
+		archiveListForUI.add(new Task(2,"test deadline", dummyDate,-1,dummyTags));
+		archiveListForUI.add(new Task(3,"test meeting", dummyDate, dummyDate, -1, dummyTags));
+		
+		/*
+		retrievedArchiveFromLogic = logicController.viewArchiveTasks();
+		for(Task task : retrievedArchiveFromLogic){
 			archiveListForUI.add(task);
-		}
+		}*/
 		
 		return archiveListForUI;		
 	}
@@ -62,7 +90,7 @@ public class Parser implements InterfaceForParser {
 	}
 
 	public String parseIn(String command) {
-		//logicController.initialise();
+
 		
 		String[] splitCommand = command.split(" ");
 		String firstCommand = splitCommand[0];
@@ -92,6 +120,8 @@ public class Parser implements InterfaceForParser {
 			}case("-search"):{
 				result = searchCommand(splitInput);
 				break;
+			}case("-change"):{
+				result = modifyCommand(splitInput);
 			}
 			default:
 				System.out.println("Invalid command");
@@ -101,6 +131,12 @@ public class Parser implements InterfaceForParser {
 		
 	}
 	
+	private String modifyCommand(String[] splitInput) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	private String searchCommand(String[] splitInput) {
 		// check input for what to search for (date/tag/priority/desc)
 		String result = new String();
@@ -119,7 +155,7 @@ public class Parser implements InterfaceForParser {
 				Calendar tomorrow = Calendar.getInstance();
 				tomorrow.add(Calendar.DATE, 1);
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-				//retrievedTasks = logicController.searchByDate(formatter.format(today));
+				//retrievedTasks = logicController.searchByDate(formatter.format(tomorrow));
 				result = "Searched by date: tomorrow";
 				break;				
 			}case("date"):{
@@ -255,7 +291,18 @@ public class Parser implements InterfaceForParser {
 		
 		result = "New task added: " + description;
 		//clear the locally stored tasklist to add the new results
-		//retrievedTasks.clear();
+		retrievedTasks.clear();
+		//Dummy Data
+		ArrayList<String> dummyTags = new ArrayList<String>();
+		SimpleDateFormat dummyDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		java.util.Date tempDummyDate = new Date();
+		Date dummyDate = new Date();
+		dummyDate.setTime(tempDummyDate.getTime());
+
+		
+		retrievedTasks.add(new Task(1,"test generic",-1,dummyTags));
+		retrievedTasks.add(new Task(2,"test deadline", dummyDate,-1,dummyTags));
+		retrievedTasks.add(new Task(3,"test meeting", dummyDate, dummyDate, -1, dummyTags));
 		
 		//convert ToDoSortedList from logicController into an ArrayList of String
 		/*for(Task task : retrievedList){
