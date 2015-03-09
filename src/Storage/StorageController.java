@@ -6,6 +6,7 @@
  * - jar/json-simpler-1.1.1.jar for JSON library
  * 
  * Test driver: StorageADT.java
+ * Interface:	InterfaceForStorage.java
  * 
  * @author Esmond
  */
@@ -27,6 +28,7 @@ import org.json.simple.parser.ParseException;
 
 import Common.DATA;
 import Common.Date;
+import Common.StorageUtil;
 import Common.Task;
 import Common.TaskList;
 
@@ -46,47 +48,70 @@ public class StorageController implements InterfaceForStorage {
 	private static final int STARTING_INDEX = 0;
 	
 	private static DATA data;
-	private static String FILE_NAME = "storage.json";
-	private static String FILE_DIRECTORY = "";
+	private static StorageUtil util;
 	
 	public static void main(String[] args) {
 		StorageController control = new StorageController();
+		
 		control.run();
-		
-//		control.insertFileDirectory("tables/");	
 //		control.getAllData();
-		
+//		control.setFileDirectory("tables/");
 //		System.out.println(control.storeAllData(data));
+		
+	}
+	
+	private void run() {
+		initialiseNewDataObject();
+		createDummyData();
 	}
 	
 	@Override
 	public DATA getAllData() {
-		// perform storage initialization 
-		// retrieve DATA from storage
+		// clear DATA object first
+		// perform utility check, this will retrieve the data from utility file and store into util.
+			// if utility file is does not exists or exists but empty, defaults will be saved into utility.
+		// util will provide the directory of the storage, so need to check if storage exists
+			// if storage does not exists or storage exists but empty, DATA = null
+			// if storage exist and contains info, retrieve DATA from storage
 		// return DATA
-		initialiseStorage();
-		retriveDataFromStorage();
+		initialiseNewDataObject();
+		processUtil();
+		if (isStorageExist() == true) {
+			retriveDataFromStorage();
+		} else {
+//			createNewStorage();
+			// must store data first, cannot create new storage because user might change directory
+			return data; // empty data
+		}
 		return data;
 	}
 
 	@SuppressWarnings("static-access")
 	@Override
 	public String storeAllData(DATA data) {
-		// set data to this.data
-		// convert data into JSON object
-		// store JSON object into storage
-		// return success/failure message
+		// perform utility check, this will retrieve the data from utility file and store into util.
+			// if utility file is does not exists or exists but empty, defaults will be saved into utility.
+		// util will provide the directory of the storage, so need to check if storage exists
+			// if storage exists, overwrites the storage
+			// if not exists, creates and write into storage
+		processUtil();
+		if (isStorageExist() == false) {
+			createNewStorage();
+		}
 		this.data = data;
-		if (storeDataIntoStorage(convertDataIntoJSONObject()) == true) {
+		if (storeDataIntoStorage(convertDataIntoJSONObject(), getFileRelativePath()) == true) {
 			return MESSAGE_STORE_DATA_SUCCESS;
 		}
 		return MESSAGE_STORE_DATA_FAILURE;
 	}
 	
-	private void run() {
-		insertFileDirectory("tables/");	
-		initialiseStorage();
-		createDummyData();
+	private void deleteOldFile() {
+		File oldFile = new File(getFileRelativePath());
+		oldFile.setWritable(true);
+		if (oldFile.exists()) {
+			oldFile.delete();
+//			System.out.println(oldFile + " deleted");
+		}
 	}
 	
 	private void convertJSONObjectIntoData(JSONObject dataJSON) {
@@ -181,7 +206,7 @@ public class StorageController implements InterfaceForStorage {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			if (br.readLine() == null) {
-				System.out.println(fileName + " is empty");
+				System.out.println(fileName + " " + MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
 				return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
 			}
 		} catch (IOException e1) {
@@ -192,17 +217,20 @@ public class StorageController implements InterfaceForStorage {
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(new FileReader(fileName));
 			dataJSON = (JSONObject) obj; 
+			if (dataJSON.containsKey("serialNumber") == false) {
+				System.out.println(fileName + " " + MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
+				return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
+			}
 			
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
-		initialiseNewDataObject();
 		convertJSONObjectIntoData(dataJSON);
+		System.out.println(MESSAGE_RETRIEVE_SUCCESS);
 		return MESSAGE_RETRIEVE_SUCCESS;
 	}
 
-	private boolean storeDataIntoStorage(JSONObject json) {
-		String fileName = getFileRelativePath();
+	private boolean storeDataIntoStorage(JSONObject json, String fileName) {
 		File file = new File(fileName);
 		long timeBeforeModification = file.lastModified();
 		long timeAfterModification = -1;
@@ -276,16 +304,54 @@ public class StorageController implements InterfaceForStorage {
 		return it;
 	}
 
-	// create the storage using the directory indicated by the users and initialize data
-	public String initialiseStorage() {
-		processStorage();
-		initialiseNewDataObject();
-		if (isStorageExist(getFileRelativePath()) == true) {
-			return MESSAGE_STORAGE_INITIALISE_SUCCESS;
+	// to retrieve utility data from storage
+	public String processUtil() {
+		JSONObject utilJSON = new JSONObject();
+		Gson gson = new Gson();
+		String output = "";
+		if (isStorageExist("tables/utility.json") == false) {
+			createStorage("tables/utility.json");
+			output = output.concat("tables/utility.json" + " does not exist.\n");
+			output = output.concat("created " + "tables/utility.json" + " for utility startup.");
+			addDefaultsToUtil();
 		} else {
-			return MESSAGE_STORAGE_INITIALISE_FAILURE;
+			try {
+				JSONParser parser = new JSONParser();
+				Object obj = parser.parse(new FileReader("tables/utility.json"));
+				utilJSON = (JSONObject) obj;
+				if (utilJSON.containsKey("directory") == false) {
+					System.out.println("tables/utility.json" + " has no data. Add defaults to utility.");
+					addDefaultsToUtil();
+					return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
+				}
+				util = gson.fromJson(utilJSON.toJSONString() , StorageUtil.class);
+				output = output.concat("check utility [OK]");
+//				System.out.println(output);
+			} catch (IOException | ParseException e) {
+				e.printStackTrace();
+			}
 		}
-		
+		return output;
+	}
+
+	private void addDefaultsToUtil() {
+		util = new StorageUtil();
+		util.setDirectory("tables/");			// default settings
+		util.setStorageName("storage.json");	// default settings
+//					System.out.println(output);
+		saveUtilToStorage();
+	}
+
+	private void saveUtilToStorage() {
+		JSONParser parser = new JSONParser();
+		JSONObject utilJSON = new JSONObject();
+		Gson gson = new Gson();
+		try {
+			utilJSON = (JSONObject) parser.parse(gson.toJson(util));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		storeDataIntoStorage(utilJSON, "tables/utility.json");
 	}
 
 	private void initialiseNewDataObject() {
@@ -295,10 +361,13 @@ public class StorageController implements InterfaceForStorage {
 		data.setSerialNumber(STARTING_INDEX);
 	}
 	
-	private void processStorage() {
-		if (isStorageExist(getFileRelativePath()) == false) {
-			createStorage(getFileRelativePath());
-		}
+	public boolean isStorageExist() {
+		return isStorageExist(getFileRelativePath());
+	}
+	
+	public void createNewStorage() {
+		createStorage(getFileRelativePath());
+		System.out.println(getFileRelativePath() + " new storage created.");
 	}
 	
 	private void createStorage(String fileRelativePath) {
@@ -313,20 +382,14 @@ public class StorageController implements InterfaceForStorage {
 		}
 	}
 
+	// Overloading method
 	private boolean isStorageExist(String fileRelativePath) {
 		File file = new File(fileRelativePath);
 		return file.exists();
 	}
 
 	public String getFileRelativePath() {
-		return FILE_DIRECTORY.concat(FILE_NAME);
-	}
-
-	@Override
-	// this method will be call by parser for the user to select the directory for the storage
-	public String insertFileDirectory(String directory) {
-		setFileDirectory(directory);
-		return getFileDirectory();
+		return util.getDirectory().concat(util.getStorageName());
 	}
 
 	public DATA getData() {
@@ -339,12 +402,17 @@ public class StorageController implements InterfaceForStorage {
 
 	@Override
 	public String getFileDirectory() {
-		return FILE_DIRECTORY;
+		return util.getDirectory();
 	}
 
-	public String setFileDirectory(String fILE_DIRECTORY) {
-		FILE_DIRECTORY = fILE_DIRECTORY;
-		return FILE_DIRECTORY;
+	@Override
+	// change the file directory and update utility file
+	public String setFileDirectory(String fileDirectory) {
+		processUtil(); // in case this method is called before other methods
+		util.setDirectory(fileDirectory);
+		saveUtilToStorage();
+//		System.out.println("new directory : " + util.getDirectory());
+		return util.getDirectory();
 	}
 	
 	// create 9 dummy tasks and store into data for testing
