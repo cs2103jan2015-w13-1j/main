@@ -39,8 +39,6 @@ public class StorageController implements InterfaceForStorage {
 	
 	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
 	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
-	private static final String MESSAGE_STORAGE_INITIALISE_FAILURE = "Storage unable to initialise";
-	private static final String MESSAGE_STORAGE_INITIALISE_SUCCESS = "Storage initialised";
 	private static final String MESSAGE_RETRIEVE_SUCCESS = "Data is retrieved";
 	private static final String MESSAGE_RETRIEVE_FROM_EMPTY_FILE = "File is empty. No data is retrieved.";
 	private static final String MESSAGE_STORE_DATA_FAILURE = "failure in storing";
