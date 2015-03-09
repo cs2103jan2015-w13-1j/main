@@ -91,7 +91,17 @@ public class Parser implements InterfaceForParser {
 	
 	public ArrayList<Task> returnArchive(){
 		
-		return retrievedArchives;
+		ArchiveSortedList retrievedArchiveFromLogic = new ArchiveSortedList();
+		ArrayList<Task> archiveListForUI = new ArrayList<Task>();
+
+		retrievedArchiveFromLogic = logicController.viewArchiveTasks();
+		for(Task task : retrievedArchiveFromLogic){
+			archiveListForUI.add(task);
+		}
+		
+		return archiveListForUI;	
+		
+
 	}
 
 	public String parseIn(String command) {
@@ -139,8 +149,19 @@ public class Parser implements InterfaceForParser {
 	}
 	
 	private String archiveCommand(String[] splitInput) {
-		// TODO Auto-generated method stub
-		return null;
+		//syntax -archive [task ID]
+		String result = new String();
+		int taskIDFromUI = Integer.parseInt(splitInput[1]);
+		Task taskToArchive = retrievedArchives.get(taskIDFromUI);
+		result = "Task moved to archive: " + taskToArchive.getDescription();
+		Date currentTime = new Date();
+		ToDoSortedList retrievedActiveTaskList = logicController.moveToArchive(taskToArchive, currentTime);
+		retrievedTasks.clear();
+		for(Task task : retrievedActiveTaskList){
+			retrievedTasks.add(task);
+		}
+		
+		return result;
 	}
 
 
