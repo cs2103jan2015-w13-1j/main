@@ -125,8 +125,10 @@ public class Parser implements InterfaceForParser {
 			}case("-search"):{
 				result = searchCommand(splitInput);
 				break;
-			}case("-change"):{
-				result = modifyCommand(splitInput);
+			}case("-delete"):{
+				result = deleteCommand(splitInput);
+			}case("-archive"):{
+				result = archiveCommand(splitInput);
 			}
 			default:
 				System.out.println("Invalid command");
@@ -136,9 +138,25 @@ public class Parser implements InterfaceForParser {
 		
 	}
 	
-	private String modifyCommand(String[] splitInput) {
+	private String archiveCommand(String[] splitInput) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	private String deleteCommand(String[] splitInput) {
+		//syntax : -delete [task ID]
+		String result = new String();
+		int taskIDFromUI = Integer.parseInt(splitInput[1]);
+		Task taskToDelete = retrievedTasks.get(taskIDFromUI);
+		result = "Deleted task: " + taskToDelete.getDescription();
+		ToDoSortedList retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+		retrievedTasks.clear();
+		for(Task task : retrievedListFromLogic){
+			retrievedTasks.add(task);
+		}
+		
+		return result;
 	}
 
 
