@@ -77,7 +77,7 @@ public class FXController implements Initializable {
 		taskDue.setCellValueFactory(new PropertyValueFactory<FXTable, String>("due"));
 		taskTable.setItems(tasks);
 		
-		//null pointer exception here------------------------------------------
+		//possible null pointer exception here when list is empty
 		taskList = parser.initialiseTasks();
 		addToTaskDisplay();
 		
@@ -85,7 +85,7 @@ public class FXController implements Initializable {
 		archiveDescription.setCellValueFactory(new PropertyValueFactory<FXTable, String>("description"));
 		archiveTable.setItems(archive);
 		
-		//null pointer exception here------------------------------------------
+		//possible null pointer exception here when list is empty
 		archiveList = parser.initialiseArchives();
 		addToArchiveDisplay();
 		
@@ -181,12 +181,18 @@ public class FXController implements Initializable {
 			int id = i+1;
 			String description = taskList.get(i).getDescription();
 			String priority = Integer.toString(taskList.get(i).getPriority());
-			//String start = taskList.get(i).getStartTime().getDateRepresentation();
-			//String end = taskList.get(i).getEndTime().getDateRepresentation();
-			//String due = taskList.get(i).getDeadline().getDateRepresentation();
 			String start = "";
 			String end = "";
 			String due = "";
+			if (taskList.get(i).getStartTime() != null){
+				start = taskList.get(i).getStartTime().getDateRepresentation();
+			}
+			if (taskList.get(i).getEndTime() != null){
+				end = taskList.get(i).getEndTime().getDateRepresentation();
+			}
+			if (taskList.get(i).getDeadline() != null){
+				due = taskList.get(i).getDeadline().getDateRepresentation();
+			}
 			FXTable entry = new FXTable(id, description, priority, start, end, due);
 			tasks.add(entry);
 			System.out.println("added: " + id + " " + description + priority + start + end + due);
@@ -194,16 +200,14 @@ public class FXController implements Initializable {
 	}
 	
 	private void addToArchiveDisplay() {
+		archive.clear();
 		for(int i = 0; i < archiveList.size(); i++){
 			int id = i+1;
 			String description = archiveList.get(i).getDescription();
 			String priority = Integer.toString(archiveList.get(i).getPriority());
-			//String start = archiveList.get(i).getStartTime().getDateRepresentation();
-			//String end = archiveList.get(i).getEndTime().getDateRepresentation();
-			//String due = archiveList.get(i).getDeadline().getDateRepresentation();
-			String start = "";
-			String end = "";
-			String due = "";
+			String start = archiveList.get(i).getStartTime().getDateRepresentation();
+			String end = archiveList.get(i).getEndTime().getDateRepresentation();
+			String due = archiveList.get(i).getDeadline().getDateRepresentation();
 			FXTable entry = new FXTable(id, description, priority, start, end, due);
 			archive.add(entry);
 			System.out.println("Initialized: " + description + priority + start + end + due);
