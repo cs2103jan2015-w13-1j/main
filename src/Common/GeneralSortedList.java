@@ -15,7 +15,7 @@ public class GeneralSortedList extends TreeSet<Task>{
 	}
 	
 	public void addTask(Task task) {
-		System.out.println(this.add(task));
+		this.add(task);
 	}
 	
 	@Override

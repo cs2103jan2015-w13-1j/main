@@ -152,8 +152,8 @@ public class LogicControllerTest {
 		assertEquals(t00, lc.activeTaskList.get(1));
 		assertEquals(t01, lc.activeTaskList.get(2));
 		assertEquals(2, lc.toDoSortedList.size());
-		assertEquals(true, lc.toDoSortedList.contains(t1));
-		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals(true, lc.toDoSortedList.contains(t00));
+		assertEquals(true, lc.toDoSortedList.contains(t01));
 		assertEquals("1\n2\n", lc.toDoSortedList.toString());
 		assertEquals(0, lc.archivedTaskList.size());
 	}

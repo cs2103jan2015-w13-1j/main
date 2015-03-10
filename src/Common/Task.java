@@ -263,40 +263,52 @@ public class Task implements Comparable<Task>{
 								getPriority(), getTags(), isArchived(), getType(),
 							getDeadline(), getStartTime(), getEndTime(), getFinishedTime());
 	}
-
+	
+	public static int compareTime(Task t1, Task t2) {
+		if (t2.getTime() == null) {
+			if (t1.getTime() == null) {
+					return 0;
+			}
+			else {
+				return -1;
+			}
+		}
+		else if (t1.getTime() == null) {
+			return 1;
+		}
+		else {
+			return t1.getTime().compareTo(t2.getTime());
+		}
+	}
+	
+	public static int comparePriority(Task t1, Task t2) {
+		return t2.getPriority()-t1.getPriority();
+	}
+	
+	public static int compareFinishTime(Task t1, Task t2) {
+		return t2.getFinishedTime().compareTo(t1.getFinishedTime());
+	}
+	
+	public static int compareId(Task t1, Task t2) {
+		return t1.getId() - t2.getId();
+	}
+	
 	/**
 	 * Comparator for the todo list sorted by deadline or starting time, then priority
 	 */
 	public static Comparator<Task> dateThenPriority = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
-			if (t2.getTime() == null) {
-				if (t1.getTime() == null) {
-					if (t2.getPriority()-t1.getPriority() != 0) {
-						return t2.getPriority()-t1.getPriority();
-					}
-					else {
-						return t1.getId() - t2.getId();
-					}
-				}
-				else {
-					return -1;
-				}
-			}
-			else if (t1.getTime() == null) {
-				return 1;
+			int dateCompare = compareTime(t1, t2);
+			if(dateCompare != 0) {
+				return dateCompare;
 			}
 			else {
-				int dateCompare = t1.getTime().compareTo(t2.getTime());
-				if(dateCompare != 0) {
-					return dateCompare;
+				int priorityCompare = comparePriority(t1, t2);
+				if (priorityCompare != 0) {
+					return priorityCompare;
 				}
 				else {
-					if (t2.getPriority()-t1.getPriority() != 0) {
-						return t2.getPriority()-t1.getPriority();
-					}
-					else {
-						return t1.getId() - t2.getId();
-					}
+					return compareId(t1, t2);
 				}
 			}
 		}
@@ -307,16 +319,17 @@ public class Task implements Comparable<Task>{
 	 */
 	public static Comparator<Task> reverseDateThenPriority = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
-			int dateCompare = t2.getFinishedTime().compareTo(t1.getFinishedTime());
+			int dateCompare = compareFinishTime(t1, t2);
 			if(dateCompare != 0) {
 				return dateCompare;
 			}
 			else {
-				if (t2.getPriority()-t1.getPriority() != 0) {
-					return t2.getPriority()-t1.getPriority();
+				int priorityCompare = comparePriority(t1, t2);
+				if (priorityCompare != 0) {
+					return priorityCompare;
 				}
 				else {
-					return t2.getId() - t1.getId();
+					return compareId(t2, t1);
 				}
 			}
 		}
@@ -327,34 +340,17 @@ public class Task implements Comparable<Task>{
 	 */
 	public static Comparator<Task> priorityThenDate = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
-			int priorityCompare = t2.getPriority()-t1.getPriority();
+			int priorityCompare = comparePriority(t1, t2);
 			if(priorityCompare != 0) {
 				return priorityCompare;
 			}
 			else {
-				if (t2.getTime() == null) {
-					if (t1.getTime() == null) {
-						if (t2.getPriority()-t1.getPriority() != 0) {
-							return t2.getPriority()-t1.getPriority();
-						}
-						else {
-							return t2.getId() - t1.getId();
-						}
-					}
-					else {
-						return -1;
-					}
-				}
-				else if (t1.getTime() == null) {
-					return 1;
+				int dateCompare = compareTime(t1, t2);
+				if(dateCompare != 0) {
+					return dateCompare;
 				}
 				else {
-					if (t1.getTime().compareTo(t2.getTime())!=0) {
-						return t1.getTime().compareTo(t2.getTime());
-					}
-					else {
-						return t1.getId() - t2.getId();
-					}
+					return compareId(t1, t2);
 				}
 			}
 		}
@@ -365,14 +361,14 @@ public class Task implements Comparable<Task>{
 		return this.getId() - other.getId();
 	}
 	
-	@Override
-	public boolean equals(Object other) {
-//		System.out.println(this.hashCode() +" "+other.hashCode());
-		return this.hashCode() == other.hashCode();
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.getId();
-	}
+//	@Override
+//	public boolean equals(Object other) {
+////		System.out.println(this.hashCode() +" "+other.hashCode());
+//		return this.hashCode() == other.hashCode();
+//	}
+//	
+//	@Override
+//	public int hashCode() {
+//		return this.getId();
+//	}
 }
