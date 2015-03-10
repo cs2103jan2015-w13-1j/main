@@ -2,6 +2,7 @@ package GUI;
 
 import java.io.File;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -161,7 +162,7 @@ public class FXController implements Initializable {
 			addToArchiveDisplay();
 			
 		}
-		else if (firstCommand.equals("search")){
+		else if (firstCommand.equals("-search")){
 			
 			taskList = parser.returnTasks();
 			addToTaskDisplay();
@@ -169,26 +170,56 @@ public class FXController implements Initializable {
 			addToArchiveDisplay();
 			
 		}
+		else if (firstCommand.equals("-change")){
+			
+			taskList = parser.returnTasks();
+			addToTaskDisplay();
+			archiveList = parser.returnArchive();
+			addToArchiveDisplay();
+			
+		}
+		else if (firstCommand.equals("-refresh")){
+			
+			taskList = parser.returnTasks();
+			addToTaskDisplay();
+			archiveList = parser.returnArchive();
+			addToArchiveDisplay();
+			
+		}
+		else if (firstCommand.equals("-exit")){
+			
+			
+			
+		}
 		
 	}
 	
 	private void addToTaskDisplay() {
 		tasks.clear();
+		
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/YYYY");
+		SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
+		
 		for(int i = 0; i < taskList.size(); i++){
 			int id = i+1;
 			String description = taskList.get(i).getDescription();
 			String priority = Integer.toString(taskList.get(i).getPriority());
-			String start = "";
-			String end = "";
-			String due = "";
+			if (priority.equals("-1")){
+				priority = "-";
+			}
+			String start = "-";
+			String end = "-";
+			String due = "-";
 			if (taskList.get(i).getStartTime() != null){
-				start = taskList.get(i).getStartTime().getDateRepresentation();
+				//start = taskList.get(i).getStartTime().getDateRepresentation();
+				start = tf.format(taskList.get(i).getStartTime());
 			}
 			if (taskList.get(i).getEndTime() != null){
-				end = taskList.get(i).getEndTime().getDateRepresentation();
+				end = tf.format(taskList.get(i).getEndTime());
 			}
 			if (taskList.get(i).getDeadline() != null){
-				due = taskList.get(i).getDeadline().getDateRepresentation();
+				//due = taskList.get(i).getDeadline().getDateRepresentation();
+				due = df.format(taskList.get(i).getDeadline());
 			}
 			FXTable entry = new FXTable(id, description, priority, start, end, due);
 			tasks.add(entry);

@@ -70,8 +70,8 @@
                       <TableColumn maxWidth="727.0" minWidth="727.0" prefWidth="727.0" resizable="false" text="To-Do">
                            <columns>
                               <TableColumn fx:id="taskId" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
-                              <TableColumn fx:id="taskDescription" maxWidth="275.0" minWidth="275.0" prefWidth="274.0" style="-fx-text-alignment: center;" text="Description" />
-                              <TableColumn fx:id="taskPriority" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Priority" />
+                              <TableColumn fx:id="taskDescription" maxWidth="341.0" minWidth="275.0" prefWidth="322.0" style="-fx-text-alignment: center;" text="Description" />
+                              <TableColumn fx:id="taskPriority" maxWidth="100.0" minWidth="34.0" prefWidth="53.0" text="Pr" />
                               <TableColumn fx:id="taskStart" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Start" />
                               <TableColumn fx:id="taskEnd" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="End" />
                               <TableColumn fx:id="taskDue" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Due" />
