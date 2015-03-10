@@ -157,6 +157,9 @@ public class Parser implements InterfaceForParser {
 			}case("-directory"):{
 				result = fileDirectoryCommand(splitInput);
 				break;
+			}case("-refresh"):{
+				result = refreshCommand();
+				break;
 			}
 			default:
 				System.out.println("Invalid command");
@@ -166,6 +169,18 @@ public class Parser implements InterfaceForParser {
 		
 	}
 	
+	private String refreshCommand() {
+		String result = "Display refreshed to current tasks";
+		ToDoSortedList retrievedCurrent = logicController.viewActiveTasks();
+		currentActiveTasks.clear();
+		for(Task task : retrievedCurrent){
+			currentActiveTasks.add(task);
+		}
+		
+		return null;
+	}
+
+
 	private String fileDirectoryCommand(String[] splitInput) {
 		String result = new String();
 		String specifiedFileDirectory = splitInput[1];
