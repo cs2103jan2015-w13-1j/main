@@ -15,17 +15,19 @@ public class Parser implements InterfaceForParser {
 	private static LogicController logicController = new LogicController();
 	
 	public int newMaxID = 0; //logicController.getMaxID()+1;
-	private ArrayList<Task> retrievedTasks = new ArrayList<Task>();
-	private ArrayList<Task> retrievedArchives = new ArrayList<Task>();
+	private ArrayList<Task> currentActiveTasks = new ArrayList<Task>();
+	private ArrayList<Task> currentArchives = new ArrayList<Task>();
 	
 	public static void main(String[] args){
-		/*
+		
 		Parser parser = new Parser();
 		parser.initialiseTasks();
-		System.out.println(parser.parseIn("-add this generic task"));
+		parser.initialiseArchives();
+		//System.out.println(parser.parseIn("-add this generic task"));
+		//System.out.println(parser.returnTasks());
+		//System.out.println(parser.parseIn("-add second generic task"));
 		System.out.println(parser.returnTasks());
-		System.out.println(parser.parseIn("-add second generic task"));
-		System.out.println(parser.returnTasks());*/
+		System.out.println(parser.returnArchive());
 		
 	}
 
@@ -35,7 +37,6 @@ public class Parser implements InterfaceForParser {
 		newMaxID = logicController.getSerialNumber();
 		//Upon application start-up, fetch the current tasklist
 		ToDoSortedList retrievedCurrent = new ToDoSortedList();
-		ArrayList<Task> taskListForUI = new ArrayList<Task>();
 		
 		/*
 		//Dummy data
@@ -52,19 +53,19 @@ public class Parser implements InterfaceForParser {
 		*/
 		
 		retrievedCurrent = logicController.viewActiveTasks();
+		currentActiveTasks.clear();
 		for(Task task : retrievedCurrent){
-			taskListForUI.add(task);
+			currentActiveTasks.add(task);
 		}
 		
-		return taskListForUI;		
+		return currentActiveTasks;		
 		
 	}
 	
 	public ArrayList<Task> initialiseArchives(){
 		//Upon application start-up, fetch the archived tasks to display
 		ArchiveSortedList retrievedArchiveFromLogic = new ArchiveSortedList();
-		ArrayList<Task> archiveListForUI = new ArrayList<Task>();
-		
+
 		/*
 		//Dummy Data
 		ArrayList<String> dummyTags = new ArrayList<String>();
@@ -81,29 +82,31 @@ public class Parser implements InterfaceForParser {
 		
 		
 		retrievedArchiveFromLogic = logicController.viewArchiveTasks();
+		currentArchives.clear();
 		for(Task task : retrievedArchiveFromLogic){
-			archiveListForUI.add(task);
+			currentArchives.add(task);
 		}
 		
-		return archiveListForUI;		
+		return currentArchives;		
 	}
 	
 	public ArrayList<Task> returnTasks(){
 
-		return retrievedTasks;
+		return currentActiveTasks;
 	}
 	
 	public ArrayList<Task> returnArchive(){
 		
 		ArchiveSortedList retrievedArchiveFromLogic = new ArchiveSortedList();
-		ArrayList<Task> archiveListForUI = new ArrayList<Task>();
+
 
 		retrievedArchiveFromLogic = logicController.viewArchiveTasks();
+		currentArchives.clear();
 		for(Task task : retrievedArchiveFromLogic){
-			archiveListForUI.add(task);
+			currentArchives.add(task);
 		}
 		
-		return archiveListForUI;	
+		return currentArchives;	
 		
 
 	}
@@ -170,14 +173,14 @@ public class Parser implements InterfaceForParser {
 		String result = new String();
 		int taskIDFromUI = Integer.parseInt(splitInput[1]);
 
-		if(!retrievedArchives.isEmpty()){
-			Task taskToArchive = retrievedArchives.get(taskIDFromUI);
+		if(!currentArchives.isEmpty()){
+			Task taskToArchive = currentArchives.get(taskIDFromUI);
 			result = "Task moved to archive: " + taskToArchive.getDescription();
 			Date currentTime = new Date();
 			ToDoSortedList retrievedActiveTaskList = logicController.moveToArchive(taskToArchive, currentTime);
-			retrievedTasks.clear();
+			currentActiveTasks.clear();
 			for(Task task : retrievedActiveTaskList){
-				retrievedTasks.add(task);
+				currentActiveTasks.add(task);
 			}
 		}else{
 			result = "No tasks in archive";
@@ -191,13 +194,13 @@ public class Parser implements InterfaceForParser {
 		//syntax : -delete [task ID]
 		String result = new String();
 		int taskIDFromUI = Integer.parseInt(splitInput[1]);
-		if(!retrievedTasks.isEmpty()){
-			Task taskToDelete = retrievedTasks.get(taskIDFromUI);
+		if(!currentActiveTasks.isEmpty()){
+			Task taskToDelete = currentActiveTasks.get(taskIDFromUI);
 			result = "Deleted task: " + taskToDelete.getDescription();
 			ToDoSortedList retrievedListFromLogic = logicController.deleteTask(taskToDelete);
-			retrievedTasks.clear();
+			currentActiveTasks.clear();
 			for(Task task : retrievedListFromLogic){
-				retrievedTasks.add(task);
+				currentActiveTasks.add(task);
 			}
 		}else{
 			result = "No tasks to delete";
@@ -211,13 +214,13 @@ public class Parser implements InterfaceForParser {
 		// check input for what to search for (date/tag/priority/desc)
 		String result = new String();
 		String searchParameter = splitInput[1];
-		retrievedTasks.clear();
+		currentActiveTasks.clear();
 		switch(searchParameter){
 			case("today"):{
 				//search by date, today's date
 				Calendar today = Calendar.getInstance();
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-				retrievedTasks = logicController.searchByDate(formatter.format(today));
+				currentActiveTasks = logicController.searchByDate(formatter.format(today));
 				result = "Searched by date: today";
 				break;
 			}case("tmr"):{
@@ -225,7 +228,7 @@ public class Parser implements InterfaceForParser {
 				Calendar tomorrow = Calendar.getInstance();
 				tomorrow.add(Calendar.DATE, 1);
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-				retrievedTasks = logicController.searchByDate(formatter.format(tomorrow));
+				currentActiveTasks = logicController.searchByDate(formatter.format(tomorrow));
 				result = "Searched by date: tomorrow";
 				break;				
 			}case("date"):{
@@ -234,7 +237,7 @@ public class Parser implements InterfaceForParser {
 				try {
 					java.util.Date tempDate = dateInput.parse(splitInput[2]);
 					String dateOutputString = dateOutput.format(tempDate);
-					retrievedTasks = logicController.searchByDate(dateOutputString);
+					currentActiveTasks = logicController.searchByDate(dateOutputString);
 					result = "Searched by date: " + splitInput[2];
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
@@ -242,12 +245,12 @@ public class Parser implements InterfaceForParser {
 				}
 				break;
 			}case("tag"):{
-				retrievedTasks = logicController.searchByTag(splitInput[2]);
+				currentActiveTasks = logicController.searchByTag(splitInput[2]);
 				result = "Searched by tag: " + splitInput[2];
 				break;
 			}case("priority"):{
 				int priority = Integer.parseInt(splitInput[2]);
-				retrievedTasks = logicController.searchByPriority(priority);
+				currentActiveTasks = logicController.searchByPriority(priority);
 				result = "Searched by priority: " + splitInput[2];
 				break;
 			}
@@ -361,11 +364,11 @@ public class Parser implements InterfaceForParser {
 		
 		result = "New task added: " + description;
 		//clear the locally stored tasklist to add the new results
-		retrievedTasks.clear();
+		currentActiveTasks.clear();
 
 		//convert ToDoSortedList from logicController into an ArrayList of String
 		for(Task task : retrievedList){
-			retrievedTasks.add(task);
+			currentActiveTasks.add(task);
 		}
 		
 		newMaxID++;
