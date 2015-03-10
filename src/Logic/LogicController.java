@@ -44,7 +44,6 @@ public class LogicController implements InterfaceForLogic{
 			String original = "";
 			for (Task t: toDoSortedList) {
 				if (t.equals(task)){
-
 					System.out.println(t + " "+task);
 				}
 				original += t.toString()+ "\n";
