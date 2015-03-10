@@ -42,6 +42,8 @@ public class LogicControllerTest {
 	static Task t7;
 	static Task t8;
 	static Task t9;
+	static Task t00;
+	static Task t01;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -89,6 +91,9 @@ public class LogicControllerTest {
 		t7 = new Task(7, "g meeting", d5, d3, 2, tags4);
 		t8 = new Task(8, "h deadline", d6, 4, tags4);
 		t9 = new Task(9, "i deadline", d3, 9, null);
+		
+		t00 = new Task(1, "task", -1, null);
+		t01 = new Task(2, "test", -1, null);
 	}
 	
 	@After
@@ -130,6 +135,26 @@ public class LogicControllerTest {
 		assertEquals(true, lc.toDoSortedList.contains(t1));
 		assertEquals(true, lc.toDoSortedList.contains(t2));
 		assertEquals("2\n1\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+	}
+	
+	/**
+	 * Adding two tasks from UI
+	 */
+	@Test
+	public void testAddPotentialError() {
+		ToDoSortedList td1 = lc.addTask(t00);
+		assertEquals(1, td1.size());
+		ToDoSortedList td2 = lc.addTask(t01);
+		assertEquals(2, td2.size());
+		assertEquals("1\n2\n", td2.toString());
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(t00, lc.activeTaskList.get(1));
+		assertEquals(t01, lc.activeTaskList.get(2));
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals("1\n2\n", lc.toDoSortedList.toString());
 		assertEquals(0, lc.archivedTaskList.size());
 	}
 	

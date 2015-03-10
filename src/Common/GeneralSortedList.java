@@ -15,9 +15,19 @@ public class GeneralSortedList extends TreeSet<Task>{
 	}
 	
 	public void addTask(Task task) {
-		this.add(task);
+		System.out.println(this.add(task));
 	}
-
+	
+	@Override
+	public boolean contains(Object task) {
+		for (Task t: this) {
+			if (t.equals(task)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void deleteTaskById(int id) throws InvalidKeyException {
 		Iterator<Task> taskIterator = this.iterator();
 		Task toBeDeleted = null;

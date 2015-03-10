@@ -271,7 +271,12 @@ public class Task implements Comparable<Task>{
 		public int compare(Task t1, Task t2) {
 			if (t2.getTime() == null) {
 				if (t1.getTime() == null) {
-					return t2.getPriority()-t1.getPriority();
+					if (t2.getPriority()-t1.getPriority() != 0) {
+						return t2.getPriority()-t1.getPriority();
+					}
+					else {
+						return t1.getId() - t2.getId();
+					}
 				}
 				else {
 					return -1;
@@ -286,7 +291,12 @@ public class Task implements Comparable<Task>{
 					return dateCompare;
 				}
 				else {
-					return t2.getPriority()-t1.getPriority();
+					if (t2.getPriority()-t1.getPriority() != 0) {
+						return t2.getPriority()-t1.getPriority();
+					}
+					else {
+						return t1.getId() - t2.getId();
+					}
 				}
 			}
 		}
@@ -302,7 +312,12 @@ public class Task implements Comparable<Task>{
 				return dateCompare;
 			}
 			else {
-				return t2.getPriority()-t1.getPriority();
+				if (t2.getPriority()-t1.getPriority() != 0) {
+					return t2.getPriority()-t1.getPriority();
+				}
+				else {
+					return t2.getId() - t1.getId();
+				}
 			}
 		}
 	};
@@ -319,7 +334,12 @@ public class Task implements Comparable<Task>{
 			else {
 				if (t2.getTime() == null) {
 					if (t1.getTime() == null) {
-						return t2.getPriority()-t1.getPriority();
+						if (t2.getPriority()-t1.getPriority() != 0) {
+							return t2.getPriority()-t1.getPriority();
+						}
+						else {
+							return t2.getId() - t1.getId();
+						}
 					}
 					else {
 						return -1;
@@ -329,7 +349,12 @@ public class Task implements Comparable<Task>{
 					return 1;
 				}
 				else {
-					return t1.getTime().compareTo(t2.getTime());
+					if (t1.getTime().compareTo(t2.getTime())!=0) {
+						return t1.getTime().compareTo(t2.getTime());
+					}
+					else {
+						return t1.getId() - t2.getId();
+					}
 				}
 			}
 		}
@@ -337,6 +362,17 @@ public class Task implements Comparable<Task>{
 
 	@Override
 	public int compareTo(Task other) {
-		return this.getDescription().compareTo(other.getDescription());
+		return this.getId() - other.getId();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+//		System.out.println(this.hashCode() +" "+other.hashCode());
+		return this.hashCode() == other.hashCode();
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getId();
 	}
 }

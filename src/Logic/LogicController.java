@@ -41,8 +41,14 @@ public class LogicController implements InterfaceForLogic{
 	
 	public ToDoSortedList addTask(Task task) {
 		if (toDoSortedList.contains(task)) {
+			System.out.println("here");
 			String original = "";
 			for (Task t: toDoSortedList) {
+				System.out.println(t.equals(task));
+				if (t.equals(task)){
+					System.out.println(t.equals(task));
+					System.out.println(t + " "+task);
+				}
 				original += t.toString()+ "\n";
 			}
 			String added = task.toString();
@@ -53,7 +59,6 @@ public class LogicController implements InterfaceForLogic{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 		toDoSortedList.add(task);
 		activeTaskList.addTask(task.getId(), task);
