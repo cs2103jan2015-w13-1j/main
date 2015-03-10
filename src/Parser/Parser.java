@@ -101,6 +101,7 @@ public class Parser implements InterfaceForParser {
 		ArchiveSortedList retrievedArchiveFromLogic = new ArchiveSortedList();
 
 		retrievedArchiveFromLogic = logicController.viewArchiveTasks();
+		currentArchives.clear();
 		for(Task task : retrievedArchiveFromLogic){
 			currentArchives.add(task);
 		}
@@ -302,8 +303,8 @@ public class Parser implements InterfaceForParser {
 		int taskIDFromUI = Integer.parseInt(splitInput[1]);
 
 
-		if(!currentArchives.isEmpty()){
-			Task taskToArchive = currentArchives.get(taskIDFromUI-1);
+		if(!currentActiveTasks.isEmpty()){
+			Task taskToArchive = currentActiveTasks.get(taskIDFromUI-1);
 
 			result = "Task moved to archive: " + taskToArchive.getDescription();
 			Date currentTime = new Date();
@@ -313,7 +314,7 @@ public class Parser implements InterfaceForParser {
 				currentActiveTasks.add(task);
 			}
 		}else{
-			result = "No tasks in archive";
+			result = "No tasks to archive";
 		}
 		
 		return result;
