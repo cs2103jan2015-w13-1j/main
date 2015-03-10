@@ -205,9 +205,18 @@ public class FXController implements Initializable {
 			int id = i+1;
 			String description = archiveList.get(i).getDescription();
 			String priority = Integer.toString(archiveList.get(i).getPriority());
-			String start = archiveList.get(i).getStartTime().getDateRepresentation();
-			String end = archiveList.get(i).getEndTime().getDateRepresentation();
-			String due = archiveList.get(i).getDeadline().getDateRepresentation();
+			String start = "";
+			String end = "";
+			String due = "";
+			if (archiveList.get(i).getStartTime() != null){
+				start = archiveList.get(i).getStartTime().getDateRepresentation();
+			}
+			if (archiveList.get(i).getEndTime() != null){
+				end = archiveList.get(i).getEndTime().getDateRepresentation();
+			}
+			if (archiveList.get(i).getDeadline() != null){
+				due = archiveList.get(i).getDeadline().getDateRepresentation();
+			}
 			FXTable entry = new FXTable(id, description, priority, start, end, due);
 			archive.add(entry);
 			System.out.println("Initialized: " + description + priority + start + end + due);

@@ -137,8 +137,10 @@ public class Parser implements InterfaceForParser {
 				break;
 			}case("-delete"):{
 				result = deleteCommand(splitInput);
+				break;
 			}case("-archive"):{
 				result = archiveCommand(splitInput);
+				break;
 			}
 			default:
 				System.out.println("Invalid command");
