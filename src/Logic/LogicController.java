@@ -3,6 +3,8 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import javax.activity.InvalidActivityException;
+
 import Common.ArchiveSortedList;
 import Common.DATA;
 import Common.Date;
@@ -39,7 +41,19 @@ public class LogicController implements InterfaceForLogic{
 	
 	public ToDoSortedList addTask(Task task) {
 		if (toDoSortedList.contains(task)) {
-			return null;
+			String original = "";
+			for (Task t: toDoSortedList) {
+				original += t.toString()+ "\n";
+			}
+			String added = task.toString();
+			String message = "original list:\n" + original + "newly added:\n"+added;
+			try {
+				throw new InvalidActivityException(message);
+			} catch (InvalidActivityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		toDoSortedList.add(task);
 		activeTaskList.addTask(task.getId(), task);

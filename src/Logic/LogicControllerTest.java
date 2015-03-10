@@ -118,8 +118,11 @@ public class LogicControllerTest {
 	 */
 	@Test
 	public void testAdd2() {
-		lc.addTask(t1);
-		lc.addTask(t2);
+		ToDoSortedList td1 = lc.addTask(t1);
+		assertEquals(1, td1.size());
+		ToDoSortedList td2 = lc.addTask(t2);
+		assertEquals(2, td2.size());
+		assertEquals("2\n1\n", td2.toString());
 		assertEquals(2, lc.activeTaskList.size());
 		assertEquals(t1, lc.activeTaskList.get(1));
 		assertEquals(t2, lc.activeTaskList.get(2));

@@ -2,6 +2,8 @@ package Logic;
 
 import java.util.ArrayList;
 
+import javax.activity.InvalidActivityException;
+
 import Common.ArchiveSortedList;
 import Common.Date;
 import Common.PrioritySortedList;
@@ -16,7 +18,7 @@ public interface InterfaceForLogic {
 	 * @param task
 	 * @return null if the task is already inside the todolist
 	 */
-	ToDoSortedList addTask(Task task); //sorted by date
+	ToDoSortedList addTask(Task task);//sorted by date
 	
 	// Returns null if the task was not 'generic'
 	ToDoSortedList addDeadLine(Task task, Date deadLine);
