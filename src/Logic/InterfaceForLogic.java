@@ -63,6 +63,8 @@ public interface InterfaceForLogic {
 	
 	ToDoSortedList deleteTask(Task task);
 	
+	ArchiveSortedList deleteFromArchive(Task task);
+	
 	/**
 	 * When the program exit
 	 * @return

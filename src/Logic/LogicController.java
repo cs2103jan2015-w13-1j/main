@@ -286,5 +286,14 @@ public class LogicController implements InterfaceForLogic{
 		return DC.storeAllData(finalData);
 	}
 
-
+	@Override
+	public ArchiveSortedList deleteFromArchive(Task task) {
+		try {
+			archivedTaskList.removeTaskbyId(task.getId());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return viewArchiveTasks();
+	}
 }
