@@ -67,6 +67,6 @@ public interface InterfaceForLogic {
 	 * When the program exit
 	 * @return
 	 */
-	String exit(int serialserialNumber);
+	String exit(int serialNumber);
 	
 }
