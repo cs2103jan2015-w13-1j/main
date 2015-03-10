@@ -9,10 +9,12 @@ import Common.Date;
 import Common.Task;
 import Common.ToDoSortedList;
 import Logic.LogicController;
+import Storage.StorageController;
 
 public class Parser implements InterfaceForParser {
 	
 	private static LogicController logicController = new LogicController();
+	private static StorageController storageController = new StorageController();
 	
 
 	public int newMaxID = 0; 
@@ -96,14 +98,13 @@ public class Parser implements InterfaceForParser {
 	public ArrayList<Task> returnArchive(){
 		
 		ArchiveSortedList retrievedArchiveFromLogic = new ArchiveSortedList();
-		ArrayList<Task> archiveListForUI = new ArrayList<Task>();
 
 		retrievedArchiveFromLogic = logicController.viewArchiveTasks();
 		for(Task task : retrievedArchiveFromLogic){
-			archiveListForUI.add(task);
+			currentArchives.add(task);
 		}
 		
-		return archiveListForUI;	
+		return currentArchives;	
 		
 
 	}
@@ -151,6 +152,9 @@ public class Parser implements InterfaceForParser {
 			}case("-change"):{
 				result = modifyCommand(splitInput);
 				break;
+			}case("-directory"):{
+				result = fileDirectoryCommand(splitInput);
+				break;
 			}
 			default:
 				System.out.println("Invalid command");
@@ -160,6 +164,15 @@ public class Parser implements InterfaceForParser {
 		
 	}
 	
+	private String fileDirectoryCommand(String[] splitInput) {
+		String result = new String();
+		String specifiedFileDirectory = splitInput[1];
+		String acknowledgeCheck = storageController.setFileDirectory(specifiedFileDirectory);
+		result = "File stored at: " + specifiedFileDirectory;
+		return result;
+	}
+
+
 	private String modifyCommand(String[] splitInput) {
 		String result = new String();
 		String modifyParameter = splitInput[1];
@@ -333,13 +346,13 @@ public class Parser implements InterfaceForParser {
 		// check input for what to search for (date/tag/priority/desc)
 		String result = new String();
 		String searchParameter = splitInput[1];
-		currentArchives.clear();
+		currentActiveTasks.clear();
 		switch(searchParameter){
 			case("today"):{
 				//search by date, today's date
 				Calendar today = Calendar.getInstance();
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-				currentArchives = logicController.searchByDate(formatter.format(today));
+				currentActiveTasks = logicController.searchByDate(formatter.format(today));
 				result = "Searched by date: today";
 				break;
 			}case("tmr"):{
@@ -347,7 +360,7 @@ public class Parser implements InterfaceForParser {
 				Calendar tomorrow = Calendar.getInstance();
 				tomorrow.add(Calendar.DATE, 1);
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-				currentArchives = logicController.searchByDate(formatter.format(tomorrow));
+				currentActiveTasks = logicController.searchByDate(formatter.format(tomorrow));
 				result = "Searched by date: tomorrow";
 				break;				
 			}case("date"):{
@@ -356,7 +369,7 @@ public class Parser implements InterfaceForParser {
 				try {
 					java.util.Date tempDate = dateInput.parse(splitInput[2]);
 					String dateOutputString = dateOutput.format(tempDate);
-					currentArchives = logicController.searchByDate(dateOutputString);
+					currentActiveTasks = logicController.searchByDate(dateOutputString);
 					result = "Searched by date: " + splitInput[2];
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
@@ -364,16 +377,18 @@ public class Parser implements InterfaceForParser {
 				}
 				break;
 			}case("tag"):{
-				currentArchives = logicController.searchByTag(splitInput[2]);
+				currentActiveTasks = logicController.searchByTag(splitInput[2]);
 				result = "Searched by tag: " + splitInput[2];
 				break;
 			}case("priority"):{
 				int priority = Integer.parseInt(splitInput[2]);
-				currentArchives = logicController.searchByPriority(priority);
+				currentActiveTasks = logicController.searchByPriority(priority);
 				result = "Searched by priority: " + splitInput[2];
 				break;
 			}
+			
 		}
+
 		
 		return result;
 	}
