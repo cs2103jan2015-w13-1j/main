@@ -55,6 +55,7 @@ public class Parser implements InterfaceForParser {
 		*/
 		
 		retrievedCurrent = logicController.viewActiveTasks();
+		currentActiveTasks.clear();
 		for(Task task : retrievedCurrent){
 			currentActiveTasks.add(task);
 		}
@@ -92,7 +93,7 @@ public class Parser implements InterfaceForParser {
 	
 	public ArrayList<Task> returnTasks(){
 
-		return currentArchives;
+		return currentActiveTasks;
 	}
 	
 	public ArrayList<Task> returnArchive(){
