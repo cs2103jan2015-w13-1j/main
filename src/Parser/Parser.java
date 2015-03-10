@@ -308,9 +308,9 @@ public class Parser implements InterfaceForParser {
 			result = "Task moved to archive: " + taskToArchive.getDescription();
 			Date currentTime = new Date();
 			ToDoSortedList retrievedActiveTaskList = logicController.moveToArchive(taskToArchive, currentTime);
-			currentArchives.clear();
+			currentActiveTasks.clear();
 			for(Task task : retrievedActiveTaskList){
-				currentArchives.add(task);
+				currentActiveTasks.add(task);
 			}
 		}else{
 			result = "No tasks in archive";
@@ -330,10 +330,10 @@ public class Parser implements InterfaceForParser {
 
 			result = "Deleted task: " + taskToDelete.getDescription();
 			ToDoSortedList retrievedListFromLogic = logicController.deleteTask(taskToDelete);
-			currentArchives.clear();
+			currentActiveTasks.clear();
 			System.out.println(retrievedListFromLogic);
 			for(Task task : retrievedListFromLogic){
-				currentArchives.add(task);
+				currentActiveTasks.add(task);
 			}
 		}else{
 			result = "No tasks to delete";
@@ -499,11 +499,11 @@ public class Parser implements InterfaceForParser {
 		
 		result = "New task added: " + description;
 		//clear the locally stored tasklist to add the new results
-		currentArchives.clear();
+		currentActiveTasks.clear();
 
 		//convert ToDoSortedList from logicController into an ArrayList of String
 		for(Task task : retrievedList){
-			currentArchives.add(task);
+			currentActiveTasks.add(task);
 		}
 		
 		newMaxID++;
