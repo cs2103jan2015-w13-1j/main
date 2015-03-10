@@ -63,4 +63,10 @@ public interface InterfaceForLogic {
 	
 	ToDoSortedList deleteTask(Task task);
 	
+	/**
+	 * When the program exit
+	 * @return
+	 */
+	String exit(int serialserialNumber);
+	
 }

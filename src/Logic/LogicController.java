@@ -278,4 +278,15 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList viewActiveTasks() {
 		return toDoSortedList;
 	}
+
+	@Override
+	public String exit(int serialserialNumber) {
+		DATA finalData = new DATA();
+		finalData.setSerialNumber(serialserialNumber);
+		finalData.setActiveTaskList(activeTaskList);
+		finalData.setArchivedTaskList(archivedTaskList);
+		return DC.storeAllData(finalData);
+	}
+
+
 }
