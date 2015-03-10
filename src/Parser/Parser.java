@@ -19,16 +19,20 @@ public class Parser implements InterfaceForParser {
 	private ArrayList<Task> retrievedArchives = new ArrayList<Task>();
 	
 	public static void main(String[] args){
+		/*
 		Parser parser = new Parser();
 		parser.initialiseTasks();
 		System.out.println(parser.parseIn("-add this generic task"));
 		System.out.println(parser.returnTasks());
+		System.out.println(parser.parseIn("-add second generic task"));
+		System.out.println(parser.returnTasks());*/
 		
 	}
 
 	
 	public ArrayList<Task> initialiseTasks(){
 		logicController.initialise();
+		newMaxID = logicController.getSerialNumber();
 		//Upon application start-up, fetch the current tasklist
 		ToDoSortedList retrievedCurrent = new ToDoSortedList();
 		ArrayList<Task> taskListForUI = new ArrayList<Task>();
@@ -141,6 +145,9 @@ public class Parser implements InterfaceForParser {
 			}case("-archive"):{
 				result = archiveCommand(splitInput);
 				break;
+			}case("exit"):{
+				result = exitCommand();
+				break;
 			}
 			default:
 				System.out.println("Invalid command");
@@ -150,17 +157,30 @@ public class Parser implements InterfaceForParser {
 		
 	}
 	
+	private String exitCommand() {
+		String result = new String();
+		logicController.exit(newMaxID);
+		result = "HeyBuddy! is closing";
+		return result;
+	}
+
+
 	private String archiveCommand(String[] splitInput) {
 		//syntax -archive [task ID]
 		String result = new String();
 		int taskIDFromUI = Integer.parseInt(splitInput[1]);
-		Task taskToArchive = retrievedArchives.get(taskIDFromUI);
-		result = "Task moved to archive: " + taskToArchive.getDescription();
-		Date currentTime = new Date();
-		ToDoSortedList retrievedActiveTaskList = logicController.moveToArchive(taskToArchive, currentTime);
-		retrievedTasks.clear();
-		for(Task task : retrievedActiveTaskList){
-			retrievedTasks.add(task);
+
+		if(!retrievedArchives.isEmpty()){
+			Task taskToArchive = retrievedArchives.get(taskIDFromUI);
+			result = "Task moved to archive: " + taskToArchive.getDescription();
+			Date currentTime = new Date();
+			ToDoSortedList retrievedActiveTaskList = logicController.moveToArchive(taskToArchive, currentTime);
+			retrievedTasks.clear();
+			for(Task task : retrievedActiveTaskList){
+				retrievedTasks.add(task);
+			}
+		}else{
+			result = "No tasks in archive";
 		}
 		
 		return result;
@@ -171,12 +191,16 @@ public class Parser implements InterfaceForParser {
 		//syntax : -delete [task ID]
 		String result = new String();
 		int taskIDFromUI = Integer.parseInt(splitInput[1]);
-		Task taskToDelete = retrievedTasks.get(taskIDFromUI);
-		result = "Deleted task: " + taskToDelete.getDescription();
-		ToDoSortedList retrievedListFromLogic = logicController.deleteTask(taskToDelete);
-		retrievedTasks.clear();
-		for(Task task : retrievedListFromLogic){
-			retrievedTasks.add(task);
+		if(!retrievedTasks.isEmpty()){
+			Task taskToDelete = retrievedTasks.get(taskIDFromUI);
+			result = "Deleted task: " + taskToDelete.getDescription();
+			ToDoSortedList retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+			retrievedTasks.clear();
+			for(Task task : retrievedListFromLogic){
+				retrievedTasks.add(task);
+			}
+		}else{
+			result = "No tasks to delete";
 		}
 		
 		return result;
@@ -338,24 +362,12 @@ public class Parser implements InterfaceForParser {
 		result = "New task added: " + description;
 		//clear the locally stored tasklist to add the new results
 		retrievedTasks.clear();
-		/*
-		//Dummy Data
-		ArrayList<String> dummyTags = new ArrayList<String>();
-		SimpleDateFormat dummyDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		java.util.Date tempDummyDate = new Date();
-		Date dummyDate = new Date();
-		dummyDate.setTime(tempDummyDate.getTime());
 
-		
-		retrievedTasks.add(new Task(1,"test generic",-1,dummyTags));
-		retrievedTasks.add(new Task(2,"test deadline", dummyDate,-1,dummyTags));
-		retrievedTasks.add(new Task(3,"test meeting", dummyDate, dummyDate, -1, dummyTags));
-		*/
-		
 		//convert ToDoSortedList from logicController into an ArrayList of String
 		for(Task task : retrievedList){
 			retrievedTasks.add(task);
 		}
+		
 		newMaxID++;
 		return result;
 	}
