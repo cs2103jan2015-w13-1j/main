@@ -14,7 +14,7 @@ public class Parser implements InterfaceForParser {
 	
 	private static LogicController logicController = new LogicController();
 	
-	public int newMaxID = 0; //logicController.getMaxID()+1;
+	public int newMaxID = 0; 
 	private ArrayList<Task> currentActiveTasks = new ArrayList<Task>();
 	private ArrayList<Task> currentArchives = new ArrayList<Task>();
 	
@@ -148,8 +148,11 @@ public class Parser implements InterfaceForParser {
 			}case("-archive"):{
 				result = archiveCommand(splitInput);
 				break;
-			}case("exit"):{
+			}case("-exit"):{
 				result = exitCommand();
+				break;
+			}case("-change"):{
+				result = modifyCommand(splitInput);
 				break;
 			}
 			default:
@@ -160,6 +163,120 @@ public class Parser implements InterfaceForParser {
 		
 	}
 	
+	private String modifyCommand(String[] splitInput) {
+		String result = new String();
+		String modifyParameter = splitInput[1];
+		ToDoSortedList retrievedSortedList = new ToDoSortedList();
+		int taskID = Integer.parseInt(splitInput[2])-1;
+		Task taskToChange = currentActiveTasks.get(taskID);
+		
+		switch(modifyParameter){
+			case("date"):{
+				//find task ID, get task
+				String taskType = taskToChange.getType();
+				//cases: generic task, deadline task, meeting task 
+				if(taskType.equalsIgnoreCase("generic")){
+					//i.e no date exists
+					//parse in the new deadline/startend time
+					if(splitInput.length>4){
+						//if change to meeting task
+						//syntax: -change date <taskID> dd/MM/yyyy HHmm HHmm
+						SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
+						String startTimeString = splitInput[3] + " " + splitInput[4];
+						String endTimeString = splitInput[3] + " " + splitInput[5];
+						try {
+							java.util.Date tempStart = formatter.parse(startTimeString);
+							Date newStartTime = new Date();
+							newStartTime.setTime(tempStart.getTime());
+							java.util.Date tempEnd = formatter.parse(endTimeString);
+							Date newEndTime = new Date();
+							newEndTime.setTime(tempEnd.getTime());
+							retrievedSortedList = logicController.addStartAndEndTime(taskToChange, newStartTime, newEndTime);
+							result = "New start and end time added";
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}		
+					}else{
+						//if change to deadline task
+						//syntax: -change date dd/MM/yyyy
+						SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+						try {
+							java.util.Date tempDate = formatter.parse(splitInput[3]);
+							Date newDeadline = new Date();
+							newDeadline.setTime(tempDate.getTime());
+							retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
+							result = "New deadline added";
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}else if(taskType.equalsIgnoreCase("deadline")){
+					//date exists, change deadline
+					//syntax: -change date dd/MM/yyyy
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+					try {
+						java.util.Date tempDate = formatter.parse(splitInput[3]);
+						Date newDeadline = new Date();
+						newDeadline.setTime(tempDate.getTime());
+						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
+						result = "Deadline changed";
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else if(taskType.equalsIgnoreCase("meeting")){
+					//change start and end time
+					//syntax:-change date dd/MM/yyyy HHmm HHmm
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
+					String startTimeString = splitInput[3] + " " + splitInput[4];
+					String endTimeString = splitInput[3] + " " + splitInput[5];
+					try {
+						java.util.Date tempStart = formatter.parse(startTimeString);
+						Date newStartTime = new Date();
+						newStartTime.setTime(tempStart.getTime());
+						java.util.Date tempEnd = formatter.parse(endTimeString);
+						Date newEndTime = new Date();
+						newEndTime.setTime(tempEnd.getTime());
+						//change this later
+						retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
+						result = "Meeting time changed";
+						
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else{
+					result = "type mismatch error, can't change date";
+				}
+				break;
+			}case("priority"):{
+				//syntax: -change priority <taskID> <new priority>
+				int newPriority = Integer.parseInt(splitInput[3]);
+				retrievedSortedList = logicController.editPriority(taskToChange, newPriority);
+				result = "Priority changed";
+				break;
+			}case("desc"):{
+				//syntax: -change desc <taskID> <new desc>
+				String newDescription = splitInput[3];
+				retrievedSortedList = logicController.editDescription(taskToChange, newDescription);
+				result = "Description changed";
+				break;
+			}
+		}
+		
+		//update current tasks
+		currentActiveTasks.clear();
+		for(Task task : retrievedSortedList){
+			currentActiveTasks.add(task);
+		}
+		
+		
+		return result;
+	}
+
+
 	private String exitCommand() {
 		String result = new String();
 		logicController.exit(newMaxID);
@@ -174,7 +291,7 @@ public class Parser implements InterfaceForParser {
 		int taskIDFromUI = Integer.parseInt(splitInput[1]);
 
 		if(!currentArchives.isEmpty()){
-			Task taskToArchive = currentArchives.get(taskIDFromUI);
+			Task taskToArchive = currentArchives.get(taskIDFromUI-1);
 			result = "Task moved to archive: " + taskToArchive.getDescription();
 			Date currentTime = new Date();
 			ToDoSortedList retrievedActiveTaskList = logicController.moveToArchive(taskToArchive, currentTime);
@@ -195,7 +312,7 @@ public class Parser implements InterfaceForParser {
 		String result = new String();
 		int taskIDFromUI = Integer.parseInt(splitInput[1]);
 		if(!currentActiveTasks.isEmpty()){
-			Task taskToDelete = currentActiveTasks.get(taskIDFromUI);
+			Task taskToDelete = currentActiveTasks.get(taskIDFromUI-1);
 			result = "Deleted task: " + taskToDelete.getDescription();
 			ToDoSortedList retrievedListFromLogic = logicController.deleteTask(taskToDelete);
 			currentActiveTasks.clear();
