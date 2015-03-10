@@ -190,12 +190,13 @@ public class Parser implements InterfaceForParser {
 	private String deleteCommand(String[] splitInput) {
 		//syntax : -delete [task ID]
 		String result = new String();
-		int taskIDFromUI = Integer.parseInt(splitInput[1]);
+		int taskIDFromUI = Integer.parseInt(splitInput[1]) - 1;
 		if(!retrievedTasks.isEmpty()){
 			Task taskToDelete = retrievedTasks.get(taskIDFromUI);
 			result = "Deleted task: " + taskToDelete.getDescription();
 			ToDoSortedList retrievedListFromLogic = logicController.deleteTask(taskToDelete);
 			retrievedTasks.clear();
+			System.out.println(retrievedListFromLogic);
 			for(Task task : retrievedListFromLogic){
 				retrievedTasks.add(task);
 			}

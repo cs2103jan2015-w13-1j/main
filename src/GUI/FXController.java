@@ -130,11 +130,9 @@ public class FXController implements Initializable {
 			
 			System.out.println(taskList);			
 		}
-		else if (firstCommand.equals("archive")){
+		else if (firstCommand.equals("-archive")){
 			
 			int deleteIndex = Integer.parseInt(splitCommand[1]);
-			
-			//parser.executeArchive(taskList.get(deleteIndex-1).getId());??????? Maybe no need.
 			
 			taskList = parser.returnTasks();
 			addToTaskDisplay();
@@ -142,7 +140,7 @@ public class FXController implements Initializable {
 			addToArchiveDisplay();
 			
 		}
-		else if (firstCommand.equals("undo")){
+		else if (firstCommand.equals("-undo")){
 			
 			//parser.executeUndo();????? Maybe no need.
 			
@@ -152,12 +150,11 @@ public class FXController implements Initializable {
 			addToArchiveDisplay();
 			
 		}
-		else if (firstCommand.equals("delete")){
+		else if (firstCommand.equals("-delete")){
 			
 			int deleteIndex = Integer.parseInt(splitCommand[1]);
 			
 			//parser.executeDelete(taskList.get(deleteIndex-1).getId());????? Maybe no need.
-			
 			taskList = parser.returnTasks();
 			addToTaskDisplay();
 			archiveList = parser.returnArchive();
