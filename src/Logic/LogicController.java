@@ -21,10 +21,10 @@ public class LogicController implements InterfaceForLogic{
 	
 	private int serialNumber;
 
-	private TaskList activeTaskList;
-	private TaskList archivedTaskList;
+	protected TaskList activeTaskList;
+	protected TaskList archivedTaskList;
 
-	private ToDoSortedList toDoSortedList;
+	protected ToDoSortedList toDoSortedList;
 	
 	public void initialise() {
 		data = DC.getAllData();
