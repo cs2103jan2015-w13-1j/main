@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1200.0" style="-fx-background-color: #f7f7f7;" styleClass="test" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1200.0" style="-fx-background-color: #f7f7f7;" styleClass="test" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.UIController">
    <children>
       <Label alignment="BOTTOM_LEFT" style="-fx-font-weight: BOLD; -fx-font-size: 59;" text="HeyBuddy!" textFill="#3b5998">
          <font>

@@ -3,7 +3,7 @@ package GUI;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class FXTable {
+public class UITask {
 	private final SimpleIntegerProperty id;
 	private final SimpleStringProperty description;
 	private final SimpleStringProperty priority;
@@ -11,7 +11,7 @@ public class FXTable {
 	private final SimpleStringProperty end;
 	private final SimpleStringProperty due;
 	
-	public FXTable(int id, String desc, String pri, String start, String end, String due){
+	public UITask(int id, String desc, String pri, String start, String end, String due){
 		this.id = new SimpleIntegerProperty(id);
 		this.description = new SimpleStringProperty(desc);
 		this.priority = new SimpleStringProperty(pri);

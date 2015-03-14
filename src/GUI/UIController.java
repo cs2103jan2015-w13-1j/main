@@ -19,9 +19,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import Common.Task;
-import Parser.Parser;
+import Parser.CommandController;;
 
-public class FXController implements Initializable {
+public class UIController implements Initializable {
 	
 	@FXML
 	private Group taskGroup;
@@ -35,59 +35,59 @@ public class FXController implements Initializable {
 	private Button directoryChooserBtn;
 	
 	@FXML
-	TableView<FXTable> taskTable;
+	TableView<UITask> taskTable;
 	@FXML
-	TableColumn<FXTable, Integer> taskId;
+	TableColumn<UITask, Integer> taskId;
 	@FXML
-	TableColumn<FXTable, String> taskDescription;
+	TableColumn<UITask, String> taskDescription;
 	@FXML
-	TableColumn<FXTable, String> taskPriority;
+	TableColumn<UITask, String> taskPriority;
 	@FXML
-	TableColumn<FXTable, String> taskStart;
+	TableColumn<UITask, String> taskStart;
 	@FXML
-	TableColumn<FXTable, String> taskEnd;
+	TableColumn<UITask, String> taskEnd;
 	@FXML
-	TableColumn<FXTable, String> taskDue;
+	TableColumn<UITask, String> taskDue;
 
 	@FXML
-	TableView<FXTable> archiveTable;
+	TableView<UITask> archiveTable;
 	@FXML
-	TableColumn<FXTable, Integer> archiveId;
+	TableColumn<UITask, Integer> archiveId;
 	@FXML
-	TableColumn<FXTable, String> archiveDescription;
+	TableColumn<UITask, String> archiveDescription;
 	
 	private int taskNumber = 1;
 	private int archiveNumber = 1;
 	
-	Parser parser = new Parser();
+	CommandController commandController = new CommandController();
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 	
-	final ObservableList<FXTable> tasks = FXCollections.observableArrayList();
+	final ObservableList<UITask> tasks = FXCollections.observableArrayList();
 	
-	final ObservableList<FXTable> archive = FXCollections.observableArrayList();
+	final ObservableList<UITask> archive = FXCollections.observableArrayList();
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources){
 	
-		taskId.setCellValueFactory(new PropertyValueFactory<FXTable, Integer>("id"));
-		taskDescription.setCellValueFactory(new PropertyValueFactory<FXTable, String>("description"));
-		taskPriority.setCellValueFactory(new PropertyValueFactory<FXTable, String>("priority"));
-		taskStart.setCellValueFactory(new PropertyValueFactory<FXTable, String>("start"));
-		taskEnd.setCellValueFactory(new PropertyValueFactory<FXTable, String>("end"));
-		taskDue.setCellValueFactory(new PropertyValueFactory<FXTable, String>("due"));
+		taskId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
+		taskDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
+		taskPriority.setCellValueFactory(new PropertyValueFactory<UITask, String>("priority"));
+		taskStart.setCellValueFactory(new PropertyValueFactory<UITask, String>("start"));
+		taskEnd.setCellValueFactory(new PropertyValueFactory<UITask, String>("end"));
+		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>("due"));
 		taskTable.setItems(tasks);
 		
 		//possible null pointer exception here when list is empty
-		taskList = parser.initialiseTasks();
+		taskList = commandController.initialiseTasks();
 		addToTaskDisplay();
 		
-		archiveId.setCellValueFactory(new PropertyValueFactory<FXTable, Integer>("id"));
-		archiveDescription.setCellValueFactory(new PropertyValueFactory<FXTable, String>("description"));
+		archiveId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
+		archiveDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
 		archiveTable.setItems(archive);
 		
 		//possible null pointer exception here when list is empty
-		archiveList = parser.initialiseArchives();
+		archiveList = commandController.initialiseArchives();
 		addToArchiveDisplay();
 		
 	}
@@ -117,7 +117,7 @@ public class FXController implements Initializable {
 		String firstCommand = splitCommand[0];
 		
 		System.out.println("User input: " + input);
-		String outputMessage = parser.parseIn(input);
+		String outputMessage = commandController.executeCommand(input);
 		System.out.println(outputMessage);
 
 		if (firstCommand.equals("-goto")){
@@ -126,7 +126,7 @@ public class FXController implements Initializable {
 		else if (firstCommand.equals("-add")){
 			
 			System.out.println("Ading tasks in progress...");
-			taskList = parser.returnTasks();
+			taskList = commandController.returnTasks();
 			addToTaskDisplay();
 			
 			System.out.println(taskList);			
@@ -135,9 +135,9 @@ public class FXController implements Initializable {
 			
 			int deleteIndex = Integer.parseInt(splitCommand[1]);
 			
-			taskList = parser.returnTasks();
+			taskList = commandController.returnTasks();
 			addToTaskDisplay();
-			archiveList = parser.returnArchive();
+			archiveList = commandController.returnArchive();
 			addToArchiveDisplay();
 			
 		}
@@ -145,9 +145,9 @@ public class FXController implements Initializable {
 			
 			//parser.executeUndo();????? Maybe no need.
 			
-			taskList = parser.returnTasks();
+			taskList = commandController.returnTasks();
 			addToTaskDisplay();
-			archiveList = parser.returnArchive();
+			archiveList = commandController.returnArchive();
 			addToArchiveDisplay();
 			
 		}
@@ -156,33 +156,33 @@ public class FXController implements Initializable {
 			int deleteIndex = Integer.parseInt(splitCommand[1]);
 			
 			//parser.executeDelete(taskList.get(deleteIndex-1).getId());????? Maybe no need.
-			taskList = parser.returnTasks();
+			taskList = commandController.returnTasks();
 			addToTaskDisplay();
-			archiveList = parser.returnArchive();
+			archiveList = commandController.returnArchive();
 			addToArchiveDisplay();
 			
 		}
 		else if (firstCommand.equals("-search")){
 			
-			taskList = parser.returnTasks();
+			taskList = commandController.returnTasks();
 			addToTaskDisplay();
-			archiveList = parser.returnArchive();
+			archiveList = commandController.returnArchive();
 			addToArchiveDisplay();
 			
 		}
 		else if (firstCommand.equals("-change")){
 			
-			taskList = parser.returnTasks();
+			taskList = commandController.returnTasks();
 			addToTaskDisplay();
-			archiveList = parser.returnArchive();
+			archiveList = commandController.returnArchive();
 			addToArchiveDisplay();
 			
 		}
 		else if (firstCommand.equals("-refresh")){
 			
-			taskList = parser.returnTasks();
+			taskList = commandController.returnTasks();
 			addToTaskDisplay();
-			archiveList = parser.returnArchive();
+			archiveList = commandController.returnArchive();
 			addToArchiveDisplay();
 			
 		}
@@ -221,7 +221,7 @@ public class FXController implements Initializable {
 				//due = taskList.get(i).getDeadline().getDateRepresentation();
 				due = df.format(taskList.get(i).getDeadline());
 			}
-			FXTable entry = new FXTable(id, description, priority, start, end, due);
+			UITask entry = new UITask(id, description, priority, start, end, due);
 			tasks.add(entry);
 			System.out.println("added: " + id + " " + description + priority + start + end + due);
 		}
@@ -245,7 +245,7 @@ public class FXController implements Initializable {
 			if (archiveList.get(i).getDeadline() != null){
 				due = archiveList.get(i).getDeadline().getDateRepresentation();
 			}
-			FXTable entry = new FXTable(id, description, priority, start, end, due);
+			UITask entry = new UITask(id, description, priority, start, end, due);
 			archive.add(entry);
 			System.out.println("Initialized: " + description + priority + start + end + due);
 		}
