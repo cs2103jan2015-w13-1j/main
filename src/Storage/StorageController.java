@@ -75,7 +75,7 @@ public class StorageController implements InterfaceForStorage {
 		initialiseNewDataObject();
 		processUtil();
 		if (isStorageExist() == true) {
-			retriveDataFromStorage();
+			retrieveDataFromStorage();
 		} else {
 //			createNewStorage();
 			// must store data first, cannot create new storage because user might change directory
@@ -93,14 +93,18 @@ public class StorageController implements InterfaceForStorage {
 			// if storage exists, overwrites the storage
 			// if not exists, creates and write into storage
 		processUtil();
-		if (isStorageExist() == false) {
-			createNewStorage();
-		}
+		processStorage();
 		this.data = data;
 		if (storeDataIntoStorage(convertDataIntoJSONObject(), getFileRelativePath()) == true) {
 			return MESSAGE_STORE_DATA_SUCCESS;
 		}
 		return MESSAGE_STORE_DATA_FAILURE;
+	}
+
+	private void processStorage() {
+		if (isStorageExist() == false) {
+			createNewStorage();
+		}
 	}
 	
 	private void deleteOldFile() {
@@ -197,7 +201,7 @@ public class StorageController implements InterfaceForStorage {
 	}
 
 	@SuppressWarnings("resource")
-	private String retriveDataFromStorage() {
+	private String retrieveDataFromStorage() {
 		// do nothing if task list is empty
 		String fileName = getFileRelativePath();
 		JSONObject dataJSON = new JSONObject();
