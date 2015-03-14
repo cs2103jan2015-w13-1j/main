@@ -23,7 +23,7 @@ public interface InterfaceForLogic {
 	
 	// Returns null if the task was not 'generic'
 	ToDoSortedList addDeadLine(Task task, Date deadLine);
-	ToDoSortedList addStartAndEndTime(Task task, Date start,Date end);
+	ToDoSortedList addStartAndEndTime(Task task, Date start, Date end);
 	
 	// Returns null if the task was not 'meeting'
 	ToDoSortedList editStartTime(Task task, Date start);
