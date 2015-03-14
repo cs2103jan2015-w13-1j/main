@@ -14,6 +14,7 @@ public interface InterfaceForLogic {
 
 	int getSerialNumber();
 	
+	void initialise();
 	/**
 	 * @param task
 	 * @return null if the task is already inside the todolist
