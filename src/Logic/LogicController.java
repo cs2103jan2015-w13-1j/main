@@ -62,10 +62,6 @@ public class LogicController implements InterfaceForLogic{
 		return toDoSortedList;
 	}
 	
-	public String exitProgram() {
-		return DC.storeAllData(data);
-	}
-
 	public ToDoSortedList addDeadLine(Task task, Date deadline) {
 		if (task.getType() == "generic") {
 			task.addDeadline(deadline);
