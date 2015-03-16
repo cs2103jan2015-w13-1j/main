@@ -89,9 +89,8 @@ public class StorageController implements InterfaceForStorage {
 			logger.log(Level.INFO, MESSAGE_GET_ALL_DATA_STORAGE_EXIST);
 			retrieveDataFromStorage();
 		} else {
-			logger.log(Level.WARNING, MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST);
-//			createNewStorage();
 			// must store data first, cannot create new storage because user might change directory
+			logger.log(Level.WARNING, MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST);
 		}
 		return data;
 	}
@@ -122,8 +121,8 @@ public class StorageController implements InterfaceForStorage {
 		}
 	}
 	
-	private void deleteOldFile() {
-		File oldFile = new File(getFileRelativePath());
+	public void deleteFile(String fileName) {
+		File oldFile = new File(fileName);
 		oldFile.setWritable(true);
 		if (oldFile.exists()) {
 			oldFile.delete();
@@ -277,6 +276,7 @@ public class StorageController implements InterfaceForStorage {
 		return timeAfterModification > timeBeforeModification;
 	}
 
+	// pre-requisite: DATA object must be valid
 	private JSONObject convertDataIntoJSONObject() {
 		JSONObject dataJSON = new JSONObject();
 		try {
@@ -364,7 +364,7 @@ public class StorageController implements InterfaceForStorage {
 		logger.log(Level.INFO, "process storage utility [OK]");
 	}
 
-	private void addDefaultsToUtil() {
+	public void addDefaultsToUtil() {
 		logger.log(Level.INFO, MESSAGE_ADD_DEFAULT_UTIL_SETTINGS);
 		util = new StorageUtil();
 		util.setDirectory("tables/");			// default settings
@@ -384,7 +384,7 @@ public class StorageController implements InterfaceForStorage {
 		storeDataIntoStorage(utilJSON, STRING_UTILITY_FILE_NAME);
 	}
 
-	private void initialiseNewDataObject() {
+	public void initialiseNewDataObject() {
 		logger.log(Level.INFO, MESSAGE_INITIALISE_NEW_DATA_OBJECT);
 		data = new DATA();
 		data.setActiveTaskList(new TaskList());
@@ -392,11 +392,7 @@ public class StorageController implements InterfaceForStorage {
 		data.setSerialNumber(STARTING_INDEX);
 	}
 	
-	public boolean isStorageExist() {
-		return isStorageExist(getFileRelativePath());
-	}
-	
-	public void createNewStorage() {
+	private void createNewStorage() {
 		createStorage(getFileRelativePath());
 		logger.log(Level.INFO, getFileRelativePath() + MESSAGE_CREATE_NEW_STORAGE_SUCCESS);
 	}
@@ -412,6 +408,10 @@ public class StorageController implements InterfaceForStorage {
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
+	}
+	
+	private boolean isStorageExist() {
+		return isStorageExist(getFileRelativePath());
 	}
 
 	// Overloading method
@@ -434,14 +434,15 @@ public class StorageController implements InterfaceForStorage {
 
 	@Override
 	public String getFileDirectory() {
+		processUtil(); 		// in case this method getFileDirectory() is called before other methods
 		return util.getDirectory();
 	}
 
 	@Override
 	// change the file directory and update utility file
 	public String setFileDirectory(String fileDirectory) {
-		processUtil(); // in case this method is called before other methods
-		deleteOldFile();
+		processUtil(); 						// in case this method setFileDirectory() is called before other methods
+		deleteFile(getFileRelativePath());	// remove old storage file if it exists
 		util.setDirectory(fileDirectory);
 		saveUtilToStorage();
 		logger.log(Level.INFO, MESSAGE_NEW_FILE_DIRECTORY + util.getDirectory());
