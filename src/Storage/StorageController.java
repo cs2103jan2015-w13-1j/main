@@ -123,7 +123,6 @@ public class StorageController implements InterfaceForStorage {
 	}
 	
 	private void deleteOldFile() {
-		logger.log(Level.INFO, "invoked");
 		File oldFile = new File(getFileRelativePath());
 		oldFile.setWritable(true);
 		if (oldFile.exists()) {
@@ -144,26 +143,31 @@ public class StorageController implements InterfaceForStorage {
 	private TaskList getTaskListFromJSON(JSONObject dataJSON, String taskList) {
 		TaskList taskListHashMap = new TaskList();
 		Gson gson = new Gson();
-		JSONObject tasklistJSON = (JSONObject) dataJSON.get(taskList);
-		Iterator it = tasklistJSON.entrySet().iterator();
-		
-	    while (it.hasNext()) {
-	    	Map.Entry pair = (Map.Entry)it.next();
-	    	JSONObject taskJSON = (JSONObject) tasklistJSON.get(pair.getKey()); 
+		try {
+			JSONObject tasklistJSON = (JSONObject) dataJSON.get(taskList);
+			Iterator it = tasklistJSON.entrySet().iterator();
+			
+		    while (it.hasNext()) {
+		    	Map.Entry pair = (Map.Entry)it.next();
+		    	JSONObject taskJSON = (JSONObject) tasklistJSON.get(pair.getKey()); 
 
-	    	// Generic Type attributes
-	    	int id = gson.fromJson(String.valueOf(taskJSON.get("id")) , int.class);
-	    	String description = String.valueOf(taskJSON.get("description"));
-			String type = String.valueOf(taskJSON.get("type"));
-			ArrayList<String> tags = gson.fromJson(String.valueOf(taskJSON.get("tags")) , new TypeToken<ArrayList<String>>() {}.getType());
-			int priority = gson.fromJson(String.valueOf(taskJSON.get("priority")) , int.class);
-			boolean archived = gson.fromJson(String.valueOf(taskJSON.get("archived")) , boolean.class);
-			
-			Task task = determineAndCreateTaskByType(taskJSON, id, description, type, tags, priority, archived);
-			
-			taskListHashMap.addTask(task.getId(), task);
-	    	it.remove(); // avoids a ConcurrentModificationException
-        }
+		    	// Generic Type attributes
+		    	int id = gson.fromJson(String.valueOf(taskJSON.get("id")) , int.class);
+		    	String description = String.valueOf(taskJSON.get("description"));
+				String type = String.valueOf(taskJSON.get("type"));
+				ArrayList<String> tags = gson.fromJson(String.valueOf(taskJSON.get("tags")) , new TypeToken<ArrayList<String>>() {}.getType());
+				int priority = gson.fromJson(String.valueOf(taskJSON.get("priority")) , int.class);
+				boolean archived = gson.fromJson(String.valueOf(taskJSON.get("archived")) , boolean.class);
+				
+				Task task = determineAndCreateTaskByType(taskJSON, id, description, type, tags, priority, archived);
+				
+				taskListHashMap.addTask(task.getId(), task);
+		    	it.remove(); // avoids a ConcurrentModificationException
+	        }
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+		
 		return taskListHashMap;
 	}
 
@@ -174,39 +178,47 @@ public class StorageController implements InterfaceForStorage {
 	}
 
 	private Task createTaskByAttributes(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags, int priority) {
-		Task task;
+		Task task = null;
 		Gson gson = new Gson();
-		if (type.equals("deadline")) {
-			// Deadline Type
-			long string_date = gson.fromJson(String.valueOf(taskJSON.get("deadline")) , long.class);
-			Date deadline = new Date();
-			deadline.setTime(string_date);
-			task = new Task(id, description, deadline, priority, tags);
-		} else if (type.equals("meeting")) {
-			// Meeting Type
-			long long_start_date = gson.fromJson(String.valueOf(taskJSON.get("startTime")) , long.class);
-			Date startDate = new Date();
-			startDate.setTime(long_start_date);
-			
-			long long_end_date = gson.fromJson(String.valueOf(taskJSON.get("endTime")) , long.class);
-			Date endDate = new Date();
-			endDate.setTime(long_end_date);
-			
-			task = new Task(id, description, startDate, endDate, priority, tags);
-		} else {
-			// Generic type
-			task = new Task(id, description, priority, tags);
+		try {
+			if (type.equals("deadline")) {
+				// Deadline Type
+				long string_date = gson.fromJson(String.valueOf(taskJSON.get("deadline")) , long.class);
+				Date deadline = new Date();
+				deadline.setTime(string_date);
+				task = new Task(id, description, deadline, priority, tags);
+			} else if (type.equals("meeting")) {
+				// Meeting Type
+				long long_start_date = gson.fromJson(String.valueOf(taskJSON.get("startTime")) , long.class);
+				Date startDate = new Date();
+				startDate.setTime(long_start_date);
+				
+				long long_end_date = gson.fromJson(String.valueOf(taskJSON.get("endTime")) , long.class);
+				Date endDate = new Date();
+				endDate.setTime(long_end_date);
+				
+				task = new Task(id, description, startDate, endDate, priority, tags);
+			} else {
+				// Generic type
+				task = new Task(id, description, priority, tags);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 		return task;
 	}
 	
 	private void verifyTaskArchiveBoolean(JSONObject taskJSON,	boolean archived, Task task) {
 		Gson gson = new Gson();
-		if (archived == true) {
-			long string_finished_time= gson.fromJson(String.valueOf(taskJSON.get("finishedTime")) , long.class);
-			Date finishedTime = new Date();
-			finishedTime.setTime(string_finished_time);
-			task.moveToArchive(finishedTime);
+		try {
+			if (archived == true) {
+				long string_finished_time= gson.fromJson(String.valueOf(taskJSON.get("finishedTime")) , long.class);
+				Date finishedTime = new Date();
+				finishedTime.setTime(string_finished_time);
+				task.moveToArchive(finishedTime);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -229,7 +241,7 @@ public class StorageController implements InterfaceForStorage {
 				return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
 			}
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			logger.log(Level.SEVERE, e1.getMessage());
 		}
 		
 		try {
@@ -242,7 +254,7 @@ public class StorageController implements InterfaceForStorage {
 			}
 			
 		} catch (IOException | ParseException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 		convertJSONObjectIntoData(dataJSON);
 		logger.log(Level.INFO, MESSAGE_RETRIEVE_SUCCESS);
@@ -260,7 +272,7 @@ public class StorageController implements InterfaceForStorage {
 			fileWriter.close();
 			timeAfterModification = file.lastModified();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 		return timeAfterModification > timeBeforeModification;
 	}
@@ -274,26 +286,29 @@ public class StorageController implements InterfaceForStorage {
 			processDataJsonByTaskListType(dataJSON, STRING_ACTIVE_TASK_LIST);
 			processDataJsonByTaskListType(dataJSON, STRING_ARCHIVED_TASK_LIST);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 		return dataJSON;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void processDataJsonByTaskListType(JSONObject dataJSON, String taskList) {
-		JSONObject taskListJSON = (JSONObject) dataJSON.get(taskList);
-		Iterator it = null;
-		it = determineTaskList(taskList, it);
-		while (it.hasNext()) {
-		    Map.Entry pair = (Map.Entry)it.next();
-			Task task = (Task) pair.getValue();
-			JSONObject taskJSON = (JSONObject) taskListJSON.get(String.valueOf(task.getId()));
-			modifyNonGenericTaskForDataJson(task, taskJSON); 
-			processArchivedTaskForDataJson(task, taskJSON);
-			taskListJSON.replace(String.valueOf(task.getId()), taskJSON);
+		try {
+			JSONObject taskListJSON = (JSONObject) dataJSON.get(taskList);
+			Iterator it = null;
+			it = determineTaskList(taskList, it);
+			while (it.hasNext()) {
+			    Map.Entry pair = (Map.Entry)it.next();
+				Task task = (Task) pair.getValue();
+				JSONObject taskJSON = (JSONObject) taskListJSON.get(String.valueOf(task.getId()));
+				modifyNonGenericTaskForDataJson(task, taskJSON); 
+				processArchivedTaskForDataJson(task, taskJSON);
+				taskListJSON.replace(String.valueOf(task.getId()), taskJSON);
+			}
+			dataJSON.replace(taskList, taskListJSON);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
 		}
-		dataJSON.replace(taskList, taskListJSON);
-//		System.out.println("done with " + taskList);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -343,7 +358,7 @@ public class StorageController implements InterfaceForStorage {
 				}
 				util = gson.fromJson(utilJSON.toJSONString() , StorageUtil.class);
 			} catch (IOException | ParseException e) {
-				e.printStackTrace();
+				logger.log(Level.SEVERE, e.getMessage());
 			}
 		}
 		logger.log(Level.INFO, "process storage utility [OK]");
@@ -364,7 +379,7 @@ public class StorageController implements InterfaceForStorage {
 		try {
 			utilJSON = (JSONObject) parser.parse(gson.toJson(util));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 		storeDataIntoStorage(utilJSON, STRING_UTILITY_FILE_NAME);
 	}
@@ -395,7 +410,7 @@ public class StorageController implements InterfaceForStorage {
 			}
 			storageFile.createNewFile();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
