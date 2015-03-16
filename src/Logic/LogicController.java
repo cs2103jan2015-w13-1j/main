@@ -274,11 +274,10 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public String exit(int serialserialNumber) {
-		DATA finalData = new DATA();
-		finalData.setSerialNumber(serialserialNumber);
-		finalData.setActiveTaskList(activeTaskList);
-		finalData.setArchivedTaskList(archivedTaskList);
-		return DC.storeAllData(finalData);
+		data.setSerialNumber(serialserialNumber);
+		data.setActiveTaskList(activeTaskList);
+		data.setArchivedTaskList(archivedTaskList);
+		return DC.storeAllData(data);
 	}
 
 	@Override
