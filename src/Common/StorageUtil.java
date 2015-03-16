@@ -1,3 +1,7 @@
+/**
+ * @author Esmond
+ */
+
 package Common;
 
 public class StorageUtil {
@@ -32,6 +36,7 @@ public class StorageUtil {
 		this.storageName = storageName;
 	}
 	
+	@Override
 	public String toString() {
 		return directory.concat(storageName);
 	}

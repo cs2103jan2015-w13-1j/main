@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -36,26 +38,35 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class StorageController implements InterfaceForStorage {
-	
-	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
-	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
+	private static final String MESSAGE_DUMMY_DATA = "9 Dummy data created.";
+	private static final String MESSAGE_NEW_FILE_DIRECTORY = "New directory : ";
+	private static final String MESSAGE_CREATE_STORAGE_FILE = "Creating storage file ";
+	private static final String MESSAGE_CREATE_NEW_STORAGE_SUCCESS = " new storage created.";
+	private static final String MESSAGE_INITIALISE_NEW_DATA_OBJECT = "Initialise new DATA object.";
+	private static final String MESSAGE_ADD_DEFAULT_UTIL_SETTINGS = "Add default settings to utility. Directory: \"tables/\" Storage: \"storage.json\"";
+	private static final String MESSAGE_PROCESS_STORAGE_NOT_FOUND = "Storage does not exist.";
+	private static final String MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST = "Storage file does not exist. DATA is empty.";
+	private static final String MESSAGE_GET_ALL_DATA_STORAGE_EXIST = "Storage file exists. Retrieving DATA from storage.";
 	private static final String MESSAGE_RETRIEVE_SUCCESS = "Data is retrieved";
 	private static final String MESSAGE_RETRIEVE_FROM_EMPTY_FILE = "File is empty. No data is retrieved.";
 	private static final String MESSAGE_STORE_DATA_FAILURE = "failure in storing";
 	private static final String MESSAGE_STORE_DATA_SUCCESS = "success in storing";
+	private static final String STRING_UTILITY_FILE_NAME = "tables/utility.json";
+	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
+	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
 	private static final int STARTING_INDEX = 0;
+
+	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
 	
 	private static DATA data;
 	private static StorageUtil util;
 	
 	public static void main(String[] args) {
 		StorageController control = new StorageController();
-		
-		control.run();
-//		control.getAllData();
+//		control.run();
+////		control.getAllData();
 //		control.setFileDirectory("tables/");
-//		System.out.println(control.storeAllData(data));
-		
+//		control.storeAllData(data);
 	}
 	
 	private void run() {
@@ -75,11 +86,12 @@ public class StorageController implements InterfaceForStorage {
 		initialiseNewDataObject();
 		processUtil();
 		if (isStorageExist() == true) {
+			logger.log(Level.INFO, MESSAGE_GET_ALL_DATA_STORAGE_EXIST);
 			retrieveDataFromStorage();
 		} else {
+			logger.log(Level.WARNING, MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST);
 //			createNewStorage();
 			// must store data first, cannot create new storage because user might change directory
-			return data; // empty data
 		}
 		return data;
 	}
@@ -96,13 +108,16 @@ public class StorageController implements InterfaceForStorage {
 		processStorage();
 		this.data = data;
 		if (storeDataIntoStorage(convertDataIntoJSONObject(), getFileRelativePath()) == true) {
+			logger.log(Level.INFO, MESSAGE_STORE_DATA_SUCCESS);
 			return MESSAGE_STORE_DATA_SUCCESS;
 		}
+		logger.log(Level.WARNING, MESSAGE_STORE_DATA_FAILURE);
 		return MESSAGE_STORE_DATA_FAILURE;
 	}
 
 	private void processStorage() {
 		if (isStorageExist() == false) {
+			logger.log(Level.WARNING, MESSAGE_PROCESS_STORAGE_NOT_FOUND);
 			createNewStorage();
 		}
 	}
@@ -194,6 +209,7 @@ public class StorageController implements InterfaceForStorage {
 		}
 	}
 
+	
 	private void getSerialFromJSON(JSONObject dataJSON) {
 		Gson gson = new Gson();
 		// retrieve serial number and store into data
@@ -208,7 +224,7 @@ public class StorageController implements InterfaceForStorage {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			if (br.readLine() == null) {
-				System.out.println(fileName + " " + MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
+				logger.log(Level.WARNING, MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
 				return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
 			}
 		} catch (IOException e1) {
@@ -220,7 +236,7 @@ public class StorageController implements InterfaceForStorage {
 			Object obj = parser.parse(new FileReader(fileName));
 			dataJSON = (JSONObject) obj; 
 			if (dataJSON.containsKey("serialNumber") == false) {
-				System.out.println(fileName + " " + MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
+				logger.log(Level.WARNING, MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
 				return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
 			}
 			
@@ -228,7 +244,7 @@ public class StorageController implements InterfaceForStorage {
 			e.printStackTrace();
 		}
 		convertJSONObjectIntoData(dataJSON);
-		System.out.println(MESSAGE_RETRIEVE_SUCCESS);
+		logger.log(Level.INFO, MESSAGE_RETRIEVE_SUCCESS);
 		return MESSAGE_RETRIEVE_SUCCESS;
 	}
 
@@ -307,40 +323,36 @@ public class StorageController implements InterfaceForStorage {
 	}
 
 	// to retrieve utility data from storage
-	public String processUtil() {
+	public void processUtil() {
 		JSONObject utilJSON = new JSONObject();
 		Gson gson = new Gson();
-		String output = "";
-		if (isStorageExist("tables/utility.json") == false) {
-			createStorage("tables/utility.json");
-			output = output.concat("tables/utility.json" + " does not exist.\n");
-			output = output.concat("created " + "tables/utility.json" + " for utility startup.");
+		if (isStorageExist(STRING_UTILITY_FILE_NAME) == false) {
+			logger.log(Level.WARNING, STRING_UTILITY_FILE_NAME + " does not exist.");
+			createStorage(STRING_UTILITY_FILE_NAME);
 			addDefaultsToUtil();
 		} else {
+			logger.log(Level.FINE, STRING_UTILITY_FILE_NAME + " exists.");
 			try {
 				JSONParser parser = new JSONParser();
-				Object obj = parser.parse(new FileReader("tables/utility.json"));
+				Object obj = parser.parse(new FileReader(STRING_UTILITY_FILE_NAME));
 				utilJSON = (JSONObject) obj;
 				if (utilJSON.containsKey("directory") == false) {
-					System.out.println("tables/utility.json" + " has no data. Add defaults to utility.");
+					logger.log(Level.WARNING, STRING_UTILITY_FILE_NAME + " has no data.");
 					addDefaultsToUtil();
-					return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
 				}
 				util = gson.fromJson(utilJSON.toJSONString() , StorageUtil.class);
-				output = output.concat("check utility [OK]");
-//				System.out.println(output);
 			} catch (IOException | ParseException e) {
 				e.printStackTrace();
 			}
 		}
-		return output;
+		logger.log(Level.INFO, "process storage utility [OK]");
 	}
 
 	private void addDefaultsToUtil() {
+		logger.log(Level.INFO, MESSAGE_ADD_DEFAULT_UTIL_SETTINGS);
 		util = new StorageUtil();
 		util.setDirectory("tables/");			// default settings
 		util.setStorageName("storage.json");	// default settings
-//					System.out.println(output);
 		saveUtilToStorage();
 	}
 
@@ -353,10 +365,11 @@ public class StorageController implements InterfaceForStorage {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		storeDataIntoStorage(utilJSON, "tables/utility.json");
+		storeDataIntoStorage(utilJSON, STRING_UTILITY_FILE_NAME);
 	}
 
 	private void initialiseNewDataObject() {
+		logger.log(Level.INFO, MESSAGE_INITIALISE_NEW_DATA_OBJECT);
 		data = new DATA();
 		data.setActiveTaskList(new TaskList());
 		data.setArchivedTaskList(new TaskList());
@@ -369,10 +382,11 @@ public class StorageController implements InterfaceForStorage {
 	
 	public void createNewStorage() {
 		createStorage(getFileRelativePath());
-		System.out.println(getFileRelativePath() + " new storage created.");
+		logger.log(Level.INFO, getFileRelativePath() + MESSAGE_CREATE_NEW_STORAGE_SUCCESS);
 	}
 	
 	private void createStorage(String fileRelativePath) {
+		logger.log(Level.INFO, MESSAGE_CREATE_STORAGE_FILE + fileRelativePath);
 		try {
 			File storageFile = new File(fileRelativePath);
 			if (storageFile.getParentFile() != null) {
@@ -413,7 +427,7 @@ public class StorageController implements InterfaceForStorage {
 		processUtil(); // in case this method is called before other methods
 		util.setDirectory(fileDirectory);
 		saveUtilToStorage();
-//		System.out.println("new directory : " + util.getDirectory());
+		logger.log(Level.INFO, MESSAGE_NEW_FILE_DIRECTORY + util.getDirectory());
 		return util.getDirectory();
 	}
 	
@@ -484,7 +498,7 @@ public class StorageController implements InterfaceForStorage {
 		data.getArchivedTaskList().addTask(dummyGenericTask2.getId(), dummyGenericTask2);
 		data.getArchivedTaskList().addTask(dummyDeadlineTask1.getId(), dummyDeadlineTask1);
 		data.getArchivedTaskList().addTask(dummyMeetingTask2.getId(), dummyMeetingTask2);
-
-		return "Dummy data created";
+		logger.log(Level.INFO, MESSAGE_DUMMY_DATA);
+		return MESSAGE_DUMMY_DATA;
 	}
 }

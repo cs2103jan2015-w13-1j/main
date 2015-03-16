@@ -11,12 +11,22 @@ import Common.DATA;
 
 public interface InterfaceForStorage {
 	
-	// for logic controller to retrieve DATA from storage
+	/**
+	 * @return a DATA object that is stored in the storage
+	 */
 	DATA getAllData();
-	// for logic controller to store DATA into storage
+	/**
+	 * @param a DATA object
+	 * @return a message that indicates the storage status
+	 */
 	String storeAllData(DATA data); 
-	// for parser to insert relative path of directory for storage
+	/**
+	 * @param relative path of the directory
+	 * @return the given relative path of the directory
+	 */
 	String setFileDirectory(String directory);
-	// for parser to retrieve current relative path of storage directory
+	/**
+	 * @return the current relative path of the directory
+	 */
 	String getFileDirectory();
 }
