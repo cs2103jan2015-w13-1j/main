@@ -64,7 +64,7 @@ public class StorageController implements InterfaceForStorage {
 	public static void main(String[] args) {
 		StorageController control = new StorageController();
 //		control.run();
-////		control.getAllData();
+//		control.getAllData();
 //		control.setFileDirectory("tables/");
 //		control.storeAllData(data);
 	}
@@ -123,11 +123,12 @@ public class StorageController implements InterfaceForStorage {
 	}
 	
 	private void deleteOldFile() {
+		logger.log(Level.INFO, "invoked");
 		File oldFile = new File(getFileRelativePath());
 		oldFile.setWritable(true);
 		if (oldFile.exists()) {
 			oldFile.delete();
-//			System.out.println(oldFile + " deleted");
+			logger.log(Level.INFO, getFileRelativePath() + " deleted");
 		}
 	}
 	
@@ -425,6 +426,7 @@ public class StorageController implements InterfaceForStorage {
 	// change the file directory and update utility file
 	public String setFileDirectory(String fileDirectory) {
 		processUtil(); // in case this method is called before other methods
+		deleteOldFile();
 		util.setDirectory(fileDirectory);
 		saveUtilToStorage();
 		logger.log(Level.INFO, MESSAGE_NEW_FILE_DIRECTORY + util.getDirectory());
