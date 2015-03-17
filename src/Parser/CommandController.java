@@ -22,19 +22,19 @@ public class CommandController implements InterfaceForParser {
 	private ArrayList<Task> currentArchives = new ArrayList<Task>();
 	
 	
-	/*
+	
 	public static void main(String[] args){
 		
 		CommandController test = new CommandController();
 		test.initialiseTasks();
-		System.out.println(test.executeCommand("-add this generic task"));
+		System.out.println(test.executeCommand("-add this generic task -date 1"));
 		System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add second generic task"));
 		//System.out.println(test.returnTasks());
 		
 		
 	}
-	*/
+	
 	
 	
 	
@@ -175,8 +175,7 @@ public class CommandController implements InterfaceForParser {
 							retrievedSortedList = logicController.addStartAndEndTime(taskToChange, newStartTime, newEndTime);
 							result = "New start and end time added";
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							return result = "Wrong format for meeting time. Please use dd/MM/yyyy HHmm HHmm";
 						}		
 					}else{
 						//if change to deadline task
@@ -189,8 +188,7 @@ public class CommandController implements InterfaceForParser {
 							retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
 							result = "New deadline added";
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							return result = "Wrong format for deadline. Please use dd/MM/yyyy";
 						}
 					}
 				}else if(taskType.equalsIgnoreCase("deadline")){
@@ -204,8 +202,7 @@ public class CommandController implements InterfaceForParser {
 						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
 						result = "Deadline changed";
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						return result = "Wrong format for deadline. Please use dd/MM/yyyy";
 					}
 				}else if(taskType.equalsIgnoreCase("meeting")){
 					//change start and end time
@@ -225,11 +222,10 @@ public class CommandController implements InterfaceForParser {
 						result = "Meeting time changed";
 						
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						return result = "Wrong date format. Please use dd/MM/yyyy HHmm HHmm";
 					}
 				}else{
-					result = "type mismatch error, can't change date";
+					return result = "type mismatch error, can't change date";
 				}
 				break;
 			}case("priority"):{
@@ -344,7 +340,7 @@ public class CommandController implements InterfaceForParser {
 					result = "Searched by date: " + splitInput[2];
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					return result = "Wrong date format. Please use dd/MM/yyyy";
 				}
 				break;
 			}case("tag"):{
@@ -434,8 +430,7 @@ public class CommandController implements InterfaceForParser {
 				endTime.setTime(tempDate.getTime());
 				
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return result = "Wrong date format for meeting task. Please use dd/MM/yyyy HHmm HHmm";
 			}
 				
 		}else if(dateAsString.size()==1){
@@ -447,8 +442,9 @@ public class CommandController implements InterfaceForParser {
 				deadLine.setTime(tempDate.getTime());
 				
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
+				return result = "Wrong date format for task deadline. Please use dd/MM/yyyy";
+	
 			}
 		}
 		
