@@ -20,6 +20,9 @@ public class CommandController implements InterfaceForParser {
 	private int newMaxID = 0;
 	private ArrayList<Task> currentActiveTasks = new ArrayList<Task>();
 	private ArrayList<Task> currentArchives = new ArrayList<Task>();
+	private static final String DEADLINE_FORMAT_ERROR = "Wrong format for deadline. Please use dd/MM/yyyy";
+	private static final String MEETINGTIME_FORMAT_ERROR = "Wrong format for timing. Please use dd/MM/yyyy HHmm HHmm";
+	private static final String DATE_FORMAT_ERROR = "Wrong format for date. Please use dd/MM/yyyy";
 	
 	
 	
@@ -175,7 +178,7 @@ public class CommandController implements InterfaceForParser {
 							retrievedSortedList = logicController.addStartAndEndTime(taskToChange, newStartTime, newEndTime);
 							result = "New start and end time added";
 						} catch (ParseException e) {
-							return result = "Wrong format for meeting time. Please use dd/MM/yyyy HHmm HHmm";
+							return result = MEETINGTIME_FORMAT_ERROR;
 						}		
 					}else{
 						//if change to deadline task
@@ -188,7 +191,7 @@ public class CommandController implements InterfaceForParser {
 							retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
 							result = "New deadline added";
 						} catch (ParseException e) {
-							return result = "Wrong format for deadline. Please use dd/MM/yyyy";
+							return result = DEADLINE_FORMAT_ERROR;
 						}
 					}
 				}else if(taskType.equalsIgnoreCase("deadline")){
@@ -202,7 +205,7 @@ public class CommandController implements InterfaceForParser {
 						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
 						result = "Deadline changed";
 					} catch (ParseException e) {
-						return result = "Wrong format for deadline. Please use dd/MM/yyyy";
+						return result = DEADLINE_FORMAT_ERROR;
 					}
 				}else if(taskType.equalsIgnoreCase("meeting")){
 					//change start and end time
@@ -222,10 +225,10 @@ public class CommandController implements InterfaceForParser {
 						result = "Meeting time changed";
 						
 					} catch (ParseException e) {
-						return result = "Wrong date format. Please use dd/MM/yyyy HHmm HHmm";
+						return result = MEETINGTIME_FORMAT_ERROR;
 					}
 				}else{
-					return result = "type mismatch error, can't change date";
+					return result = "Type mismatch error, can't change date";
 				}
 				break;
 			}case("priority"):{
@@ -340,7 +343,7 @@ public class CommandController implements InterfaceForParser {
 					result = "Searched by date: " + splitInput[2];
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
-					return result = "Wrong date format. Please use dd/MM/yyyy";
+					return result = DATE_FORMAT_ERROR ;
 				}
 				break;
 			}case("tag"):{
@@ -430,7 +433,7 @@ public class CommandController implements InterfaceForParser {
 				endTime.setTime(tempDate.getTime());
 				
 			} catch (ParseException e) {
-				return result = "Wrong date format for meeting task. Please use dd/MM/yyyy HHmm HHmm";
+				return result = MEETINGTIME_FORMAT_ERROR;
 			}
 				
 		}else if(dateAsString.size()==1){
@@ -443,7 +446,7 @@ public class CommandController implements InterfaceForParser {
 				
 			} catch (ParseException e) {
 				
-				return result = "Wrong date format for task deadline. Please use dd/MM/yyyy";
+				return result = DEADLINE_FORMAT_ERROR;
 	
 			}
 		}
