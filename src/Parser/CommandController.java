@@ -21,6 +21,23 @@ public class CommandController implements InterfaceForParser {
 	private ArrayList<Task> currentActiveTasks = new ArrayList<Task>();
 	private ArrayList<Task> currentArchives = new ArrayList<Task>();
 	
+	
+	/*
+	public static void main(String[] args){
+		
+		CommandController test = new CommandController();
+		test.initialiseTasks();
+		System.out.println(test.executeCommand("-add this generic task"));
+		System.out.println(test.returnTasks());
+		//System.out.println(test.executeCommand("-add second generic task"));
+		//System.out.println(test.returnTasks());
+		
+		
+	}
+	*/
+	
+	
+	
 	public ArrayList<Task> initialiseTasks(){
 		logicController.initialise();
 		newMaxID = logicController.getSerialNumber();
@@ -71,7 +88,39 @@ public class CommandController implements InterfaceForParser {
 	}
 	
 	public String executeCommand(String inputCommand){
-		String result = parser.parseIn(inputCommand);
+		int commandNum = parser.parseIn(inputCommand);
+		String[] splitInput = inputCommand.split(" ");
+		String result = new String();
+		switch(commandNum){
+			case(0):{
+				result = "Invalid command";
+				break;
+			}case(1):{
+				result = addCommand(splitInput);
+				break;
+			}case(2):{
+				result = searchCommand(splitInput);
+				break;
+			}case(3):{
+				result = deleteCommand(splitInput);
+				break;
+			}case(4):{
+				result = archiveCommand(splitInput);
+				break;
+			}case(5):{
+				result = exitCommand();
+				break;
+			}case(6):{
+				result = modifyCommand(splitInput);
+				break;
+			}case(7):{
+				result = fileDirectoryCommand(splitInput);
+				break;
+			}case(8):{
+				result = refreshCommand();
+				break;
+			}
+		}
 		return result;
 	}
 	String refreshCommand() {

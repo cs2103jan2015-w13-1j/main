@@ -9,11 +9,11 @@ public class Parser {
 	public static void main(String[] args){
 		
 		Parser parser = new Parser();
-		parser.initialiseTasks();
+		//parser.initialiseTasks();
 		System.out.println(parser.parseIn("-add this generic task"));
-		System.out.println(parser.returnTasks());
+		//System.out.println(parser.returnTasks());
 		System.out.println(parser.parseIn("-add second generic task"));
-		System.out.println(parser.returnTasks());
+		//System.out.println(parser.returnTasks());
 		
 		
 	}
@@ -21,59 +21,63 @@ public class Parser {
 
 
 
-	public String parseIn(String command) {
+	public int parseIn(String command) {
 
 		
 		String[] splitCommand = command.split(" ");
 		String firstCommand = splitCommand[0];
-		String result = new String();
+		int commandNum=0;
 		
 		
 		//check first word for command
 		if(firstCommand.charAt(0)=='-'){
 			//command found
-			result = commandCheck(firstCommand,splitCommand);
+			commandNum = commandCheck(firstCommand,splitCommand);
 		}
 		
-		return result;
+		return commandNum;
 		
 	}
 
-	private String commandCheck(String command, String[] splitInput) {
 	
-		String result = new String();
+	
+	private int commandCheck(String command, String[] splitInput) {
+	
+		int commandNum = 0;
 		switch(command){
 			case("-add"):{
 				//run "add" functions
-				result = commandController.addCommand(splitInput);
+				//return to commandController what command to execute
+				//commandController.result(integer)
+				commandNum = 1;
 				break;
 			}case("-search"):{
-				result = commandController.searchCommand(splitInput);
+				commandNum = 2;
 				break;
 			}case("-delete"):{
-				result = commandController.deleteCommand(splitInput);
+				commandNum = 3;
 				break;
 			}case("-archive"):{
-				result = commandController.archiveCommand(splitInput);
+				commandNum = 4;
 				break;
 			}case("-exit"):{
-				result = commandController.exitCommand();
+				commandNum = 5;
 				break;
 			}case("-change"):{
-				result = commandController.modifyCommand(splitInput);
+				commandNum = 6;
 				break;
 			}case("-directory"):{
-				result = commandController.fileDirectoryCommand(splitInput);
+				commandNum = 7;
 				break;
 			}case("-refresh"):{
-				result = commandController.refreshCommand();
+				commandNum = 8;
 				break;
 			}
 			default:
 				System.out.println("Invalid command");
 		}
 		
-		return result;
+		return commandNum;
 		
 	}
 	
