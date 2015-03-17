@@ -13,11 +13,6 @@
 
 package Storage;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,7 +25,6 @@ import org.json.simple.parser.ParseException;
 
 import Common.DATA;
 import Common.Date;
-import Common.StorageUtil;
 import Common.Task;
 import Common.TaskList;
 
@@ -39,74 +33,65 @@ import com.google.gson.reflect.TypeToken;
 
 public class StorageController implements InterfaceForStorage {
 	private static final String MESSAGE_DUMMY_DATA = "9 Dummy data created.";
-	private static final String MESSAGE_NEW_FILE_DIRECTORY = "New directory : ";
-	private static final String MESSAGE_CREATE_STORAGE_FILE = "Creating storage file ";
-	private static final String MESSAGE_CREATE_NEW_STORAGE_SUCCESS = " new storage created.";
 	private static final String MESSAGE_INITIALISE_NEW_DATA_OBJECT = "Initialise new DATA object.";
-	private static final String MESSAGE_ADD_DEFAULT_UTIL_SETTINGS = "Add default settings to utility. Directory: \"tables/\" Storage: \"storage.json\"";
-	private static final String MESSAGE_PROCESS_STORAGE_NOT_FOUND = "Storage does not exist.";
-	private static final String MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST = "Storage file does not exist. DATA is empty.";
-	private static final String MESSAGE_GET_ALL_DATA_STORAGE_EXIST = "Storage file exists. Retrieving DATA from storage.";
-	private static final String MESSAGE_RETRIEVE_SUCCESS = "Data is retrieved";
-	private static final String MESSAGE_RETRIEVE_FROM_EMPTY_FILE = "File is empty. No data is retrieved.";
 	private static final String MESSAGE_STORE_DATA_FAILURE = "failure in storing";
 	private static final String MESSAGE_STORE_DATA_SUCCESS = "success in storing";
-	private static final String STRING_UTILITY_FILE_NAME = "tables/utility.json";
 	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
 	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
 	private static final int STARTING_INDEX = 0;
 
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
 	
-	private static DATA data;
-	private static StorageUtil util;
+	private DATA data;
+	private StorageDatastore datastore = new StorageDatastore();
 	
 	public static void main(String[] args) {
 		StorageController control = new StorageController();
-//		control.run();
-//		control.getAllData();
 //		control.setFileDirectory("tables/");
-//		control.storeAllData(data);
+		control.testForStoreFunction();
+//		control.getAllData();
 	}
 	
-	private void run() {
-		initialiseNewDataObject();
+	/**
+	 * for testing purpose
+	 */
+	private void testForStoreFunction() {
+		this.data = initialiseNewDataObject();
 		createDummyData();
+		storeAllData(this.data);
 	}
 	
 	@Override
 	public DATA getAllData() {
-		// clear DATA object first
-		// perform utility check, this will retrieve the data from utility file and store into util.
-			// if utility file is does not exists or exists but empty, defaults will be saved into utility.
-		// util will provide the directory of the storage, so need to check if storage exists
-			// if storage does not exists or storage exists but empty, DATA = null
-			// if storage exist and contains info, retrieve DATA from storage
-		// return DATA
-		initialiseNewDataObject();
-		processUtil();
-		if (isStorageExist() == true) {
-			logger.log(Level.INFO, MESSAGE_GET_ALL_DATA_STORAGE_EXIST);
-			retrieveDataFromStorage();
-		} else {
-			// must store data first, cannot create new storage because user might change directory
-			logger.log(Level.WARNING, MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST);
-		}
+		this.data = convertJSONObjectToData(datastore.getData());
 		return data;
 	}
+	
+	/**
+	 * @param dataJSON
+	 * @return DATA object
+	 */
+	private DATA convertJSONObjectToData(JSONObject dataJSON) {
+		if (dataJSON.containsKey("serialNumber") == false) {
+			logger.log(Level.WARNING, "Unable to get DATA from storage.");
+			return initialiseNewDataObject();
+		}
+		
+		DATA newData = new DATA();
+		Gson gson = new Gson();
+		// retrieve serial number and store into data
+		newData.setSerialNumber(gson.fromJson(String.valueOf(dataJSON.get("serialNumber")) , int.class));
+		TaskList activeTaskList = getTaskListFromJSON(dataJSON, STRING_ACTIVE_TASK_LIST);
+		newData.setActiveTaskList(activeTaskList);
+		TaskList archivedTaskList = getTaskListFromJSON(dataJSON, STRING_ARCHIVED_TASK_LIST);
+		newData.setArchivedTaskList(archivedTaskList);
+	    return newData;
+	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String storeAllData(DATA data) {
-		// perform utility check, this will retrieve the data from utility file and store into util.
-			// if utility file is does not exists or exists but empty, defaults will be saved into utility.
-		// util will provide the directory of the storage, so need to check if storage exists
-			// if storage exists, overwrites the storage
-			// if not exists, creates and write into storage
-		processUtil();
-		processStorage();
 		this.data = data;
-		if (storeDataIntoStorage(convertDataIntoJSONObject(), getFileRelativePath()) == true) {
+		if (datastore.storeJSONIntoStorage(convertDataToJSONObject()) == true) {
 			logger.log(Level.INFO, MESSAGE_STORE_DATA_SUCCESS);
 			return MESSAGE_STORE_DATA_SUCCESS;
 		}
@@ -114,30 +99,11 @@ public class StorageController implements InterfaceForStorage {
 		return MESSAGE_STORE_DATA_FAILURE;
 	}
 
-	private void processStorage() {
-		if (isStorageExist() == false) {
-			logger.log(Level.WARNING, MESSAGE_PROCESS_STORAGE_NOT_FOUND);
-			createNewStorage();
-		}
-	}
-	
-	public void deleteFile(String fileName) {
-		File oldFile = new File(fileName);
-		oldFile.setWritable(true);
-		if (oldFile.exists()) {
-			oldFile.delete();
-			logger.log(Level.INFO, getFileRelativePath() + " deleted");
-		}
-	}
-	
-	private void convertJSONObjectIntoData(JSONObject dataJSON) {
-		getSerialFromJSON(dataJSON);
-		TaskList activeTaskList = getTaskListFromJSON(dataJSON, STRING_ACTIVE_TASK_LIST);
-		data.setActiveTaskList(activeTaskList);
-		TaskList archivedTaskList = getTaskListFromJSON(dataJSON, STRING_ARCHIVED_TASK_LIST);
-	    data.setArchivedTaskList(archivedTaskList);
-	}
-
+	/**
+	 * @param dataJSON
+	 * @param taskList type
+	 * @return taskList
+	 */
 	@SuppressWarnings("rawtypes")
 	private TaskList getTaskListFromJSON(JSONObject dataJSON, String taskList) {
 		TaskList taskListHashMap = new TaskList();
@@ -170,12 +136,31 @@ public class StorageController implements InterfaceForStorage {
 		return taskListHashMap;
 	}
 
+	/**
+	 * @param taskJSON
+	 * @param id
+	 * @param description
+	 * @param type
+	 * @param tags
+	 * @param priority
+	 * @param archived
+	 * @return task object
+	 */
 	private Task determineAndCreateTaskByType(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags,	int priority, boolean archived) {
 		Task task = createTaskByAttributes(taskJSON, id, description, type, tags, priority);
 		verifyTaskArchiveBoolean(taskJSON, archived, task);
 		return task;
 	}
 
+	/**
+	 * @param taskJSON
+	 * @param id
+	 * @param description
+	 * @param type
+	 * @param tags
+	 * @param priority
+	 * @return task object
+	 */
 	private Task createTaskByAttributes(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags, int priority) {
 		Task task = null;
 		Gson gson = new Gson();
@@ -207,6 +192,11 @@ public class StorageController implements InterfaceForStorage {
 		return task;
 	}
 	
+	/**
+	 * @param taskJSON
+	 * @param archived
+	 * @param task
+	 */
 	private void verifyTaskArchiveBoolean(JSONObject taskJSON,	boolean archived, Task task) {
 		Gson gson = new Gson();
 		try {
@@ -221,68 +211,16 @@ public class StorageController implements InterfaceForStorage {
 		}
 	}
 
-	
-	private void getSerialFromJSON(JSONObject dataJSON) {
-		Gson gson = new Gson();
-		// retrieve serial number and store into data
-		data.setSerialNumber(gson.fromJson(String.valueOf(dataJSON.get("serialNumber")) , int.class));
-	}
-
-	@SuppressWarnings("resource")
-	private String retrieveDataFromStorage() {
-		// do nothing if task list is empty
-		String fileName = getFileRelativePath();
-		JSONObject dataJSON = new JSONObject();
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(fileName));
-			if (br.readLine() == null) {
-				logger.log(Level.WARNING, MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
-				return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
-			}
-		} catch (IOException e1) {
-			logger.log(Level.SEVERE, e1.getMessage());
-		}
-		
-		try {
-			JSONParser parser = new JSONParser();
-			Object obj = parser.parse(new FileReader(fileName));
-			dataJSON = (JSONObject) obj; 
-			if (dataJSON.containsKey("serialNumber") == false) {
-				logger.log(Level.WARNING, MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
-				return MESSAGE_RETRIEVE_FROM_EMPTY_FILE;
-			}
-			
-		} catch (IOException | ParseException e) {
-			logger.log(Level.SEVERE, e.getMessage());
-		}
-		convertJSONObjectIntoData(dataJSON);
-		logger.log(Level.INFO, MESSAGE_RETRIEVE_SUCCESS);
-		return MESSAGE_RETRIEVE_SUCCESS;
-	}
-
-	private boolean storeDataIntoStorage(JSONObject json, String fileName) {
-		File file = new File(fileName);
-		long timeBeforeModification = file.lastModified();
-		long timeAfterModification = -1;
-		try {
-			FileWriter fileWriter = new FileWriter(fileName);
-			fileWriter.write(json.toJSONString());
-			fileWriter.flush();  
-			fileWriter.close();
-			timeAfterModification = file.lastModified();
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
-		}
-		return timeAfterModification > timeBeforeModification;
-	}
-
 	// pre-requisite: DATA object must be valid
-	private JSONObject convertDataIntoJSONObject() {
+	/**
+	 * @return json object
+	 */
+	private JSONObject convertDataToJSONObject() {
 		JSONObject dataJSON = new JSONObject();
 		try {
 			Gson gson = new Gson();
 			JSONParser parser = new JSONParser();
-			dataJSON = (JSONObject) parser.parse(gson.toJson(getData()));
+			dataJSON = (JSONObject) parser.parse(gson.toJson(this.data));
 			processDataJsonByTaskListType(dataJSON, STRING_ACTIVE_TASK_LIST);
 			processDataJsonByTaskListType(dataJSON, STRING_ARCHIVED_TASK_LIST);
 		} catch (ParseException e) {
@@ -291,6 +229,10 @@ public class StorageController implements InterfaceForStorage {
 		return dataJSON;
 	}
 
+	/**
+	 * @param dataJSON
+	 * @param taskList
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void processDataJsonByTaskListType(JSONObject dataJSON, String taskList) {
 		try {
@@ -311,6 +253,10 @@ public class StorageController implements InterfaceForStorage {
 		}
 	}
 
+	/**
+	 * @param task
+	 * @param taskJSON
+	 */
 	@SuppressWarnings("unchecked")
 	private void processArchivedTaskForDataJson(Task task, JSONObject taskJSON) {
 		if (task.isArchived() == true) {
@@ -318,6 +264,10 @@ public class StorageController implements InterfaceForStorage {
 		}
 	}
 
+	/**
+	 * @param task
+	 * @param taskJSON
+	 */
 	@SuppressWarnings("unchecked")
 	private void modifyNonGenericTaskForDataJson(Task task, JSONObject taskJSON) {
 		if (taskJSON.containsKey("deadline")) {
@@ -328,6 +278,11 @@ public class StorageController implements InterfaceForStorage {
 		}
 	}
 
+	/**
+	 * @param taskList
+	 * @param it
+	 * @return it
+	 */
 	@SuppressWarnings("rawtypes")
 	private Iterator determineTaskList(String taskList, Iterator it) {
 		if (taskList.equals(STRING_ACTIVE_TASK_LIST)) {
@@ -338,118 +293,34 @@ public class StorageController implements InterfaceForStorage {
 		return it;
 	}
 
-	// to retrieve utility data from storage
-	public void processUtil() {
-		JSONObject utilJSON = new JSONObject();
-		Gson gson = new Gson();
-		if (isStorageExist(STRING_UTILITY_FILE_NAME) == false) {
-			logger.log(Level.WARNING, STRING_UTILITY_FILE_NAME + " does not exist.");
-			createStorage(STRING_UTILITY_FILE_NAME);
-			addDefaultsToUtil();
-		} else {
-			logger.log(Level.FINE, STRING_UTILITY_FILE_NAME + " exists.");
-			try {
-				JSONParser parser = new JSONParser();
-				Object obj = parser.parse(new FileReader(STRING_UTILITY_FILE_NAME));
-				utilJSON = (JSONObject) obj;
-				if (utilJSON.containsKey("directory") == false) {
-					logger.log(Level.WARNING, STRING_UTILITY_FILE_NAME + " has no data.");
-					addDefaultsToUtil();
-				}
-				util = gson.fromJson(utilJSON.toJSONString() , StorageUtil.class);
-			} catch (IOException | ParseException e) {
-				logger.log(Level.SEVERE, e.getMessage());
-			}
-		}
-		logger.log(Level.INFO, "process storage utility [OK]");
-	}
-
-	public void addDefaultsToUtil() {
-		logger.log(Level.INFO, MESSAGE_ADD_DEFAULT_UTIL_SETTINGS);
-		util = new StorageUtil();
-		util.setDirectory("tables/");			// default settings
-		util.setStorageName("storage.json");	// default settings
-		saveUtilToStorage();
-	}
-
-	private void saveUtilToStorage() {
-		JSONParser parser = new JSONParser();
-		JSONObject utilJSON = new JSONObject();
-		Gson gson = new Gson();
-		try {
-			utilJSON = (JSONObject) parser.parse(gson.toJson(util));
-		} catch (ParseException e) {
-			logger.log(Level.SEVERE, e.getMessage());
-		}
-		storeDataIntoStorage(utilJSON, STRING_UTILITY_FILE_NAME);
-	}
-
-	public void initialiseNewDataObject() {
-		logger.log(Level.INFO, MESSAGE_INITIALISE_NEW_DATA_OBJECT);
-		data = new DATA();
-		data.setActiveTaskList(new TaskList());
-		data.setArchivedTaskList(new TaskList());
-		data.setSerialNumber(STARTING_INDEX);
-	}
-	
-	private void createNewStorage() {
-		createStorage(getFileRelativePath());
-		logger.log(Level.INFO, getFileRelativePath() + MESSAGE_CREATE_NEW_STORAGE_SUCCESS);
-	}
-	
-	private void createStorage(String fileRelativePath) {
-		logger.log(Level.INFO, MESSAGE_CREATE_STORAGE_FILE + fileRelativePath);
-		try {
-			File storageFile = new File(fileRelativePath);
-			if (storageFile.getParentFile() != null) {
-				storageFile.getParentFile().mkdirs();
-			}
-			storageFile.createNewFile();
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
-		}
-	}
-	
-	private boolean isStorageExist() {
-		return isStorageExist(getFileRelativePath());
-	}
-
-	// Overloading method
-	private boolean isStorageExist(String fileRelativePath) {
-		File file = new File(fileRelativePath);
-		return file.exists();
-	}
-
-	public String getFileRelativePath() {
-		return util.getDirectory().concat(util.getStorageName());
-	}
-
-	public DATA getData() {
-		return data;
-	}
-
-	public void setData(DATA data) {
-		StorageController.data = data;
+	/**
+	 * Intialise new DATA object
+	 */
+	public DATA initialiseNewDataObject() {
+		logger.log(Level.FINE, MESSAGE_INITIALISE_NEW_DATA_OBJECT);
+		this.data = new DATA();
+		this.data.setActiveTaskList(new TaskList());
+		this.data.setArchivedTaskList(new TaskList());
+		this.data.setSerialNumber(STARTING_INDEX);
+		return this.data;
 	}
 
 	@Override
 	public String getFileDirectory() {
-		processUtil(); 		// in case this method getFileDirectory() is called before other methods
-		return util.getDirectory();
+		return datastore.getDirectory();
 	}
 
 	@Override
-	// change the file directory and update utility file
+	// change the file directory
 	public String setFileDirectory(String fileDirectory) {
-		processUtil(); 						// in case this method setFileDirectory() is called before other methods
-		deleteFile(getFileRelativePath());	// remove old storage file if it exists
-		util.setDirectory(fileDirectory);
-		saveUtilToStorage();
-		logger.log(Level.INFO, MESSAGE_NEW_FILE_DIRECTORY + util.getDirectory());
-		return util.getDirectory();
+		datastore.setDirectory(fileDirectory);
+		return datastore.getDirectory();
 	}
 	
 	// create 9 dummy tasks and store into data for testing
+	/**
+	 * @return a message to show 9 dummy tasks created
+	 */
 	public String createDummyData() {
 		// dummy GenericTask
 		Task dummyGenericTask1 = new Task(1, "dummyGenericTask 1", 1, null);
@@ -518,5 +389,26 @@ public class StorageController implements InterfaceForStorage {
 		data.getArchivedTaskList().addTask(dummyMeetingTask2.getId(), dummyMeetingTask2);
 		logger.log(Level.INFO, MESSAGE_DUMMY_DATA);
 		return MESSAGE_DUMMY_DATA;
+	}
+
+	/**
+	 * @return datastore.getStorageRelativePath();
+	 */
+	public String getFileRelativePath() {
+		return datastore.getStorageRelativePath();
+	}
+
+	/**
+	 * @return the data
+	 */
+	public DATA getData() {
+		return data;
+	}
+
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(DATA data) {
+		this.data = data;
 	}
 }

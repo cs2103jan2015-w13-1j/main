@@ -22,8 +22,6 @@ public class StorageADT {
 	@Before
 	public void initialise() {
 		program = new StorageController();
-		program.processUtil();
-		program.addDefaultsToUtil();
 		program.initialiseNewDataObject();
 	}
 	
@@ -43,7 +41,6 @@ public class StorageADT {
 		assertEquals("storage/", program.setFileDirectory("storage/"));
 		assertEquals("folder/", program.setFileDirectory("folder/"));
 		assertEquals("folder/", program.getFileDirectory());
-		program.addDefaultsToUtil();
 	}
 	
 	/**
@@ -75,11 +72,8 @@ public class StorageADT {
 		assertEquals(3, program.getAllData().getArchivedTaskList().size());
 	}
 	
-	/**
-	 * Remove the storage file after testing
-	 */
 	@After
 	public void cleanUp() {
-		program.deleteFile(program.getFileRelativePath());
+		program.setFileDirectory("tables/");
 	}
 }
