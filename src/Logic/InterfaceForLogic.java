@@ -28,11 +28,31 @@ public interface InterfaceForLogic {
 	void setSerialNumber(int number);
 	
 	/**
+	 * @return the current highest recurrence id
+	 */
+	int getRecurrenceId();
+	
+	/**
+	 * @param number - the new recurrence id
+	 */
+	void setRecurrenceId(int number);
+	
+	/**
 	 * @param task a new task object
 	 * @return the updated ToDoSortedList
 	 * null if the task is already inside the list of tasks
 	 */
-	ToDoSortedList addTask(Task task);//sorted by date
+	ToDoSortedList addTask(Task task);
+	
+	/**
+	 * @param task a single task object which is the first task to be repeated.
+	 * 		The task must have a specific start and/or end time.
+	 * @param period the interval between each two recurrence tasks
+	 * @param recurrenceNum the number of recurrence tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList addRecurringTask(Task task, Date period, int recurrenceNum);
+	
 	
 	/**
 	 * @param task an existing generic task

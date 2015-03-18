@@ -2,11 +2,12 @@ package Common;
 
 /**
  * To store all the data
- * Used during initialization and closing of the program
+ * Used during initialisation and closing of the program
  */
 public class DATA {
 	
 	private int serialNumber;
+	private int recurrenceId;
 	
 	//The hashMaps
 	private TaskList activeTaskList;
@@ -56,6 +57,20 @@ public class DATA {
 	 */
 	public void incrementSerialNumber() {
 		this.serialNumber ++;
+	}
+	
+	/**
+	 * @return the recurrenceId
+	 */
+	public int getRecurrenceId() {
+		return recurrenceId;
+	}
+	
+	/**
+	 * @param recurrenceId the recurrenceId to set
+	 */
+	public void setRecurrenceId(int recurrenceId) {
+		this.recurrenceId = recurrenceId;
 	}
 	
 }
