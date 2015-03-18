@@ -64,7 +64,7 @@ public class LogicController implements InterfaceForLogic{
 	
 	@Override
 	public ToDoSortedList addDeadLine(Task task, Date deadline) {
-		if (task.getType() == "generic") {
+		if (task.getType().equals("generic")) {
 			task.addDeadline(deadline);
 			task.setType("deadline");
 			toDoSortedList.updateTaskOrder(activeTaskList);
@@ -78,7 +78,7 @@ public class LogicController implements InterfaceForLogic{
 	
 	@Override
 	public ToDoSortedList editDeadline(Task task, Date deadline) {
-		if (task.getType() != "deadline") {
+		if (!task.getType().equals("deadline")) {
 			return null;
 		}
 		task.changeDeadline(deadline);
@@ -89,7 +89,7 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public ToDoSortedList addStartAndEndTime(Task task, Date start, Date end) {
-		if (task.getType() == "generic") {
+		if (!task.getType().equals("generic")) {
 			task.addStartAndEndTime(start, end);
 			task.setType("meeting");
 			toDoSortedList.updateTaskOrder(activeTaskList);
@@ -104,7 +104,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList editStartTime(Task task, Date start) {
 		
-		if (task.getType() != "meeting") {
+		if (!task.getType().equals("meeting")) {
 			return null;
 		}
 		if (start.compareTo(task.getEndTime()) >= 0){
@@ -118,7 +118,7 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public ToDoSortedList editEndTime(Task task, Date end) {
-		if (task.getType() != "meeting") {
+		if (!task.getType().equals("meeting")) {
 			return null;
 		}
 		task.changeEndTime(end);
