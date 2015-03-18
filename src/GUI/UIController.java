@@ -63,9 +63,9 @@ public class UIController implements Initializable {
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 	
-	final ObservableList<UITask> tasks = FXCollections.observableArrayList();
+	final ObservableList<UITask> uiTaskList = FXCollections.observableArrayList();
 	
-	final ObservableList<UITask> archive = FXCollections.observableArrayList();
+	final ObservableList<UITask> uiArchiveList = FXCollections.observableArrayList();
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources){
@@ -76,7 +76,7 @@ public class UIController implements Initializable {
 		taskStart.setCellValueFactory(new PropertyValueFactory<UITask, String>("start"));
 		taskEnd.setCellValueFactory(new PropertyValueFactory<UITask, String>("end"));
 		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>("due"));
-		taskTable.setItems(tasks);
+		taskTable.setItems(uiTaskList);
 		
 		//possible null pointer exception here when list is empty
 		taskList = commandController.initialiseTasks();
@@ -84,7 +84,7 @@ public class UIController implements Initializable {
 		
 		archiveId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
 		archiveDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
-		archiveTable.setItems(archive);
+		archiveTable.setItems(uiArchiveList);
 		
 		//possible null pointer exception here when list is empty
 		archiveList = commandController.initialiseArchives();
@@ -195,7 +195,7 @@ public class UIController implements Initializable {
 	}
 	
 	private void addToTaskDisplay() {
-		tasks.clear();
+		uiTaskList.clear();
 		
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/YYYY");
 		SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
@@ -207,10 +207,10 @@ public class UIController implements Initializable {
 			if (priority.equals("-1")){
 				priority = "-";
 			}
-			String start = "-";
-			String end = "-";
-			String due = "-";
-			if (taskList.get(i).getStartTime() != null){
+			String start;
+			String end;
+			String due;
+			/*if (taskList.get(i).getStartTime() != null){
 				//start = taskList.get(i).getStartTime().getDateRepresentation();
 				start = tf.format(taskList.get(i).getStartTime());
 			}
@@ -220,23 +220,44 @@ public class UIController implements Initializable {
 			if (taskList.get(i).getDeadline() != null){
 				//due = taskList.get(i).getDeadline().getDateRepresentation();
 				due = df.format(taskList.get(i).getDeadline());
+			}*/
+			
+			try{
+				start = tf.format(taskList.get(i).getStartTime());
 			}
+			catch (NullPointerException e){
+				start = "-";
+			}
+			try{
+				end = tf.format(taskList.get(i).getEndTime());
+			}
+			catch (NullPointerException e){
+				end = "-";
+			}
+			try{
+				due = df.format(taskList.get(i).getDeadline());
+			}
+			catch (NullPointerException e){
+				due = "-";
+			}
+			
+			
 			UITask entry = new UITask(id, description, priority, start, end, due);
-			tasks.add(entry);
+			uiTaskList.add(entry);
 			System.out.println("added: " + id + " " + description + priority + start + end + due);
 		}
 	}
 	
 	private void addToArchiveDisplay() {
-		archive.clear();
+		uiArchiveList.clear();
 		for(int i = 0; i < archiveList.size(); i++){
 			int id = i+1;
 			String description = archiveList.get(i).getDescription();
 			String priority = Integer.toString(archiveList.get(i).getPriority());
-			String start = "";
-			String end = "";
-			String due = "";
-			if (archiveList.get(i).getStartTime() != null){
+			String start;
+			String end;
+			String due;
+			/*if (archiveList.get(i).getStartTime() != null){
 				start = archiveList.get(i).getStartTime().getDateRepresentation();
 			}
 			if (archiveList.get(i).getEndTime() != null){
@@ -244,9 +265,27 @@ public class UIController implements Initializable {
 			}
 			if (archiveList.get(i).getDeadline() != null){
 				due = archiveList.get(i).getDeadline().getDateRepresentation();
+			}*/
+			try{
+				start = archiveList.get(i).getStartTime().getDateRepresentation();
+			}
+			catch (NullPointerException e){
+				start = "-";
+			}
+			try{
+				end = archiveList.get(i).getEndTime().getDateRepresentation();
+			}
+			catch (NullPointerException e){
+				end = "-";
+			}
+			try{
+				due = archiveList.get(i).getDeadline().getDateRepresentation();
+			}
+			catch (NullPointerException e){
+				due = "-";
 			}
 			UITask entry = new UITask(id, description, priority, start, end, due);
-			archive.add(entry);
+			uiArchiveList.add(entry);
 			System.out.println("Initialized: " + description + priority + start + end + due);
 		}
 	}
