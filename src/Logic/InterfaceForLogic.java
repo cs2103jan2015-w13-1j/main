@@ -23,6 +23,11 @@ public interface InterfaceForLogic {
 	int getSerialNumber();
 	
 	/**
+	 * @param number - the new serial number
+	 */
+	void setSerialNumber(int number);
+	
+	/**
 	 * @param task a new task object
 	 * @return the updated ToDoSortedList
 	 * null if the task is already inside the list of tasks

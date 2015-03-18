@@ -19,17 +19,15 @@ public class LogicController implements InterfaceForLogic{
 	private StorageController DC = new StorageController();
 	private DATA data;
 	
-	private int serialNumber;
-
 	protected TaskList activeTaskList;
 	protected TaskList archivedTaskList;
 
 	protected ToDoSortedList toDoSortedList;
 	
+	@Override
 	public void initialise() {
 		data = DC.getAllData();
 		
-		serialNumber = data.getSerialNumber();
 		activeTaskList = data.getActiveTaskList();
 		archivedTaskList = data.getArchivedTaskList();
 
@@ -39,6 +37,7 @@ public class LogicController implements InterfaceForLogic{
 		}
 	}
 	
+	@Override
 	public ToDoSortedList addTask(Task task) {
 		if (toDoSortedList.contains(task)) {
 			String original = "";
@@ -59,14 +58,17 @@ public class LogicController implements InterfaceForLogic{
 		}
 		toDoSortedList.add(task);
 		activeTaskList.addTask(task.getId(), task);
+		DC.storeAllData(data);
 		return toDoSortedList;
 	}
 	
+	@Override
 	public ToDoSortedList addDeadLine(Task task, Date deadline) {
 		if (task.getType() == "generic") {
 			task.addDeadline(deadline);
 			task.setType("deadline");
 			toDoSortedList.updateTaskOrder(activeTaskList);
+			DC.storeAllData(data);
 			return toDoSortedList;
 		}
 		else {
@@ -74,20 +76,24 @@ public class LogicController implements InterfaceForLogic{
 		}
 	}
 	
+	@Override
 	public ToDoSortedList editDeadline(Task task, Date deadline) {
 		if (task.getType() != "deadline") {
 			return null;
 		}
 		task.changeDeadline(deadline);
 		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
 		return toDoSortedList;
 	}
 
+	@Override
 	public ToDoSortedList addStartAndEndTime(Task task, Date start, Date end) {
 		if (task.getType() == "generic") {
 			task.addStartAndEndTime(start, end);
 			task.setType("meeting");
 			toDoSortedList.updateTaskOrder(activeTaskList);
+			DC.storeAllData(data);
 			return toDoSortedList;
 		}
 		else {
@@ -95,6 +101,7 @@ public class LogicController implements InterfaceForLogic{
 		}
 	}
 
+	@Override
 	public ToDoSortedList editStartTime(Task task, Date start) {
 		
 		if (task.getType() != "meeting") {
@@ -105,18 +112,56 @@ public class LogicController implements InterfaceForLogic{
 		}
 		task.changeStartTime(start);
 		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
 		return toDoSortedList;
 	}
 
+	@Override
 	public ToDoSortedList editEndTime(Task task, Date end) {
 		if (task.getType() != "meeting") {
 			return null;
 		}
 		task.changeEndTime(end);
+		DC.storeAllData(data);
+		return toDoSortedList;
+	}
+	
+	@Override
+	public ToDoSortedList editDescription(Task task, String newDescription) {
+		task.changeDescription(newDescription);
+		DC.storeAllData(data);
 		return toDoSortedList;
 	}
 
+	@Override
+	public ToDoSortedList editPriority(Task task, int priority) {
+		task.changePriority(priority);
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
+		return toDoSortedList;
+	}
+
+	@Override
+	public ToDoSortedList addTag(Task task, String tag) {
+		if (task.getTags().contains(tag)) {
+			return null;
+		}
+		task.addTag(tag);
+		DC.storeAllData(data);
+		return toDoSortedList;
+	}
 	
+	@Override
+	public ToDoSortedList removeTag(Task task, String tag) {
+		if (!task.getTags().contains(tag)) {
+			return null;
+		}
+		task.removeTag(tag);
+		DC.storeAllData(data);
+		return toDoSortedList;
+	}
+
+	@Override
 	public ToDoSortedList moveToArchive(Task task, Date finishedTime) {
 		task.moveToArchive(finishedTime);
 		int id = task.getId();
@@ -128,18 +173,11 @@ public class LogicController implements InterfaceForLogic{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		DC.storeAllData(data);
 		return toDoSortedList;
 	}
-
-	public ArchiveSortedList viewArchiveTasks() {
-		ArchiveSortedList archiveSortedList = new ArchiveSortedList();
-		for (Entry<Integer, Task> e: archivedTaskList.entrySet()) {
-			archiveSortedList.addTask(e.getValue());
-		}
-		return archiveSortedList;
-	}
 	
-
+	@Override
 	public ToDoSortedList deleteTask(Task task) {
 		if (!task.isArchived()){
 			try {
@@ -153,9 +191,9 @@ public class LogicController implements InterfaceForLogic{
 		else{
 			archivedTaskList.removeTaskbyId(task.getId());
 		}
+		DC.storeAllData(data);
 		return toDoSortedList;
 	}
-
 	
 	@Override
 	public ArrayList<Task> searchByDate(String date) {
@@ -183,6 +221,7 @@ public class LogicController implements InterfaceForLogic{
 	}
 
 	// Only for tasks in the to do list
+	@Override
 	public ArrayList<Task> searchByTag(String tag) {
 		ArrayList<Task> taskByTag = new ArrayList<Task>();
 		for (Task task: toDoSortedList) {
@@ -195,6 +234,7 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	// Only for tasks in the to do list
+	@Override
 	public ArrayList<Task> searchByPriority(int priority) {
 		ArrayList<Task> taskByPriority = new ArrayList<Task>();
 		for (Task task: toDoSortedList) {
@@ -218,38 +258,12 @@ public class LogicController implements InterfaceForLogic{
 	
 	@Override
 	public int getSerialNumber() {
-		return serialNumber;
-	}
-
-	@Override
-	public ToDoSortedList editDescription(Task task, String newDescription) {
-		task.changeDescription(newDescription);
-		return toDoSortedList;
-	}
-
-	@Override
-	public ToDoSortedList editPriority(Task task, int priority) {
-		task.changePriority(priority);
-		toDoSortedList.updateTaskOrder(activeTaskList);
-		return toDoSortedList;
-	}
-
-	@Override
-	public ToDoSortedList addTag(Task task, String tag) {
-		if (task.getTags().contains(tag)) {
-			return null;
-		}
-		task.addTag(tag);
-		return toDoSortedList;
+		return this.data.getSerialNumber();
 	}
 	
 	@Override
-	public ToDoSortedList removeTag(Task task, String tag) {
-		if (!task.getTags().contains(tag)) {
-			return null;
-		}
-		task.removeTag(tag);
-		return toDoSortedList;
+	public void setSerialNumber(int n) {
+		this.data.setSerialNumber(n);
 	}
 
 	@Override
@@ -271,16 +285,16 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList viewActiveTasks() {
 		return toDoSortedList;
 	}
-
+	
 	@Override
-	public String exit(int serialserialNumber) {
-		DATA finalData = new DATA();
-		finalData.setSerialNumber(serialserialNumber);
-		finalData.setActiveTaskList(activeTaskList);
-		finalData.setArchivedTaskList(archivedTaskList);
-		return DC.storeAllData(finalData);
+	public ArchiveSortedList viewArchiveTasks() {
+		ArchiveSortedList archiveSortedList = new ArchiveSortedList();
+		for (Entry<Integer, Task> e: archivedTaskList.entrySet()) {
+			archiveSortedList.addTask(e.getValue());
+		}
+		return archiveSortedList;
 	}
-
+	
 	@Override
 	public ArchiveSortedList deleteFromArchive(Task task) {
 		try {
@@ -289,6 +303,13 @@ public class LogicController implements InterfaceForLogic{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		DC.storeAllData(data);
 		return viewArchiveTasks();
+	}
+	
+	@Override
+	public String exit(int serialNumber) {
+		data.setSerialNumber(serialNumber);
+		return DC.storeAllData(data);
 	}
 }

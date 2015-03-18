@@ -20,6 +20,26 @@ public class CommandController implements InterfaceForParser {
 	private int newMaxID = 0;
 	private ArrayList<Task> currentActiveTasks = new ArrayList<Task>();
 	private ArrayList<Task> currentArchives = new ArrayList<Task>();
+	private static final String DEADLINE_FORMAT_ERROR = "Wrong format for deadline. Please use dd/MM/yyyy";
+	private static final String MEETINGTIME_FORMAT_ERROR = "Wrong format for timing. Please use dd/MM/yyyy HHmm HHmm";
+	private static final String DATE_FORMAT_ERROR = "Wrong format for date. Please use dd/MM/yyyy";
+	
+	
+	
+	public static void main(String[] args){
+		
+		CommandController test = new CommandController();
+		test.initialiseTasks();
+		System.out.println(test.executeCommand("-add this generic task -date 1"));
+		System.out.println(test.returnTasks());
+		//System.out.println(test.executeCommand("-add second generic task"));
+		//System.out.println(test.returnTasks());
+		
+		
+	}
+	
+	
+	
 	
 	public ArrayList<Task> initialiseTasks(){
 		logicController.initialise();
@@ -71,7 +91,39 @@ public class CommandController implements InterfaceForParser {
 	}
 	
 	public String executeCommand(String inputCommand){
-		String result = parser.parseIn(inputCommand);
+		int commandNum = parser.parseIn(inputCommand);
+		String[] splitInput = inputCommand.split(" ");
+		String result = new String();
+		switch(commandNum){
+			case(0):{
+				result = "Invalid command";
+				break;
+			}case(1):{
+				result = addCommand(splitInput);
+				break;
+			}case(2):{
+				result = searchCommand(splitInput);
+				break;
+			}case(3):{
+				result = deleteCommand(splitInput);
+				break;
+			}case(4):{
+				result = archiveCommand(splitInput);
+				break;
+			}case(5):{
+				result = exitCommand();
+				break;
+			}case(6):{
+				result = modifyCommand(splitInput);
+				break;
+			}case(7):{
+				result = fileDirectoryCommand(splitInput);
+				break;
+			}case(8):{
+				result = refreshCommand();
+				break;
+			}
+		}
 		return result;
 	}
 	String refreshCommand() {
@@ -126,8 +178,7 @@ public class CommandController implements InterfaceForParser {
 							retrievedSortedList = logicController.addStartAndEndTime(taskToChange, newStartTime, newEndTime);
 							result = "New start and end time added";
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							return result = MEETINGTIME_FORMAT_ERROR;
 						}		
 					}else{
 						//if change to deadline task
@@ -140,8 +191,7 @@ public class CommandController implements InterfaceForParser {
 							retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
 							result = "New deadline added";
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							return result = DEADLINE_FORMAT_ERROR;
 						}
 					}
 				}else if(taskType.equalsIgnoreCase("deadline")){
@@ -155,8 +205,7 @@ public class CommandController implements InterfaceForParser {
 						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
 						result = "Deadline changed";
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						return result = DEADLINE_FORMAT_ERROR;
 					}
 				}else if(taskType.equalsIgnoreCase("meeting")){
 					//change start and end time
@@ -176,11 +225,10 @@ public class CommandController implements InterfaceForParser {
 						result = "Meeting time changed";
 						
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						return result = MEETINGTIME_FORMAT_ERROR;
 					}
 				}else{
-					result = "type mismatch error, can't change date";
+					return result = "Type mismatch error, can't change date";
 				}
 				break;
 			}case("priority"):{
@@ -295,7 +343,7 @@ public class CommandController implements InterfaceForParser {
 					result = "Searched by date: " + splitInput[2];
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					return result = DATE_FORMAT_ERROR ;
 				}
 				break;
 			}case("tag"):{
@@ -385,8 +433,7 @@ public class CommandController implements InterfaceForParser {
 				endTime.setTime(tempDate.getTime());
 				
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return result = MEETINGTIME_FORMAT_ERROR;
 			}
 				
 		}else if(dateAsString.size()==1){
@@ -398,8 +445,9 @@ public class CommandController implements InterfaceForParser {
 				deadLine.setTime(tempDate.getTime());
 				
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
+				return result = DEADLINE_FORMAT_ERROR;
+	
 			}
 		}
 		

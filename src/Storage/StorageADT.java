@@ -8,33 +8,72 @@ package Storage;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class StorageADT {
 	
-	StorageController program = new StorageController();
+	StorageController program;
 	
+	/**
+	 * Initialise storage utility file with its default settings and initialise new DATA object
+	 */
 	@Before
 	public void initialise() {
-//		assertEquals("Storage initialised", program.initialiseStorage());
-//		assertEquals("Dummy data created", program.createDummyData());
-//		assertEquals("tables/storage.json", program.getFileRelativePath());
+		program = new StorageController();
+		program.initialiseNewDataObject();
 	}
 	
-//	@Test
-//	public void testForGetAllDataEmpty() {
-//		assertEquals(6, program.getAllData().getActiveTaskList().size());
-//	}
+	/**
+	 * Test for retrieval of directory
+	 */
+	@Test
+	public void testForRetrievalOfDirectory() {
+		assertEquals("tables/", program.getFileDirectory());
+	}
 	
+	/**
+	 * Test for change of directory
+	 */
 	@Test
 	public void testForDirectoryChange() {
-		assertEquals("esmond/", program.setFileDirectory("esmond/"));
-		program.storeAllData(program.getData());
+		assertEquals("storage/", program.setFileDirectory("storage/"));
+		assertEquals("folder/", program.setFileDirectory("folder/"));
+		assertEquals("folder/", program.getFileDirectory());
 	}
 	
-//	@After
-//	public void cleanUp() {
-//		program.deleteAllTables();
-//	}
+	/**
+	 * Test for creation of dummy data
+	 */
+	@Test
+	public void testForDummyData() {
+		assertEquals("9 Dummy data created.", program.createDummyData());
+		assertEquals(6, program.getData().getActiveTaskList().size());
+		assertEquals(3, program.getData().getArchivedTaskList().size());
+	}
+	
+	/**
+	 * Test for storing after dummy creation
+	 */
+	@Test
+	public void testForStoring() {
+		testForDummyData();
+		assertEquals("success in storing", program.storeAllData(program.getData()));
+	}
+	
+	/**
+	 * Test for retrieval from storage
+	 */
+	@Test
+	public void testForRetrieval() {
+		testForStoring();
+		assertEquals(6, program.getAllData().getActiveTaskList().size());
+		assertEquals(3, program.getAllData().getArchivedTaskList().size());
+	}
+	
+	@After
+	public void cleanUp() {
+		program.setFileDirectory("tables/");
+	}
 }

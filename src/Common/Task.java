@@ -25,6 +25,7 @@ public class Task implements Comparable<Task>{
 	private Date endTime = null;
 	private Date deadline = null;
 	private Date finishedTime = null;
+	private int recurrenceId = -1;
 	
 	/**
 	 * The default Constructor for a task
@@ -359,6 +360,27 @@ public class Task implements Comparable<Task>{
 	@Override
 	public int compareTo(Task other) {
 		return this.getId() - other.getId();
+	}
+
+	/**
+	 * @return the recurrenceId
+	 */
+	public int getRecurrenceId() {
+		return recurrenceId;
+	}
+	
+	/**
+	 * @return whether the task is recurrent
+	 */
+	public boolean isRecurrence() {
+		return recurrenceId>-1;
+	}
+
+	/**
+	 * @param recurrenceId the recurrenceId to set
+	 */
+	public void setRecurrenceId(int recurrenceId) {
+		this.recurrenceId = recurrenceId;
 	}
 	
 //	@Override
