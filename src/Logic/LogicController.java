@@ -300,7 +300,6 @@ public class LogicController implements InterfaceForLogic{
 		try {
 			archivedTaskList.removeTaskbyId(task.getId());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		DC.storeAllData(data);
@@ -311,5 +310,71 @@ public class LogicController implements InterfaceForLogic{
 	public String exit(int serialNumber) {
 		data.setSerialNumber(serialNumber);
 		return DC.storeAllData(data);
+	}
+
+	@Override
+	public ToDoSortedList addRecurringTask(Task task, Date period,
+			int recurrenceNum) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList deleteAllRecurringTask(Task task) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList editAlldeadline(Task task, Date newDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList editAllStartTime(Task task, Date newDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList editAllEndTime(Task task, Date newDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList editAllPriority(Task task, int newPriority) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList addAlltag(Task task, String tag) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList removeAlltag(Task task, String tag) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList editAllDescription(Task task, String description) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ToDoSortedList archiveAllTasks(Task task) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean undo() {
+		return false;
 	}
 }

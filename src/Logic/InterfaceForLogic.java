@@ -28,31 +28,11 @@ public interface InterfaceForLogic {
 	void setSerialNumber(int number);
 	
 	/**
-	 * @return the current highest recurrence id
-	 */
-	int getRecurrenceId();
-	
-	/**
-	 * @param number - the new recurrence id
-	 */
-	void setRecurrenceId(int number);
-	
-	/**
 	 * @param task a new task object
 	 * @return the updated ToDoSortedList
 	 * null if the task is already inside the list of tasks
 	 */
 	ToDoSortedList addTask(Task task);
-	
-	/**
-	 * @param task a single task object which is the first task to be repeated.
-	 * 		The task must have a specific start and/or end time.
-	 * @param period the interval between each two recurrence tasks
-	 * @param recurrenceNum the number of recurrence tasks
-	 * @return the updated toDoSortedList
-	 */
-	ToDoSortedList addRecurringTask(Task task, Date period, int recurrenceNum);
-	
 	
 	/**
 	 * @param task an existing generic task
@@ -204,6 +184,94 @@ public interface InterfaceForLogic {
 	 */
 	ArchiveSortedList deleteFromArchive(Task task);
 	
+	/*
+	 * Recurring Tasks methods
+	 */
+	/**
+	 * @param task a single task object which is the first task to be repeated.
+	 * 		The task must have a specific start and/or end time.
+	 * @param period the interval between each two recurrence tasks
+	 * @param recurrenceNum the number of recurrence tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList addRecurringTask(Task task, Date period, int recurrenceNum);
+	
+	/**
+	 * This will delete all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList deleteAllRecurringTask(Task task);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAlldeadline(Task task, Date newDate);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllStartTime(Task task, Date newDate);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllEndTime(Task task, Date newDate);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllPriority(Task task, int newPriority);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList addAlltag(Task task, String tag);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList removeAlltag(Task task, String tag);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllDescription(Task task, String description);
+	
+	/**
+	 * This will archive all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList archiveAllTasks(Task task);
+	
+	
+	/*
+	 * Undo
+	 */
+	/**
+	 * undo an action
+	 * @return a boolean indicating whether this is successful
+	 */
+	boolean undo();
+	
+	/*
+	 * Exit
+	 */
 	/**
 	 * @param serialNumber the current highest ID that is already used
 	 * @return a string message indicating the state of program
