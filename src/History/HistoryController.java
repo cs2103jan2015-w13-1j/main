@@ -10,19 +10,20 @@ import Common.DATA;
 
 public class HistoryController implements InterfaceForHistory{
 
-	@Override
-	public void saveState(DATA data) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public DATA retriveState() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	// add command to log
 	// undo command from log; determine the type of command and undo the changes made
 	// view log
+
+	@Override
+	public boolean log() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public DATA undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

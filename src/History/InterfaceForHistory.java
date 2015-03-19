@@ -4,7 +4,7 @@ import Common.DATA;
 
 public interface InterfaceForHistory {
 	
-	void saveState(DATA data);
+	boolean log();
 	
-	DATA retriveState();
+	DATA undo();
 }
