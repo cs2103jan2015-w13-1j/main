@@ -25,7 +25,7 @@ public class CommandController implements InterfaceForParser {
 	private static final String DATE_FORMAT_ERROR = "Wrong format for date. Please use dd/MM/yyyy";
 	
 	
-	
+	/*
 	public static void main(String[] args){
 		
 		CommandController test = new CommandController();
@@ -36,7 +36,7 @@ public class CommandController implements InterfaceForParser {
 		//System.out.println(test.returnTasks());
 		
 		
-	}
+	}*/
 	
 	
 	
@@ -47,11 +47,15 @@ public class CommandController implements InterfaceForParser {
 		//Upon application start-up, fetch the current tasklist
 		ToDoSortedList retrievedCurrent = new ToDoSortedList();
 		
-		
-		retrievedCurrent = logicController.viewActiveTasks();
-		currentActiveTasks.clear();
-		for(Task task : retrievedCurrent){
-			currentActiveTasks.add(task);
+		try{
+			retrievedCurrent = logicController.viewActiveTasks();
+			currentActiveTasks.clear();
+			for(Task task : retrievedCurrent){
+				currentActiveTasks.add(task);
+		}
+		}catch(NullPointerException e){
+			currentActiveTasks.clear();
+			return currentActiveTasks;
 		}
 		
 		return currentActiveTasks;		
@@ -61,11 +65,17 @@ public class CommandController implements InterfaceForParser {
 		//Upon application start-up, fetch the archived tasks to display
 		ArchiveSortedList retrievedArchiveFromLogic = new ArchiveSortedList();
 		
+		
 		currentArchives.clear();
-		retrievedArchiveFromLogic = logicController.viewArchiveTasks();
-		for(Task task : retrievedArchiveFromLogic){
-			currentArchives.add(task);
+		try{
+			retrievedArchiveFromLogic = logicController.viewArchiveTasks();
+			for(Task task : retrievedArchiveFromLogic){
+				currentArchives.add(task);
+			}
+		}catch(NullPointerException e){
+			return currentArchives;
 		}
+		
 		
 		return currentArchives;		
 	}
@@ -79,10 +89,14 @@ public class CommandController implements InterfaceForParser {
 		
 		ArchiveSortedList retrievedArchiveFromLogic = new ArchiveSortedList();
 
-		retrievedArchiveFromLogic = logicController.viewArchiveTasks();
-		currentArchives.clear();
-		for(Task task : retrievedArchiveFromLogic){
-			currentArchives.add(task);
+		try{
+			retrievedArchiveFromLogic = logicController.viewArchiveTasks();
+			currentArchives.clear();
+			for(Task task : retrievedArchiveFromLogic){
+				currentArchives.add(task);
+			}
+		}catch(NullPointerException e){
+			return currentArchives;
 		}
 		
 		return currentArchives;	
@@ -129,12 +143,17 @@ public class CommandController implements InterfaceForParser {
 	String refreshCommand() {
 		String result = "Display refreshed to current tasks";
 		ToDoSortedList retrievedCurrent = logicController.viewActiveTasks();
-		currentActiveTasks.clear();
-		for(Task task : retrievedCurrent){
-			currentActiveTasks.add(task);
+		
+		try{
+			currentActiveTasks.clear();
+			for(Task task : retrievedCurrent){
+				currentActiveTasks.add(task);
+			}
+		}catch(NullPointerException e){
+			return result = "No active tasks to display";
 		}
 		
-		return null;
+		return result;
 	}
 
 
@@ -367,7 +386,12 @@ public class CommandController implements InterfaceForParser {
 		
 		//break the commands
 		String result = new String();
-		String description = input[1];
+		String description = new String();
+		try{
+			description = input[1];
+		}catch(ArrayIndexOutOfBoundsException e){
+			return result = "No description found. Please try again";
+		}
 		int inputLength = input.length;
 		int currentInputPoint = 2;
 		int priority = -1;
