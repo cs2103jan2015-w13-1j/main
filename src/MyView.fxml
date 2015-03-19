@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1200.0" style="-fx-background-color: #f7f7f7;" styleClass="test" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.UIController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: #f7f7f7;" styleClass="test" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.UIController">
    <children>
       <Label alignment="BOTTOM_LEFT" style="-fx-font-weight: BOLD; -fx-font-size: 59;" text="HeyBuddy!" textFill="#3b5998">
          <font>
@@ -21,17 +21,22 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
       </Label>
-      <TextField fx:id="commandField" layoutX="174.0" layoutY="726.0" onAction="#inputCommand" prefHeight="31.0" prefWidth="969.0" />
-      <Label layoutX="47.0" layoutY="724.0" style="-fx-font-weight: BOLD; -fx-font-size: 24;" text="Command:">
+      <TextField fx:id="commandField" layoutX="174.0" layoutY="639.0" onAction="#inputCommand" prefHeight="31.0" prefWidth="969.0" />
+      <Label layoutX="47.0" layoutY="637.0" style="-fx-font-weight: BOLD; -fx-font-size: 24;" text="Command:">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
+      <Text fx:id="outputMessage" layoutX="174.0" layoutY="623.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="969.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
       <Group layoutX="74.0" layoutY="204.0">
          <children>
             <Group fx:id="settingsGroup">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#3b5998" height="510.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#3b5998" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#3b5998" height="150.0" layoutX="706.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
                   <Label layoutX="805.0" layoutY="-80.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Settings" textFill="WHITE">
                      <font>
@@ -52,7 +57,7 @@
             </Group>
             <Group fx:id="helpGroup">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="510.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="150.0" layoutX="340.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
                   <Label layoutX="407.0" layoutY="-76.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Commands" textFill="WHITE">
                      <font>
@@ -63,18 +68,19 @@
             </Group>
             <Group fx:id="taskGroup">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="510.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="150.0" layoutX="-27.0" layoutY="-91.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
-                  <TableView fx:id="taskTable" layoutX="-13.0" layoutY="-1.0" prefHeight="483.0" prefWidth="727.0">
+                  <TableView fx:id="taskTable" layoutX="-13.0" layoutY="-1.0" prefHeight="370.0" prefWidth="815.0">
                     <columns>
                       <TableColumn maxWidth="727.0" minWidth="727.0" prefWidth="727.0" resizable="false" text="To-Do">
                            <columns>
                               <TableColumn fx:id="taskId" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
-                              <TableColumn fx:id="taskDescription" maxWidth="341.0" minWidth="275.0" prefWidth="322.0" style="-fx-text-alignment: center;" text="Description" />
+                              <TableColumn fx:id="taskDescription" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" style="-fx-text-alignment: center;" text="Description" />
                               <TableColumn fx:id="taskPriority" maxWidth="100.0" minWidth="34.0" prefWidth="53.0" text="Pr" />
-                              <TableColumn fx:id="taskStart" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Start" />
-                              <TableColumn fx:id="taskEnd" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="End" />
-                              <TableColumn fx:id="taskDue" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Due" />
+                              <TableColumn fx:id="taskStart" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Start" />
+                              <TableColumn fx:id="taskEnd" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="End" />
+                              <TableColumn fx:id="taskDue" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Due" />
+                              <TableColumn fx:id="tags" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" style="-fx-text-alignment: center;" text="Tags" />
                            </columns>
                         </TableColumn>
                     </columns>
@@ -84,12 +90,12 @@
                         <Font size="44.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="archiveTable" layoutX="720.0" layoutY="-2.0" prefHeight="484.0" prefWidth="340.0">
+                  <TableView fx:id="archiveTable" layoutX="809.0" layoutY="-1.0" prefHeight="370.0" prefWidth="250.0">
                     <columns>
-                      <TableColumn maxWidth="340.0" minWidth="340.0" prefWidth="340.0" resizable="false" text="Archive">
+                      <TableColumn maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" text="Archive">
                            <columns>
                               <TableColumn fx:id="archiveId" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
-                              <TableColumn fx:id="archiveDescription" maxWidth="288.0" minWidth="288.0" prefWidth="288.0" text="Description" />
+                              <TableColumn fx:id="archiveDescription" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Description" />
                            </columns>
                         </TableColumn>
                     </columns>

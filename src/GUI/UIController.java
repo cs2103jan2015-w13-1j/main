@@ -17,6 +17,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import Common.Task;
@@ -34,6 +35,8 @@ public class UIController implements Initializable {
 	private TextField commandField;
 	@FXML
 	private Button directoryChooserBtn;
+	@FXML
+	private Text outputMessage;
 	
 	@FXML
 	TableView<UITask> taskTable;
@@ -41,6 +44,8 @@ public class UIController implements Initializable {
 	TableColumn<UITask, Integer> taskId;
 	@FXML
 	TableColumn<UITask, String> taskDescription;
+	@FXML
+	TableColumn<UITask, String> tags;
 	@FXML
 	TableColumn<UITask, String> taskPriority;
 	@FXML
@@ -79,7 +84,6 @@ public class UIController implements Initializable {
 		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>("due"));
 		taskTable.setItems(uiTaskList);
 		
-		//possible null pointer exception here when list is empty
 		taskList = commandController.initialiseTasks();
 		addToTaskDisplay();
 		
@@ -87,7 +91,6 @@ public class UIController implements Initializable {
 		archiveDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
 		archiveTable.setItems(uiArchiveList);
 		
-		//possible null pointer exception here when list is empty
 		archiveList = commandController.initialiseArchives();
 		addToArchiveDisplay();
 		
@@ -117,10 +120,10 @@ public class UIController implements Initializable {
 		String[] splitCommand = input.split(" ");
 		String firstCommand = splitCommand[0];
 		
-		System.out.println("User input: " + input);
-		String outputMessage = commandController.executeCommand(input);
-		System.out.println(outputMessage);
-
+		String message = commandController.executeCommand(input);
+		System.out.println("Output: " + message);
+		outputMessage = new Text(message);
+		
 		if (firstCommand.equals("-goto")){
 			executeGoTo(splitCommand[1]);
 		}
@@ -143,9 +146,7 @@ public class UIController implements Initializable {
 			
 		}
 		else if (firstCommand.equals("-undo")){
-			
-			//parser.executeUndo();????? Maybe no need.
-			
+						
 			taskList = commandController.returnTasks();
 			addToTaskDisplay();
 			archiveList = commandController.returnArchive();
@@ -153,10 +154,7 @@ public class UIController implements Initializable {
 			
 		}
 		else if (firstCommand.equals("-delete")){
-			
-			int deleteIndex = Integer.parseInt(splitCommand[1]);
-			
-			//parser.executeDelete(taskList.get(deleteIndex-1).getId());????? Maybe no need.
+						
 			taskList = commandController.returnTasks();
 			addToTaskDisplay();
 			archiveList = commandController.returnArchive();
