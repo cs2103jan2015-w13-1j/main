@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import Common.Task;
 import Parser.CommandController;;
 
@@ -187,9 +188,8 @@ public class UIController implements Initializable {
 			
 		}
 		else if (firstCommand.equals("-exit")){
-			
-			
-			
+		    Stage stage = (Stage) commandField.getScene().getWindow();
+		    stage.close();
 		}
 		
 	}
@@ -210,37 +210,22 @@ public class UIController implements Initializable {
 			String start;
 			String end;
 			String due;
-			/*if (taskList.get(i).getStartTime() != null){
-				//start = taskList.get(i).getStartTime().getDateRepresentation();
-				start = tf.format(taskList.get(i).getStartTime());
-			}
-			if (taskList.get(i).getEndTime() != null){
-				end = tf.format(taskList.get(i).getEndTime());
-			}
-			if (taskList.get(i).getDeadline() != null){
-				//due = taskList.get(i).getDeadline().getDateRepresentation();
-				due = df.format(taskList.get(i).getDeadline());
-			}*/
 			
 			try{
 				start = tf.format(taskList.get(i).getStartTime());
-			}
-			catch (NullPointerException e){
+			}catch (NullPointerException e){
 				start = "-";
 			}
 			try{
 				end = tf.format(taskList.get(i).getEndTime());
-			}
-			catch (NullPointerException e){
+			}catch (NullPointerException e){
 				end = "-";
 			}
 			try{
 				due = df.format(taskList.get(i).getDeadline());
-			}
-			catch (NullPointerException e){
+			}catch (NullPointerException e){
 				due = "-";
 			}
-			
 			
 			UITask entry = new UITask(id, description, priority, start, end, due);
 			uiTaskList.add(entry);
@@ -257,33 +242,23 @@ public class UIController implements Initializable {
 			String start;
 			String end;
 			String due;
-			/*if (archiveList.get(i).getStartTime() != null){
-				start = archiveList.get(i).getStartTime().getDateRepresentation();
-			}
-			if (archiveList.get(i).getEndTime() != null){
-				end = archiveList.get(i).getEndTime().getDateRepresentation();
-			}
-			if (archiveList.get(i).getDeadline() != null){
-				due = archiveList.get(i).getDeadline().getDateRepresentation();
-			}*/
+			
 			try{
 				start = archiveList.get(i).getStartTime().getDateRepresentation();
-			}
-			catch (NullPointerException e){
+			}catch (NullPointerException e){
 				start = "-";
 			}
 			try{
 				end = archiveList.get(i).getEndTime().getDateRepresentation();
-			}
-			catch (NullPointerException e){
+			}catch (NullPointerException e){
 				end = "-";
 			}
 			try{
 				due = archiveList.get(i).getDeadline().getDateRepresentation();
-			}
-			catch (NullPointerException e){
+			}catch (NullPointerException e){
 				due = "-";
 			}
+			
 			UITask entry = new UITask(id, description, priority, start, end, due);
 			uiArchiveList.add(entry);
 			System.out.println("Initialized: " + description + priority + start + end + due);
