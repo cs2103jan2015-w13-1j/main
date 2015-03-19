@@ -6,24 +6,46 @@
 
 package History;
 
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import Storage.StorageController;
 import Common.DATA;
 
 public class HistoryController implements InterfaceForHistory{
 
-	// add command to log
-	// undo command from log; determine the type of command and undo the changes made
-	// view log
+	private LinkedList<DATA> logList;
+	private StorageController storageControl;
+	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
+	
+	public HistoryController() {
+		this.logList = new LinkedList<DATA>();
+		storageControl = new StorageController();
+		logger.log(Level.INFO, "Log list is initialised.");
+	}
 
 	@Override
 	public boolean log() {
-		// TODO Auto-generated method stub
-		return false;
+		if (this.logList.size() == 5) {
+			this.logList.removeLast();
+		}
+		
+		DATA previousData = storageControl.getAllData();
+		this.logList.push(previousData);
+		if (this.logList.contains(previousData) == true) {
+			logger.log(Level.INFO, "Log previous DATA successfully.");
+			return true;
+		} else {
+			logger.log(Level.WARNING, "Log previous DATA was not successful.");
+			return false;
+		}
 	}
 
 	@Override
 	public DATA undo() {
-		// TODO Auto-generated method stub
-		return null;
+		DATA previousData = this.logList.pop();
+		return previousData;
 	}
 	
 }
