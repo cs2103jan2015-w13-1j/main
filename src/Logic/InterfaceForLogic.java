@@ -191,7 +191,7 @@ public interface InterfaceForLogic {
 	 * @param task a single task object which is the first task to be repeated.
 	 * 		The task must have a specific start and/or end time.
 	 * @param period the interval between each two recurrence tasks
-	 * @param recurrenceNum the number of recurrence tasks
+	 * @param recurrenceNum the number of recurrence tasks, should be at least 2
 	 * @return the updated toDoSortedList
 	 */
 	ToDoSortedList addRecurringTask(Task task, Date period, int recurrenceNum);
@@ -255,9 +255,10 @@ public interface InterfaceForLogic {
 	/**
 	 * This will archive all the linked recurrence tasks
 	 * @param task one member of the recurring tasks
+	 * @param finishedTime the time when the task is moved to archive
 	 * @return the updated toDoSortedList
 	 */
-	ToDoSortedList archiveAllTasks(Task task);
+	ToDoSortedList archiveAllTasks(Task task, Date finishedTime);
 	
 	
 	/*

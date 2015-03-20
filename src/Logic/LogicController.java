@@ -313,64 +313,140 @@ public class LogicController implements InterfaceForLogic{
 	}
 
 	@Override
-	public ToDoSortedList addRecurringTask(Task task, Date period,
-			int recurrenceNum) {
-		// TODO Auto-generated method stub
-		return null;
+	public ToDoSortedList addRecurringTask(Task task, Date period, int recurrenceNum) {
+		assert(task.getType().equals("generic"));
+		int id = task.getId();
+		int recurrenceId = data.getRecurrenceId();
+		task.setRecurrenceId(recurrenceId);
+		activeTaskList.addTask(task.getId(), task);
+		for (int i = 1; i < recurrenceNum ; i++) {
+			Task newTask = task.copyWithInterval(id + i, i * period.getTime());
+			newTask.setRecurrenceId(recurrenceId);
+			activeTaskList.addTask(id + i, newTask);
+		}
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		data.increamentRecurrenceId();
+		return toDoSortedList;
 	}
 
+	/**
+	 * @param task a recurrence task
+	 * @return an arraylist of task objects with the same recurring id
+	 */
+	private ArrayList<Task> getRecurringTasks(Task task) {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		for (Task t: activeTaskList.values()) {
+			if (t.getRecurrenceId() == task.getRecurrenceId()) {
+				tasks.add(t);
+			}
+		}
+		assert(tasks.size()>1);
+		return tasks;
+	}
+	
 	@Override
 	public ToDoSortedList deleteAllRecurringTask(Task task) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			activeTaskList.removeTaskbyId(t.getId());
+		}
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
+		return toDoSortedList;
 	}
 
 	@Override
-	public ToDoSortedList editAlldeadline(Task task, Date newDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public ToDoSortedList archiveAllTasks(Task task, Date finishedTime) {
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.moveToArchive(finishedTime);
+			int id = t.getId();
+			activeTaskList.removeTaskbyId(id);
+			archivedTaskList.addTask(id, t);
+		}
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
+		return toDoSortedList;
+	}
+	
+	@Override
+	public ToDoSortedList editAlldeadline(Task task, Date deadline) {
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.changeDeadline(deadline);
+		}
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
+		return toDoSortedList;
 	}
 
 	@Override
 	public ToDoSortedList editAllStartTime(Task task, Date newDate) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.changeStartTime(newDate);
+		}
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
+		return toDoSortedList;
 	}
 
 	@Override
 	public ToDoSortedList editAllEndTime(Task task, Date newDate) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.changeEndTime(newDate);
+		}
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
+		return toDoSortedList;
 	}
 
 	@Override
 	public ToDoSortedList editAllPriority(Task task, int newPriority) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.changePriority(newPriority);
+		}
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		DC.storeAllData(data);
+		return toDoSortedList;
 	}
 
 	@Override
 	public ToDoSortedList addAlltag(Task task, String tag) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			if (t.getTags().contains(tag)) {
+				return null;
+			}
+			t.addTag(tag);
+		}
+		DC.storeAllData(data);
+		return toDoSortedList;
 	}
 
 	@Override
 	public ToDoSortedList removeAlltag(Task task, String tag) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			if (!t.getTags().contains(tag)) {
+				return null;
+			}
+			t.removeTag(tag);
+		}
+		DC.storeAllData(data);
+		return toDoSortedList;
 	}
 
 	@Override
 	public ToDoSortedList editAllDescription(Task task, String description) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ToDoSortedList archiveAllTasks(Task task) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.changeDescription(description);
+		}
+		DC.storeAllData(data);
+		return toDoSortedList;
 	}
 
 	@Override

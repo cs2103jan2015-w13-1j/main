@@ -73,4 +73,7 @@ public class DATA {
 		this.recurrenceId = recurrenceId;
 	}
 	
+	public void increamentRecurrenceId() {
+		this.recurrenceId++;
+	}
 }

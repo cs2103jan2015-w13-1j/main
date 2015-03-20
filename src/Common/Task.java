@@ -320,9 +320,9 @@ public class Task implements Comparable<Task>{
 	 */
 	public static Comparator<Task> reverseDateThenPriority = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
-			int dateCompare = compareFinishTime(t1, t2);
-			if(dateCompare != 0) {
-				return dateCompare;
+			int finishCompare = compareFinishTime(t1, t2);
+			if(finishCompare != 0) {
+				return finishCompare;
 			}
 			else {
 				int priorityCompare = comparePriority(t1, t2);
@@ -330,7 +330,13 @@ public class Task implements Comparable<Task>{
 					return priorityCompare;
 				}
 				else {
-					return compareId(t2, t1);
+					int dateCompare = compareTime(t2, t1);
+					if(dateCompare != 0) {
+						return dateCompare;
+					}
+					else {
+						return compareId(t2, t1);
+					}
 				}
 			}
 		}
@@ -381,6 +387,28 @@ public class Task implements Comparable<Task>{
 	 */
 	public void setRecurrenceId(int recurrenceId) {
 		this.recurrenceId = recurrenceId;
+	}
+
+	/**
+	 * Copy a current task to a certain date with the interval period given
+	 * @param period the interval between this task to the copied task
+	 * @return a new Task object representing the copied task
+	 */
+	public Task copyWithInterval(int id, long period) {
+		Task task;
+		if (this.type.equals("meeting")) {
+			Date startTime = new Date();
+			Date endTime = new Date();
+			startTime.setTime(this.startTime.getTime() + period);
+			endTime.setTime(this.endTime.getTime() + period);
+			task = new Task(this.id, this.description, startTime, endTime, this.priority, this.tags);
+		}
+		else { // the type is a deadline task
+			Date deadline = new Date();
+			deadline.setTime(this.getDeadline().getTime()+period);
+			task = new Task(this.id, this.description, deadline, this.priority, this.tags);
+		}
+		return task;
 	}
 	
 //	@Override
