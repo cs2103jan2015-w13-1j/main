@@ -47,11 +47,9 @@ public class GeneralSortedList extends TreeSet<Task>{
 		}
 	}
 	
-	public void deleteTask(Task task) throws Exception {
-		boolean removed = this.remove(task);
-		if (!removed) {
-			throw new Exception("Task not inside the sorted list");
-		}
+	public void deleteTask(Task task){
+		assert(this.contains(task));
+		this.remove(task);
 	}
 	
 	/**
