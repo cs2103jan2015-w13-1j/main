@@ -1,5 +1,7 @@
 package GUI;
 
+import java.util.ArrayList;
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -10,14 +12,20 @@ public class UITask {
 	private final SimpleStringProperty start;
 	private final SimpleStringProperty end;
 	private final SimpleStringProperty due;
+	private SimpleStringProperty tags;
 	
-	public UITask(int id, String desc, String pri, String start, String end, String due){
+	public UITask(int id, String desc, String pri, String start, String end, String due, String tags){
 		this.id = new SimpleIntegerProperty(id);
 		this.description = new SimpleStringProperty(desc);
 		this.priority = new SimpleStringProperty(pri);
 		this.start = new SimpleStringProperty(start);
 		this.end = new SimpleStringProperty(end);
 		this.due = new SimpleStringProperty(due);
+		this.tags = new SimpleStringProperty(tags);
+	}
+	
+	public String getTags() {
+		return tags.get();
 	}
 	
 	public Integer getId(){
@@ -42,6 +50,10 @@ public class UITask {
 	
 	public String getDue(){
 		return due.get();
+	}
+	
+	public void setTags(String tags){
+		this.tags.set(tags);
 	}
 	
 	public void setId(int id){

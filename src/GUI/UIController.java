@@ -36,7 +36,7 @@ public class UIController implements Initializable {
 	@FXML
 	private Button directoryChooserBtn;
 	@FXML
-	private Text outputMessage;
+	private Text outputMessageText;
 	
 	@FXML
 	TableView<UITask> taskTable;
@@ -45,8 +45,6 @@ public class UIController implements Initializable {
 	@FXML
 	TableColumn<UITask, String> taskDescription;
 	@FXML
-	TableColumn<UITask, String> tags;
-	@FXML
 	TableColumn<UITask, String> taskPriority;
 	@FXML
 	TableColumn<UITask, String> taskStart;
@@ -54,6 +52,8 @@ public class UIController implements Initializable {
 	TableColumn<UITask, String> taskEnd;
 	@FXML
 	TableColumn<UITask, String> taskDue;
+	@FXML
+	TableColumn<UITask, String> taskTags;
 
 	@FXML
 	TableView<UITask> archiveTable;
@@ -82,6 +82,7 @@ public class UIController implements Initializable {
 		taskStart.setCellValueFactory(new PropertyValueFactory<UITask, String>("start"));
 		taskEnd.setCellValueFactory(new PropertyValueFactory<UITask, String>("end"));
 		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>("due"));
+		taskTags.setCellValueFactory(new PropertyValueFactory<UITask, String>("tags"));
 		taskTable.setItems(uiTaskList);
 		
 		taskList = commandController.initialiseTasks();
@@ -122,7 +123,8 @@ public class UIController implements Initializable {
 		
 		String message = commandController.executeCommand(input);
 		System.out.println("Output: " + message);
-		outputMessage = new Text(message);
+		outputMessageText = new Text();
+		outputMessageText.setText(message);
 		
 		if (firstCommand.equals("-goto")){
 			executeGoTo(splitCommand[1]);
@@ -225,9 +227,20 @@ public class UIController implements Initializable {
 				due = "-";
 			}
 			
-			UITask entry = new UITask(id, description, priority, start, end, due);
+			String tags = "";
+			
+			for(int j = 0; j < taskList.get(i).getTags().size(); j++){
+				if (j != 0) {
+					tags = tags + ", " + taskList.get(i).getTags().get(j);
+				}
+				else{
+					tags = taskList.get(i).getTags().get(j);
+				}
+			}
+			
+			UITask entry = new UITask(id, description, priority, start, end, due, tags);
 			uiTaskList.add(entry);
-			System.out.println("added: " + id + " " + description + priority + start + end + due);
+			System.out.println("added: " + id + " " + description + priority + start + end + due + tags);
 		}
 	}
 	
@@ -256,8 +269,8 @@ public class UIController implements Initializable {
 			}catch (NullPointerException e){
 				due = "-";
 			}
-			
-			UITask entry = new UITask(id, description, priority, start, end, due);
+			String tags = "";
+			UITask entry = new UITask(id, description, priority, start, end, due, tags);
 			uiArchiveList.add(entry);
 			System.out.println("Initialized: " + description + priority + start + end + due);
 		}

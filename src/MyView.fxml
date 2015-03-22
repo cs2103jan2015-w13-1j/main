@@ -27,7 +27,7 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Text fx:id="outputMessage" layoutX="174.0" layoutY="623.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="969.0">
+      <Text fx:id="outputMessageText" layoutX="174.0" layoutY="623.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="969.0">
          <font>
             <Font size="24.0" />
          </font>
@@ -80,7 +80,7 @@
                               <TableColumn fx:id="taskStart" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Start" />
                               <TableColumn fx:id="taskEnd" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="End" />
                               <TableColumn fx:id="taskDue" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Due" />
-                              <TableColumn fx:id="tags" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" style="-fx-text-alignment: center;" text="Tags" />
+                              <TableColumn fx:id="taskTags" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" style="-fx-text-alignment: center;" text="Tags" />
                            </columns>
                         </TableColumn>
                     </columns>
