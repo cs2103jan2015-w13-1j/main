@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.scene.control.Label;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import Common.Task;
@@ -36,7 +37,7 @@ public class UIController implements Initializable {
 	@FXML
 	private Button directoryChooserBtn;
 	@FXML
-	private Text outputMessageText;
+	private Label outputMessageText;
 	
 	@FXML
 	TableView<UITask> taskTable;
@@ -123,7 +124,6 @@ public class UIController implements Initializable {
 		
 		String message = commandController.executeCommand(input);
 		System.out.println("Output: " + message);
-		outputMessageText = new Text();
 		outputMessageText.setText(message);
 		
 		if (firstCommand.equals("-goto")){
