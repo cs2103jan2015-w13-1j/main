@@ -7,20 +7,21 @@ public class Date extends java.util.Date{
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		return df.format(this);
 	}
-	
-	public Date(String interval) {
-		super();
+
+	/**
+	 * @param interval a string indicating the interval
+	 * @return the number of miliseconds representing the interval
+	 */
+	public static long getMiliseconds(String interval) {
 		switch(interval) {
 		case "oneHour":
-			this.setTime(3600000);
-			break;
+			return 3600000;
 		case "oneDay":
-			this.setTime(86400000);
-			break;
+			return 86400000;
 		case "oneWeek":
-			this.setTime(604800000);
-			break;
+			return 604800000;
 		}
+		return 0;
 	}
 	
 	public Date() {

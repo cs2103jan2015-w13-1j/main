@@ -14,7 +14,7 @@ import org.junit.Test;
 
 
 public class LogicControllerTest {
-	LogicController lc = new LogicController();
+	static LogicController lc = new LogicController();
 
 	
 	static String tag1 = "tagA";
@@ -63,6 +63,8 @@ public class LogicControllerTest {
 		d5.setTime(777677777);
 		d6.setTime(776677777);
 		
+		
+		lc.isTesting = true;
 	}
 	@Before
 	public void setUp() throws Exception {
@@ -109,7 +111,6 @@ public class LogicControllerTest {
 		tags5.clear();
 		
 		lc.data.clearAllData();
-		lc.DC.storeAllData(lc.data);
 	}
 	
 	/**

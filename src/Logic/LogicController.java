@@ -13,12 +13,14 @@ import Storage.StorageController;
 
 public class LogicController implements InterfaceForLogic{
 	
+	protected boolean isTesting = false;
+	
 	protected StorageController DC = new StorageController();
 	protected DATA data;
 	
 	protected TaskList activeTaskList;
 	protected TaskList archivedTaskList;
-
+	
 	protected ToDoSortedList toDoSortedList;
 	protected HistoryController historyController;
 	
@@ -44,9 +46,11 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	private ToDoSortedList storeAndReturnToDo() {
-		data.setActiveTaskList(activeTaskList);
-		data.setArchivedTaskList(archivedTaskList);
-		DC.storeAllData(data);
+		if (!isTesting) {
+			data.setActiveTaskList(activeTaskList);
+			data.setArchivedTaskList(archivedTaskList);
+			DC.storeAllData(data);
+		}
 		return toDoSortedList;
 	}
 	
@@ -55,10 +59,19 @@ public class LogicController implements InterfaceForLogic{
 		return storeAndReturnToDo();
 	}
 	
+	/**
+	 * Log the current data object to history
+	 */
+	private void logToHistory() {
+		if (!isTesting) {
+			historyController.log();
+		}
+	}
+	
 	@Override
 	public ToDoSortedList addTask(Task task) {
 		assert(!toDoSortedList.contains(task));	
-		historyController.log();
+		logToHistory();
 		
 		toDoSortedList.add(task);
 		activeTaskList.addTask(task.getId(), task);
@@ -68,7 +81,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList addDeadLine(Task task, Date deadline) {
 		assert(task.getType().equals("generic"));
-		historyController.log();
+		logToHistory();
 		
 		task.addDeadline(deadline);
 		task.setType("deadline");
@@ -78,7 +91,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList editDeadline(Task task, Date deadline) {
 		assert (task.getType().equals("deadline"));
-		historyController.log();
+		logToHistory();
 		
 		task.changeDeadline(deadline);
 		return update_Save_ReturnTodo();
@@ -87,7 +100,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList addStartAndEndTime(Task task, Date start, Date end) {
 		assert(task.getType().equals("generic"));
-		historyController.log();
+		logToHistory();
 		
 		task.addStartAndEndTime(start, end);
 		task.setType("meeting");
@@ -98,7 +111,7 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList editStartTime(Task task, Date start) {
 		assert (task.getType().equals("meeting"));
 		assert (start.compareTo(task.getEndTime()) < 0);
-		historyController.log();
+		logToHistory();
 		
 		task.changeStartTime(start);
 		return update_Save_ReturnTodo();
@@ -108,7 +121,7 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList editEndTime(Task task, Date end) {
 		assert (task.getType().equals("meeting"));
 		assert (task.getStartTime().compareTo(end) < 0);
-		historyController.log();
+		logToHistory();
 		
 		task.changeEndTime(end);
 		return storeAndReturnToDo();
@@ -116,7 +129,7 @@ public class LogicController implements InterfaceForLogic{
 	
 	@Override
 	public ToDoSortedList editDescription(Task task, String newDescription) {
-		historyController.log();
+		logToHistory();
 		
 		task.changeDescription(newDescription);
 		return storeAndReturnToDo();
@@ -125,7 +138,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList editPriority(Task task, int priority) {
 		assert (priority <= 10);
-		historyController.log();
+		logToHistory();
 		
 		task.changePriority(priority);
 		return update_Save_ReturnTodo();
@@ -134,7 +147,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList addTag(Task task, String tag) {
 		assert (!task.getTags().contains(tag));
-		historyController.log();
+		logToHistory();
 		
 		task.addTag(tag);
 		return storeAndReturnToDo();
@@ -143,7 +156,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList removeTag(Task task, String tag) {
 		assert (task.getTags().contains(tag));
-		historyController.log();
+		logToHistory();
 		
 		task.removeTag(tag);
 		return storeAndReturnToDo();
@@ -153,7 +166,7 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList moveToArchive(Task task, Date finishedTime) {
 		assert (activeTaskList.containsValue(task));
 		assert (toDoSortedList.contains(task));
-		historyController.log();
+		logToHistory();
 		
 		task.moveToArchive(finishedTime);
 		int id = task.getId();
@@ -166,7 +179,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList deleteTask(Task task) {
 		assert(activeTaskList.containsValue(task) || archivedTaskList.containsValue(task));
-		historyController.log();
+		logToHistory();
 		
 		if (!task.isArchived()){
 			toDoSortedList.deleteTask(task);
@@ -283,7 +296,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ArchiveSortedList deleteFromArchive(Task task) {
 		assert(archivedTaskList.containsValue(task));
-		historyController.log();
+		logToHistory();
 		
 		archivedTaskList.removeTaskbyId(task.getId());
 		DC.storeAllData(data);
@@ -293,7 +306,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum) {
 		assert(!task.getType().equals("generic"));
-		historyController.log();
+		logToHistory();
 		
 		int id = task.getId();
 		int recurrenceId = data.getRecurrenceId();
@@ -328,7 +341,7 @@ public class LogicController implements InterfaceForLogic{
 	// Only for tasks in the active task list
 	public ToDoSortedList deleteAllRecurringTask(Task task) {
 		assert(activeTaskList.containsValue(task));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
@@ -340,7 +353,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList archiveAllTasks(Task task, Date finishedTime) {
 		assert(activeTaskList.containsValue(task));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
@@ -356,7 +369,7 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList editAlldeadline(Task task, Date deadline) {
 		assert(activeTaskList.containsValue(task));
 		assert(task.getType().equals("deadline"));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
@@ -369,7 +382,7 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList editAllStartTime(Task task, Date newDate) {
 		assert(activeTaskList.containsValue(task));
 		assert(task.getType().equals("meeting"));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
@@ -382,7 +395,7 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList editAllEndTime(Task task, Date newDate) {
 		assert(activeTaskList.containsValue(task));
 		assert(task.getType().equals("meeting"));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
@@ -394,7 +407,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList editAllPriority(Task task, int newPriority) {
 		assert(activeTaskList.containsValue(task));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
@@ -406,7 +419,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList addAlltag(Task task, String tag) {
 		assert(!task.getTags().contains(tag));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
@@ -421,7 +434,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList removeAlltag(Task task, String tag) {
 		assert(task.getTags().contains(tag));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
@@ -436,7 +449,7 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public ToDoSortedList editAllDescription(Task task, String description) {
 		assert(activeTaskList.containsValue(task));
-		historyController.log();
+		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
