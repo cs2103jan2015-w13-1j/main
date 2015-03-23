@@ -411,11 +411,10 @@ public class Task implements Comparable<Task>{
 		return task;
 	}
 	
-//	@Override
-//	public boolean equals(Object other) {
-////		System.out.println(this.hashCode() +" "+other.hashCode());
-//		return this.hashCode() == other.hashCode();
-//	}
+	@Override
+	public boolean equals(Object other) {
+		return this.toString().equals(other.toString());
+	}
 //	
 //	@Override
 //	public int hashCode() {
