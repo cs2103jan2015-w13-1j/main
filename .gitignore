@@ -8,4 +8,6 @@ src/Testing.java
 
 src/Logic/Testing.java
 
-/tables/
+/tables/utility.json
+
+/tables/storage.json

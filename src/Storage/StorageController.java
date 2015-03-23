@@ -25,6 +25,7 @@ import org.json.simple.parser.ParseException;
 
 import Common.DATA;
 import Common.Date;
+import Common.Motivator;
 import Common.Task;
 import Common.TaskList;
 
@@ -43,6 +44,7 @@ public class StorageController implements InterfaceForStorage {
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
 	
 	private DATA data;
+	private Motivator motivator = new Motivator();
 	private StorageDatastore datastore = new StorageDatastore();
 	
 	public static void main(String[] args) {
@@ -50,6 +52,7 @@ public class StorageController implements InterfaceForStorage {
 //		control.setFileDirectory("tables/");
 		control.testForStoreFunction();
 //		control.getAllData();
+//		System.out.println(control.getMotivationQuotes());
 	}
 	
 	/**
@@ -414,5 +417,10 @@ public class StorageController implements InterfaceForStorage {
 	 */
 	public void setData(DATA data) {
 		this.data = data;
+	}
+
+	@Override
+	public String getMotivationQuotes() {
+		return motivator.getRandomQuotes();
 	}
 }
