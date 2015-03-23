@@ -29,4 +29,9 @@ public interface InterfaceForStorage {
 	 * @return the current relative path of the directory
 	 */
 	String getFileDirectory();
+	
+	/**
+	 * @return a random motivation quotes
+	 */
+	String getMotivationQuotes();
 }

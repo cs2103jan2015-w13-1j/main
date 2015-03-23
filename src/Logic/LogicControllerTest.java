@@ -5,6 +5,7 @@ import java.util.*;
 
 import Common.*;
 import Common.Date;
+import History.HistoryController;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 public class LogicControllerTest {
 	LogicController lc = new LogicController();
+
 	
 	static String tag1 = "tagA";
 	static String tag2 = "tagB";
@@ -78,9 +80,12 @@ public class LogicControllerTest {
 
 		tags5.add(tag2);
 		
-		lc.activeTaskList = new TaskList();
-		lc.archivedTaskList = new TaskList();
-		lc.toDoSortedList = new ToDoSortedList();
+		lc.initialise();
+		lc.data = new DATA();
+//		lc.historyController = new HistoryController();
+//		lc.activeTaskList = new TaskList();
+//		lc.archivedTaskList = new TaskList();
+//		lc.toDoSortedList = new ToDoSortedList();
 		
 		t1 = new Task(1, "do a", 3, null);
 		t2 = new Task(2, "get b", 6, null);
@@ -242,6 +247,7 @@ public class LogicControllerTest {
 		lc.addTask(t2);
    		lc.addDeadLine(t1, d1);
 		lc.addStartAndEndTime(t2, d1, d2);
+		//System.out.println(lc.activeTaskList);
 		assertEquals(2, lc.activeTaskList.size());
 		assertEquals(t1, lc.activeTaskList.get(1));
 		assertEquals(t2, lc.activeTaskList.get(2));

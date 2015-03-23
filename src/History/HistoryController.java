@@ -44,6 +44,10 @@ public class HistoryController implements InterfaceForHistory{
 
 	@Override
 	public DATA undo() {
+		if (this.logList.isEmpty() == true) {
+			logger.log(Level.WARNING, "Undo not successful. No previous command entry found.");
+			return null;
+		}
 		DATA previousData = this.logList.pop();
 		return previousData;
 	}

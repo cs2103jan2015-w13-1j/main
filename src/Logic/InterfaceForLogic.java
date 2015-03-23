@@ -194,7 +194,7 @@ public interface InterfaceForLogic {
 	 * @param recurrenceNum the number of recurrence tasks, should be at least 2
 	 * @return the updated toDoSortedList
 	 */
-	ToDoSortedList addRecurringTask(Task task, Date period, int recurrenceNum);
+	ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum);
 	
 	/**
 	 * This will delete all the linked recurrence tasks
