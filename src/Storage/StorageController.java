@@ -81,6 +81,8 @@ public class StorageController implements InterfaceForStorage {
 		Gson gson = new Gson();
 		// retrieve serial number and store into data
 		newData.setSerialNumber(gson.fromJson(String.valueOf(dataJSON.get("serialNumber")) , int.class));
+		// retrieve recurrence ID and store into data
+		newData.setRecurrenceId(gson.fromJson(String.valueOf(dataJSON.get("recurrenceId")) , int.class));
 		TaskList activeTaskList = getTaskListFromJSON(dataJSON, STRING_ACTIVE_TASK_LIST);
 		newData.setActiveTaskList(activeTaskList);
 		TaskList archivedTaskList = getTaskListFromJSON(dataJSON, STRING_ARCHIVED_TASK_LIST);
@@ -302,6 +304,7 @@ public class StorageController implements InterfaceForStorage {
 		this.data.setActiveTaskList(new TaskList());
 		this.data.setArchivedTaskList(new TaskList());
 		this.data.setSerialNumber(STARTING_INDEX);
+		this.data.setRecurrenceId(STARTING_INDEX);
 		return this.data;
 	}
 
@@ -376,6 +379,7 @@ public class StorageController implements InterfaceForStorage {
 		dummyMeetingTask2.moveToArchive(deadline3);
 
 		data.setSerialNumber(10); // hard-coded serial number
+		data.setRecurrenceId(STARTING_INDEX); // hard-coded recurrence id
 
 		data.getActiveTaskList().addTask(dummyGenericTask1.getId(), dummyGenericTask1);
 		data.getActiveTaskList().addTask(dummyGenericTask3.getId(), dummyGenericTask3);
