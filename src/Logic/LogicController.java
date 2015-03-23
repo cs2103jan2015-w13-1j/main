@@ -26,6 +26,7 @@ public class LogicController implements InterfaceForLogic{
 	public void initialise() {
 		data = DC.getAllData();
 		historyController = new HistoryController();
+		
 		loadData();
 	}
 	
@@ -43,6 +44,8 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	private ToDoSortedList storeAndReturnToDo() {
+		data.setActiveTaskList(activeTaskList);
+		data.setArchivedTaskList(archivedTaskList);
 		DC.storeAllData(data);
 		return toDoSortedList;
 	}
@@ -444,8 +447,13 @@ public class LogicController implements InterfaceForLogic{
 
 	@Override
 	public boolean undo() {
-		this.data = historyController.undo();
+		DATA data = historyController.undo();
+		if (data == null) {
+			return false;
+		}
+		this.data = data;
 		loadData();
+		DC.storeAllData(data);
 		return true;
 	}
 	

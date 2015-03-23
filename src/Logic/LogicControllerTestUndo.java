@@ -13,7 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class LogicControllerTest {
+public class LogicControllerTestUndo {
 	LogicController lc = new LogicController();
 
 	
@@ -81,6 +81,7 @@ public class LogicControllerTest {
 		tags5.add(tag2);
 		
 		lc.initialise();
+		lc.data = new DATA();
 //		lc.historyController = new HistoryController();
 //		lc.activeTaskList = new TaskList();
 //		lc.archivedTaskList = new TaskList();
@@ -143,6 +144,12 @@ public class LogicControllerTest {
 		assertEquals(true, lc.toDoSortedList.contains(t2));
 		assertEquals("2\n1\n", lc.toDoSortedList.toString());
 		assertEquals(0, lc.archivedTaskList.size());
+		lc.undo();
+		assertEquals(1, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(1, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(0, lc.archivedTaskList.size());
 	}
 	
 	/**
@@ -171,7 +178,9 @@ public class LogicControllerTest {
 	@Test
 	public void testAdddeadline() {
 		lc.addTask(t1);
+		String s1 = t1.toString();
 		lc.addTask(t2);
+		String s2 = t2.toString();
 		lc.addDeadLine(t1, d1);
 		assertEquals(2, lc.activeTaskList.size());
 		assertEquals(t1, lc.activeTaskList.get(1));
@@ -183,6 +192,16 @@ public class LogicControllerTest {
 		assertEquals(0, lc.archivedTaskList.size());
 		assertEquals("2\n1\n", lc.sortByPriority().toString());
 		assertEquals(d1, t1.getDeadline());
+		lc.undo();
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(s1, lc.activeTaskList.get(1).toString());
+		assertEquals(t2, lc.activeTaskList.get(2));
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals("2\n1\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+		
 	}
 	
 	/**
@@ -249,6 +268,7 @@ public class LogicControllerTest {
 		lc.addTask(t2);
    		lc.addDeadLine(t1, d1);
 		lc.addStartAndEndTime(t2, d1, d2);
+		//System.out.println(lc.activeTaskList);
 		assertEquals(2, lc.activeTaskList.size());
 		assertEquals(t1, lc.activeTaskList.get(1));
 		assertEquals(t2, lc.activeTaskList.get(2));
@@ -287,11 +307,9 @@ public class LogicControllerTest {
 		lc.addTask(t1);
 		lc.addTask(t2);
 		lc.addTask(t3);
-		
 		assertEquals(3, lc.activeTaskList.size());
 		assertEquals(t1, lc.activeTaskList.get(1));
 		assertEquals(t2, lc.activeTaskList.get(2));
-		
 		assertEquals(3, lc.toDoSortedList.size());
 		assertEquals(true, lc.toDoSortedList.contains(t1));
 		assertEquals(true, lc.toDoSortedList.contains(t2));

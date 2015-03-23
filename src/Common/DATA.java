@@ -76,4 +76,12 @@ public class DATA {
 	public void increamentRecurrenceId() {
 		this.recurrenceId++;
 	}
+	
+	/**
+	 * For testing purpose only
+	 */
+	public void clearAllData() {
+		this.activeTaskList = new TaskList();
+		this.archivedTaskList = new TaskList();
+	}
 }
