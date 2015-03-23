@@ -13,8 +13,8 @@ import Storage.StorageController;
 
 public class LogicController implements InterfaceForLogic{
 	
-	private StorageController DC = new StorageController();
-	private DATA data;
+	protected StorageController DC = new StorageController();
+	protected DATA data;
 	
 	protected TaskList activeTaskList;
 	protected TaskList archivedTaskList;
