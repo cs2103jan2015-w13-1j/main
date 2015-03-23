@@ -136,19 +136,44 @@ public class CommandController implements InterfaceForParser {
 			}case(8):{
 				result = refreshCommand();
 				break;
+			}case(9):{
+				result = undoCommand();
+				break;
 			}
 		}
 		return result;
 	}
+	private String undoCommand() {
+		boolean isSuccessful = logicController.undo();
+		refreshCurrent();
+		refreshArchive();
+		String result = new String();
+		if(isSuccessful){
+			return result = "Undo successful";
+		} else{
+			return result = "Undo unsuccessful, maybe nothing to undo";
+		}
+
+	}
+	private void refreshArchive() {
+		currentArchives.clear();
+		ArchiveSortedList retrievedArchiveList = logicController.viewArchiveTasks();
+		for(Task task : retrievedArchiveList){
+			currentArchives.add(task);
+		}
+	}
+	private void refreshCurrent() {
+		currentActiveTasks.clear();
+		ToDoSortedList retrievedSortedList = logicController.viewActiveTasks();
+		for(Task task : retrievedSortedList){
+			currentActiveTasks.add(task);
+		}
+	}
 	String refreshCommand() {
 		String result = "Display refreshed to current tasks";
-		ToDoSortedList retrievedCurrent = logicController.viewActiveTasks();
 		
 		try{
-			currentActiveTasks.clear();
-			for(Task task : retrievedCurrent){
-				currentActiveTasks.add(task);
-			}
+			refreshCurrent();
 		}catch(NullPointerException e){
 			return result = "No active tasks to display";
 		}

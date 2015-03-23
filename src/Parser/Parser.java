@@ -72,6 +72,9 @@ public class Parser {
 			}case("-refresh"):{
 				commandNum = 8;
 				break;
+			}case("-undo"):{
+				commandNum = 9;
+				break;
 			}
 			default:
 				System.out.println("Invalid command");
