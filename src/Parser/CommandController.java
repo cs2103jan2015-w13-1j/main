@@ -426,9 +426,13 @@ public class CommandController implements InterfaceForParser {
 		boolean isGenericTask = true; //default is Generic Task
 		boolean isDeadlineTask =false;
 		boolean isMeetingTask = false;
+		boolean isRecurring = false;
 		ToDoSortedList retrievedList = new ToDoSortedList();
 		ArrayList<String> tags = new ArrayList<String>();
 		ArrayList<String> dateAsString = new ArrayList<String>();
+		String recurringPeriod = new String();
+		long recurringTime = 0;
+		int recurrenceNum = 0;
 		
 		//date, priority and tags optional
 		//look through remaining input for more commands
@@ -454,6 +458,24 @@ public class CommandController implements InterfaceForParser {
 				}
 				isGenericTask = false;
 				break;
+			}else if(input[i].equalsIgnoreCase("-recurring")){
+				//syntax -recurring <recurringNum> <recurringPeriod>
+				if(isGenericTask){
+					return result = "No date specified, cannot be recurring";
+				}else{
+					isRecurring = true;
+					
+					try{
+						if(input[i+1].charAt(0)!='-'){
+							recurrenceNum = Integer.parseInt(input[i+1]);
+							recurringPeriod = input[i+2];
+						}else{
+							return result = "No recurring period stated";
+						}
+					}catch(ArrayIndexOutOfBoundsException | NumberFormatException e){
+						return result = "Error in command format. Try -recurring <num> <period>";
+					}
+				}
 			}else{
 				//i.e no other command, add the rest as description
 				description = description.concat(" " + input[i]).trim();
@@ -500,6 +522,42 @@ public class CommandController implements InterfaceForParser {
 			}
 		}
 		
+		//parse the recurring portion
+		
+		if(recurringPeriod.length()>0){
+			if(recurringPeriod.equalsIgnoreCase("weekly")){
+				if(isDeadlineTask){
+					setPeriodOfOccurence(deadLine, recurringTime,Calendar.DATE,7); 
+				}else if(isMeetingTask){
+					setPeriodOfOccurence(startTime, recurringTime,Calendar.DATE,7); 
+				}
+			}else if(recurringPeriod.equalsIgnoreCase("daily")){
+				if(isDeadlineTask){
+					setPeriodOfOccurence(deadLine, recurringTime,Calendar.DATE,1); 
+				}else if(isMeetingTask){
+					setPeriodOfOccurence(startTime, recurringTime,Calendar.DATE,1); 
+				}
+			}else if(recurringPeriod.equalsIgnoreCase("hourly")){
+				if(isDeadlineTask){
+					setPeriodOfOccurence(deadLine, recurringTime,Calendar.HOUR,1); 
+				}else if(isMeetingTask){
+					setPeriodOfOccurence(endTime, recurringTime,Calendar.HOUR,1); 
+				}
+			}else if(recurringPeriod.equalsIgnoreCase("monthly")){
+				if(isDeadlineTask){
+					setPeriodOfOccurence(deadLine, recurringTime,Calendar.MONTH,1); 
+				}else if(isMeetingTask){
+					setPeriodOfOccurence(startTime, recurringTime,Calendar.MONTH,1); 
+				}
+			}else if(recurringPeriod.equalsIgnoreCase("yearly")){
+				if(isDeadlineTask){
+					setPeriodOfOccurence(deadLine, recurringTime,Calendar.YEAR,1); 
+				}else if(isMeetingTask){
+					setPeriodOfOccurence(startTime, recurringTime,Calendar.YEAR,1); 
+				}
+			}
+		}
+		
 		//format for tasks: integer ID, String description, int priority, ArrayList<String> tags,archived
 		if(isGenericTask){
 		//floating task
@@ -508,11 +566,19 @@ public class CommandController implements InterfaceForParser {
 		}else if(isDeadlineTask){
 		//deadline task
 			Task newDeadlineTask = new Task(newMaxID, description,deadLine, priority,tags);
-			retrievedList = logicController.addTask(newDeadlineTask);
+			if(isRecurring){
+				retrievedList = logicController.addRecurringTask(newDeadlineTask, recurringTime, recurrenceNum);
+			}else{
+				retrievedList = logicController.addTask(newDeadlineTask);
+			}
 		}else if(isMeetingTask){
 		//meeting task
 			Task newMeetingTask = new Task(newMaxID, description, startTime, endTime, priority, tags);
-			retrievedList = logicController.addTask(newMeetingTask);
+			if(isRecurring){
+				retrievedList = logicController.addRecurringTask(newMeetingTask, recurringTime, recurrenceNum);
+			}else{
+				retrievedList = logicController.addTask(newMeetingTask);
+			}
 		}
 		
 		result = "New task added: " + description;
@@ -526,5 +592,11 @@ public class CommandController implements InterfaceForParser {
 		
 		newMaxID++;
 		return result;
+	}
+	private void setPeriodOfOccurence(Date dueDate, long recurringTime, int type, int addValue) {
+		Calendar nextOccurence = Calendar.getInstance();
+		nextOccurence.setTime(dueDate);
+		nextOccurence.add(type, addValue);
+		recurringTime = (nextOccurence.getTimeInMillis()-dueDate.getTime());
 	}
 }
