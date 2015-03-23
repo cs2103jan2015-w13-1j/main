@@ -15,6 +15,7 @@ import Common.DATA;
 
 public class HistoryController implements InterfaceForHistory{
 
+	private final int SIZE = 10;
 	private LinkedList<DATA> logList;
 	private StorageController storageControl;
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
@@ -27,7 +28,7 @@ public class HistoryController implements InterfaceForHistory{
 
 	@Override
 	public boolean log() {
-		if (this.logList.size() == 5) {
+		if (this.logList.size() == SIZE) {
 			this.logList.removeLast();
 		}
 		
