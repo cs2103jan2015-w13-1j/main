@@ -288,7 +288,7 @@ public class LogicController implements InterfaceForLogic{
 	}
 
 	@Override
-	public ToDoSortedList addRecurringTask(Task task, Date period, int recurrenceNum) {
+	public ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum) {
 		assert(!task.getType().equals("generic"));
 		historyController.log();
 		
@@ -297,7 +297,7 @@ public class LogicController implements InterfaceForLogic{
 		task.setRecurrenceId(recurrenceId);
 		activeTaskList.addTask(task.getId(), task);
 		for (int i = 1; i < recurrenceNum ; i++) {
-			Task newTask = task.copyWithInterval(id + i, i * period.getTime());
+			Task newTask = task.copyWithInterval(id + i, i * period);
 			newTask.setRecurrenceId(recurrenceId);
 			activeTaskList.addTask(id + i, newTask);
 		}
