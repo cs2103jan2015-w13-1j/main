@@ -17,12 +17,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.Text;
 import javafx.scene.control.Label;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import Common.Task;
-import Parser.CommandController;;
+import Parser.CommandController;
+import Storage.StorageController;
 
 public class UIController implements Initializable {
 	
@@ -38,6 +38,8 @@ public class UIController implements Initializable {
 	private Button directoryChooserBtn;
 	@FXML
 	private Label outputMessageText;
+	@FXML
+	private Label motivationalQuote;
 	
 	@FXML
 	TableView<UITask> taskTable;
@@ -67,6 +69,7 @@ public class UIController implements Initializable {
 	private int archiveNumber = 1;
 	
 	CommandController commandController = new CommandController();
+	StorageController storageController = new StorageController();
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 	
@@ -96,6 +99,7 @@ public class UIController implements Initializable {
 		archiveList = commandController.initialiseArchives();
 		addToArchiveDisplay();
 		
+		motivationalQuote.setText(storageController.getMotivationQuotes());
 	}
 	
 	public void chooseDirectory(ActionEvent event){
@@ -123,75 +127,28 @@ public class UIController implements Initializable {
 		String firstCommand = splitCommand[0];
 		
 		String message = commandController.executeCommand(input);
-		System.out.println("Output: " + message);
-		outputMessageText.setText(message);
 		
 		if (firstCommand.equals("-goto")){
 			executeGoTo(splitCommand[1]);
-		}
-		else if (firstCommand.equals("-add")){
-			
-			System.out.println("Ading tasks in progress...");
-			taskList = commandController.returnTasks();
-			addToTaskDisplay();
-			
-			System.out.println(taskList);			
-		}
-		else if (firstCommand.equals("-archive")){
-			
-			int deleteIndex = Integer.parseInt(splitCommand[1]);
-			
-			taskList = commandController.returnTasks();
-			addToTaskDisplay();
-			archiveList = commandController.returnArchive();
-			addToArchiveDisplay();
-			
-		}
-		else if (firstCommand.equals("-undo")){
-						
-			taskList = commandController.returnTasks();
-			addToTaskDisplay();
-			archiveList = commandController.returnArchive();
-			addToArchiveDisplay();
-			
-		}
-		else if (firstCommand.equals("-delete")){
-						
-			taskList = commandController.returnTasks();
-			addToTaskDisplay();
-			archiveList = commandController.returnArchive();
-			addToArchiveDisplay();
-			
-		}
-		else if (firstCommand.equals("-search")){
-			
-			taskList = commandController.returnTasks();
-			addToTaskDisplay();
-			archiveList = commandController.returnArchive();
-			addToArchiveDisplay();
-			
-		}
-		else if (firstCommand.equals("-change")){
-			
-			taskList = commandController.returnTasks();
-			addToTaskDisplay();
-			archiveList = commandController.returnArchive();
-			addToArchiveDisplay();
-			
-		}
-		else if (firstCommand.equals("-refresh")){
-			
-			taskList = commandController.returnTasks();
-			addToTaskDisplay();
-			archiveList = commandController.returnArchive();
-			addToArchiveDisplay();
-			
+			message = "You are at the " + splitCommand[1] + " panel";
 		}
 		else if (firstCommand.equals("-exit")){
 		    Stage stage = (Stage) commandField.getScene().getWindow();
 		    stage.close();
 		}
+		else if (firstCommand.equals("-changemotto")){
+			message = "New motto for the day!";
+			String quote = storageController.getMotivationQuotes();
+			motivationalQuote.setText(quote);
+		}
+		else{
+			taskList = commandController.returnTasks();
+			addToTaskDisplay();
+			archiveList = commandController.returnArchive();
+			addToArchiveDisplay();
+		}
 		
+		outputMessageText.setText(message);
 	}
 	
 	private void addToTaskDisplay() {

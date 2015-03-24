@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: #f7f7f7;" styleClass="test" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.UIController">
    <children>
-      <Label alignment="BOTTOM_LEFT" style="-fx-font-weight: BOLD; -fx-font-size: 59;" text="HeyBuddy!" textFill="#3b5998">
+      <Label alignment="BOTTOM_LEFT" layoutX="1.0" layoutY="-4.0" style="-fx-font-weight: BOLD; -fx-font-size: 59;" text="HeyBuddy!" textFill="#3b5998">
          <font>
             <Font size="59.0" />
          </font>
@@ -102,6 +102,11 @@
       <Label fx:id="outputMessageText" layoutX="174.0" layoutY="600.0" prefHeight="35.0" prefWidth="969.0">
          <font>
             <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="motivationalQuote" layoutX="348.0" layoutY="10.0" prefHeight="99.0" prefWidth="779.0" style="-fx-font-style: italic; -fx-font-size: 20; -fx-font-weight: BOLD;" textFill="#597fbf" wrapText="true">
+         <font>
+            <Font size="28.0" />
          </font>
       </Label>
    </children>
