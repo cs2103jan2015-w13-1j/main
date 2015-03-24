@@ -110,7 +110,7 @@ public class LogicControllerTestRecurrence {
 		tags5.clear();
 		
 		lc.data.clearAllData();
-		lc.DC.storeAllData(lc.data);
+		lc.storageController.storeAllData(lc.data);
 	}
 	
 	/**

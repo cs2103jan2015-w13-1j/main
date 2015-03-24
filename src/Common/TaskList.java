@@ -13,6 +13,7 @@ public class TaskList extends HashMap<Integer, Task>{
 				throw new Exception();
 			} catch (Exception e) {
 				System.out.println("ID: "+id+" already exists in the tasklist");
+				System.out.println(task);
 				e.printStackTrace();
 				return;
 			}

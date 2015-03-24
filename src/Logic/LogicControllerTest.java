@@ -64,9 +64,11 @@ public class LogicControllerTest {
 		d6.setTime(776677777);
 		
 		lc.isTesting = true;
+		
 	}
 	@Before
 	public void setUp() throws Exception {
+		
 		tags1.add(tag1);
 		
 		tags2.add(tag1);
@@ -82,6 +84,11 @@ public class LogicControllerTest {
 		tags5.add(tag2);
 		
 		lc.initialise();
+//		lc.data.clearAllData();
+//		lc.loadData();
+//		System.out.println("here");
+//		System.out.println(lc.data.getActiveTaskList());
+//		System.out.println(lc.activeTaskList);
 //		lc.historyController = new HistoryController();
 //		lc.activeTaskList = new TaskList();
 //		lc.archivedTaskList = new TaskList();
@@ -110,6 +117,7 @@ public class LogicControllerTest {
 		tags5.clear();
 		
 		lc.data.clearAllData();
+//		lc.storageController.storeAllData(lc.data);
 	}
 	
 	/**
@@ -117,6 +125,7 @@ public class LogicControllerTest {
 	 */
 	@Test
 	public void testAdd1() {
+		System.out.println(lc.activeTaskList);
 		lc.addTask(t1);
 		assertEquals(1, lc.activeTaskList.size());
 		assertEquals(t1, lc.activeTaskList.get(1));
