@@ -317,9 +317,8 @@ public class LogicController implements InterfaceForLogic{
 			newTask.setRecurrenceId(recurrenceId);
 			activeTaskList.addTask(id + i, newTask);
 		}
-		toDoSortedList.updateTaskOrder(activeTaskList);
 		data.increamentRecurrenceId();
-		return toDoSortedList;
+		return update_Save_ReturnTodo();
 	}
 
 	/**
