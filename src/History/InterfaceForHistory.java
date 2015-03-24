@@ -16,7 +16,7 @@ public interface InterfaceForHistory {
 	boolean log();
 	
 	/**
-	 * @return previous DATA object if logList is not empty. Otherwise, return null
+	 * @return previous DATA object 
 	 */
 	DATA undo();
 }

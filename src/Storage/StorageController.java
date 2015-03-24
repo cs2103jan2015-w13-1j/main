@@ -43,7 +43,7 @@ public class StorageController implements InterfaceForStorage {
 
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
 	
-	private DATA data = null;
+	private DATA data;
 	private Motivator motivator = new Motivator();
 	private StorageDatastore datastore = new StorageDatastore();
 	
@@ -86,9 +86,9 @@ public class StorageController implements InterfaceForStorage {
 		newData.setSerialNumber(gson.fromJson(String.valueOf(dataJSON.get("serialNumber")) , int.class));
 		// retrieve recurrence ID and store into data
 		newData.setRecurrenceId(gson.fromJson(String.valueOf(dataJSON.get("recurrenceId")) , int.class));
-		TaskList activeTaskList = getTaskListFromJSONByListType(dataJSON, STRING_ACTIVE_TASK_LIST);
+		TaskList activeTaskList = getTaskListFromJSON(dataJSON, STRING_ACTIVE_TASK_LIST);
 		newData.setActiveTaskList(activeTaskList);
-		TaskList archivedTaskList = getTaskListFromJSONByListType(dataJSON, STRING_ARCHIVED_TASK_LIST);
+		TaskList archivedTaskList = getTaskListFromJSON(dataJSON, STRING_ARCHIVED_TASK_LIST);
 		newData.setArchivedTaskList(archivedTaskList);
 	    return newData;
 	}
@@ -110,8 +110,9 @@ public class StorageController implements InterfaceForStorage {
 	 * @return taskList
 	 */
 	@SuppressWarnings("rawtypes")
-	private TaskList getTaskListFromJSONByListType(JSONObject dataJSON, String taskList) {
+	private TaskList getTaskListFromJSON(JSONObject dataJSON, String taskList) {
 		TaskList taskListHashMap = new TaskList();
+		Gson gson = new Gson();
 		try {
 			JSONObject tasklistJSON = (JSONObject) dataJSON.get(taskList);
 			Iterator it = tasklistJSON.entrySet().iterator();
@@ -119,7 +120,17 @@ public class StorageController implements InterfaceForStorage {
 		    while (it.hasNext()) {
 		    	Map.Entry pair = (Map.Entry)it.next();
 		    	JSONObject taskJSON = (JSONObject) tasklistJSON.get(pair.getKey()); 
-				Task task = convertJSONObjectToTask(taskJSON);
+
+		    	// Generic Type attributes
+		    	int id = gson.fromJson(String.valueOf(taskJSON.get("id")) , int.class);
+		    	String description = String.valueOf(taskJSON.get("description"));
+				String type = String.valueOf(taskJSON.get("type"));
+				ArrayList<String> tags = gson.fromJson(String.valueOf(taskJSON.get("tags")) , new TypeToken<ArrayList<String>>() {}.getType());
+				int priority = gson.fromJson(String.valueOf(taskJSON.get("priority")) , int.class);
+				boolean archived = gson.fromJson(String.valueOf(taskJSON.get("archived")) , boolean.class);
+				
+				Task task = determineAndCreateTaskByType(taskJSON, id, description, type, tags, priority, archived);
+				
 				taskListHashMap.addTask(task.getId(), task);
 		    	it.remove(); // avoids a ConcurrentModificationException
 	        }
@@ -132,23 +143,6 @@ public class StorageController implements InterfaceForStorage {
 
 	/**
 	 * @param taskJSON
-	 * @return task object
-	 */
-	private Task convertJSONObjectToTask(JSONObject taskJSON) {
-		Gson gson = new Gson();
-		int id = gson.fromJson(String.valueOf(taskJSON.get("id")) , int.class);
-		String description = String.valueOf(taskJSON.get("description"));
-		String type = String.valueOf(taskJSON.get("type"));
-		ArrayList<String> tags = gson.fromJson(String.valueOf(taskJSON.get("tags")) , new TypeToken<ArrayList<String>>() {}.getType());
-		int priority = gson.fromJson(String.valueOf(taskJSON.get("priority")) , int.class);
-		boolean archived = gson.fromJson(String.valueOf(taskJSON.get("archived")) , boolean.class);
-		
-		Task task = createTaskFromAttribute(taskJSON, id, description, type, tags, priority, archived);
-		return task;
-	}
-
-	/**
-	 * @param taskJSON
 	 * @param id
 	 * @param description
 	 * @param type
@@ -157,9 +151,9 @@ public class StorageController implements InterfaceForStorage {
 	 * @param archived
 	 * @return task object
 	 */
-	private Task createTaskFromAttribute(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags,	int priority, boolean archived) {
-		Task task = createTask(taskJSON, id, description, type, tags, priority);
-		determineTaskArchive(taskJSON, archived, task);
+	private Task determineAndCreateTaskByType(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags,	int priority, boolean archived) {
+		Task task = createTaskByAttributes(taskJSON, id, description, type, tags, priority);
+		verifyTaskArchiveBoolean(taskJSON, archived, task);
 		return task;
 	}
 
@@ -172,7 +166,7 @@ public class StorageController implements InterfaceForStorage {
 	 * @param priority
 	 * @return task object
 	 */
-	private Task createTask(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags, int priority) {
+	private Task createTaskByAttributes(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags, int priority) {
 		Task task = null;
 		Gson gson = new Gson();
 		try {
@@ -208,7 +202,7 @@ public class StorageController implements InterfaceForStorage {
 	 * @param archived
 	 * @param task
 	 */
-	private void determineTaskArchive(JSONObject taskJSON,	boolean archived, Task task) {
+	private void verifyTaskArchiveBoolean(JSONObject taskJSON,	boolean archived, Task task) {
 		Gson gson = new Gson();
 		try {
 			if (archived == true) {
@@ -232,8 +226,8 @@ public class StorageController implements InterfaceForStorage {
 			Gson gson = new Gson();
 			JSONParser parser = new JSONParser();
 			dataJSON = (JSONObject) parser.parse(gson.toJson(this.data));
-			modifyDataJsonByTaskList(dataJSON, STRING_ACTIVE_TASK_LIST);
-			modifyDataJsonByTaskList(dataJSON, STRING_ARCHIVED_TASK_LIST);
+			processDataJsonByTaskListType(dataJSON, STRING_ACTIVE_TASK_LIST);
+			processDataJsonByTaskListType(dataJSON, STRING_ARCHIVED_TASK_LIST);
 		} catch (ParseException e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
@@ -245,17 +239,17 @@ public class StorageController implements InterfaceForStorage {
 	 * @param taskList
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void modifyDataJsonByTaskList(JSONObject dataJSON, String taskList) {
+	private void processDataJsonByTaskListType(JSONObject dataJSON, String taskList) {
 		try {
 			JSONObject taskListJSON = (JSONObject) dataJSON.get(taskList);
 			Iterator it = null;
-			it = setIteratorByTaskList(taskList, it);
+			it = determineTaskList(taskList, it);
 			while (it.hasNext()) {
 			    Map.Entry pair = (Map.Entry)it.next();
 				Task task = (Task) pair.getValue();
 				JSONObject taskJSON = (JSONObject) taskListJSON.get(String.valueOf(task.getId()));
 				modifyNonGenericTaskForDataJson(task, taskJSON); 
-				modifyArchivedTaskForDataJson(task, taskJSON);
+				processArchivedTaskForDataJson(task, taskJSON);
 				taskListJSON.replace(String.valueOf(task.getId()), taskJSON);
 			}
 			dataJSON.replace(taskList, taskListJSON);
@@ -269,7 +263,7 @@ public class StorageController implements InterfaceForStorage {
 	 * @param taskJSON
 	 */
 	@SuppressWarnings("unchecked")
-	private void modifyArchivedTaskForDataJson(Task task, JSONObject taskJSON) {
+	private void processArchivedTaskForDataJson(Task task, JSONObject taskJSON) {
 		if (task.isArchived() == true) {
 			taskJSON.replace("finishedTime", task.getFinishedTime().getTime());
 		}
@@ -295,7 +289,7 @@ public class StorageController implements InterfaceForStorage {
 	 * @return it
 	 */
 	@SuppressWarnings("rawtypes")
-	private Iterator setIteratorByTaskList(String taskList, Iterator it) {
+	private Iterator determineTaskList(String taskList, Iterator it) {
 		if (taskList.equals(STRING_ACTIVE_TASK_LIST)) {
 			it = data.getActiveTaskList().entrySet().iterator();
 		} else if (taskList.equals(STRING_ARCHIVED_TASK_LIST)) {
