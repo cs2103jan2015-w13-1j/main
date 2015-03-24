@@ -50,8 +50,8 @@ public class StorageController implements InterfaceForStorage {
 	public static void main(String[] args) {
 		StorageController control = new StorageController();
 //		control.setFileDirectory("tables/");
-		control.testForStoreFunction();
-//		control.getAllData();
+//		control.testForStoreFunction();
+		control.getAllData();
 //		System.out.println(control.getMotivationQuotes());
 	}
 	
