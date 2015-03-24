@@ -1,8 +1,3 @@
-/**
- * @author Esmond
- *
- */
-
 package Common;
 
 import java.io.BufferedReader;

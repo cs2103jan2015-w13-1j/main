@@ -70,7 +70,7 @@ public class StorageDatastore {
 				logger.log(Level.SEVERE, e.getMessage());
 			}
 		}
-//		logger.log(Level.INFO, "process storage utility [OK]");
+		logger.log(Level.INFO, "process storage utility [OK]");
 	}
 	
 	/**
