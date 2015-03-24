@@ -70,7 +70,7 @@ public class StorageDatastore {
 				logger.log(Level.SEVERE, e.getMessage());
 			}
 		}
-		logger.log(Level.INFO, "process storage utility [OK]");
+//		logger.log(Level.INFO, "process storage utility [OK]");
 	}
 	
 	/**
@@ -78,6 +78,7 @@ public class StorageDatastore {
 	 * @return true if storing is successful
 	 */
 	public boolean storeJSONIntoStorage(JSONObject json) {
+		initialise();
 		processStorage();
 		return storeJSONIntoStorage(json, getStorageRelativePath());
 	}
@@ -261,6 +262,7 @@ public class StorageDatastore {
 	 * @return directory + storageName
 	 */
 	public String getStorageRelativePath() {
-		return directory.concat(storageName);
+		String relativePath = getDirectory().concat(getStorageName());
+		return relativePath;
 	}
 }
