@@ -442,6 +442,5 @@ public class StorageController implements InterfaceForStorage {
 	@Override
 	public String getMotivationQuotes() {
 		return motivator.getRandomQuotes();
-//		return "quotes";
 	}
 }
