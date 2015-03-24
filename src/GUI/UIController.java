@@ -159,7 +159,13 @@ public class UIController implements Initializable {
 		
 		for(int i = 0; i < taskList.size(); i++){
 			int id = i+1;
+			
 			String description = taskList.get(i).getDescription();
+			
+			if (taskList.get(i).isRecurrence()){
+				description = description + "(Reccur)";
+			}
+			
 			String priority = Integer.toString(taskList.get(i).getPriority());
 			if (priority.equals("-1")){
 				priority = "-";
@@ -205,7 +211,13 @@ public class UIController implements Initializable {
 		uiArchiveList.clear();
 		for(int i = 0; i < archiveList.size(); i++){
 			int id = i+1;
+			
 			String description = archiveList.get(i).getDescription();
+			
+			if (archiveList.get(i).isRecurrence()){
+				description = description + "(Reccur)";
+			}
+			
 			String priority = Integer.toString(archiveList.get(i).getPriority());
 			String start;
 			String end;
