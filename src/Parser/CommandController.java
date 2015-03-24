@@ -30,8 +30,8 @@ public class CommandController implements InterfaceForParser {
 		
 		CommandController test = new CommandController();
 		test.initialiseTasks();
-		//System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
-		//System.out.println(test.returnTasks());
+		System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
+		System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
 		//System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add second generic task"));
@@ -413,11 +413,6 @@ public class CommandController implements InterfaceForParser {
 		//break the commands
 		String result = new String();
 		String description = new String();
-		try{
-			description = input[1];
-		}catch(ArrayIndexOutOfBoundsException e){
-			return result = "No description found. Please try again";
-		}
 		int inputLength = input.length;
 		int currentInputPoint = 2;
 		int priority = -1;
@@ -432,6 +427,7 @@ public class CommandController implements InterfaceForParser {
 		ArrayList<String> userInput = new ArrayList<String>();
 		ArrayList<String> tags = new ArrayList<String>();
 		ArrayList<String> dateAsString = new ArrayList<String>();
+		ArrayList<String> descriptionArrayList = new ArrayList<String>();
 		String recurringPeriod = new String();
 		long recurringTime = 0;
 		int recurrenceNum = 0;
@@ -439,6 +435,16 @@ public class CommandController implements InterfaceForParser {
 		for(int i=0;i<inputLength;i++){
 			userInput.add(input[i]);
 		}
+		
+		for(int i=1;i<userInput.size();i++){
+			if(userInput.get(i).charAt(0)!='-'){
+				description = description.concat(userInput.get(i)+" ");
+				//descriptionArrayList.add(userInput.get(i));
+			}else{
+				break;
+			}
+		}
+		description = description.trim();
 		
 		if(userInput.contains("-priority")){
 			//find position of info
@@ -520,69 +526,7 @@ public class CommandController implements InterfaceForParser {
 				return result = "No description added";
 			}
 		}*/
-		/*
-		/for(int i =currentInputPoint; i<userInput.size();i++){
-			if(userInput.get(i).equalsIgnoreCase("-priority")){
-				//TODO surround with try catch block
-				priority = Integer.parseInt(userInput.get(i+1));
-				userInput.remove(i+1);
-				userInput.remove(i);
-			}else if(userInput.get(i).equalsIgnoreCase("-tags")){
-				int pointAfterTag = i+1;
-				for(int j=pointAfterTag;j<userInput.size();j++){
-					if(userInput.get(j).charAt(0)!='-'){
-						tags.add(userInput.get(j));
-					}
-				}
-				for(int j=pointAfterTag;j<userInput.size();j++){
-					if(userInput.get(j).charAt(0)!='-'){
-						userInput.remove(j);
-					}
-				}
-				userInput.remove(i);
-				//break;
-				
-			}else if(userInput.get(i).equalsIgnoreCase("-date")){
-
-				int pointAfterTag=i+1;
-				for(int j=pointAfterTag;j<inputLength;j++){
-					if(userInput.get(j).charAt(0)!='-'){
-						dateAsString.add(userInput.get(j));
-					}
-				}
-				for(int j=pointAfterTag;j<userInput.size();j++){
-					if(userInput.get(j).charAt(0)!='-'){
-						userInput.remove(j);
-					}
-				}
-				isGenericTask = false;
-				userInput.remove(i);
-				//break;
-			}else if(userInput.get(i).equalsIgnoreCase("-recurring")){
-				//syntax -recurring <recurringNum> <recurringPeriod>
-				if(isGenericTask){
-					return result = "No date specified, cannot be recurring";
-				}else{
-					isRecurring = true;
-					
-					try{
-						if(userInput.get(i+1).charAt(0)!='-'){
-							recurrenceNum = Integer.parseInt(userInput.get(i+1));
-							recurringPeriod = userInput.get(i+2);
-							userInput.remove(i+1);
-							userInput.remove(i+2);
-						}else{
-							return result = "No recurring period stated";
-						}
-					}catch(ArrayIndexOutOfBoundsException | NumberFormatException e){
-						return result = "Error in command format. Try -recurring <num> <period>";
-					}
-				}
-			}else{
-				//i.e no other command, add the rest as description
-				description = description.concat(" " + userInput.get(i)).trim();
-			}
-		}*/
+	
 		
 		
 		//convert dates or time into Date object
@@ -711,7 +655,10 @@ public class CommandController implements InterfaceForParser {
 	private void setPeriodOfOccurence(Date dueDate, long recurringTime, int type, int addValue) {
 		Calendar nextOccurence = Calendar.getInstance();
 		nextOccurence.setTime(dueDate);
+		//System.out.println("1-1-1-1"+nextOccurence.getTime());
 		nextOccurence.add(type, addValue);
+		//System.out.println("1-1-1-1"+nextOccurence.getTime());
 		recurringTime = (nextOccurence.getTimeInMillis()-dueDate.getTime());
+		//System.out.println("1-1-1-1"+recurringTime);
 	}
 }
