@@ -84,6 +84,8 @@ public class LogicControllerTest {
 		tags5.add(tag2);
 		
 		lc.initialise();
+		lc.data.clearAllData();
+		lc.loadData();
 //		lc.data.clearAllData();
 //		lc.loadData();
 //		System.out.println("here");
@@ -117,7 +119,6 @@ public class LogicControllerTest {
 		tags5.clear();
 		
 		lc.data.clearAllData();
-//		lc.storageController.storeAllData(lc.data);
 	}
 	
 	/**

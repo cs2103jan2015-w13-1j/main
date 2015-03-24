@@ -81,7 +81,8 @@ public class LogicControllerTestRecurrence {
 		tags5.add(tag2);
 		
 		lc.initialise();
-		lc.data = new DATA();
+		lc.data.clearAllData();
+		lc.loadData();
 //		lc.historyController = new HistoryController();
 //		lc.activeTaskList = new TaskList();
 //		lc.archivedTaskList = new TaskList();
@@ -110,7 +111,7 @@ public class LogicControllerTestRecurrence {
 		tags5.clear();
 		
 		lc.data.clearAllData();
-		lc.storageController.storeAllData(lc.data);
+//		lc.storageController.storeAllData(lc.data);
 	}
 	
 	/**

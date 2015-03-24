@@ -36,7 +36,7 @@ public class LogicController implements InterfaceForLogic{
 	 * Load relevant task lists from the data object
 	 * @param data
 	 */
-	private void loadData() {
+	protected void loadData() {
 		activeTaskList = data.getActiveTaskList();
 		archivedTaskList = data.getArchivedTaskList();
 		toDoSortedList = new ToDoSortedList();
