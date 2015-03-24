@@ -63,7 +63,7 @@ public class StorageController implements InterfaceForStorage {
 	
 	public static void main(String[] args) {
 		StorageController control = new StorageController();
-//		control.setFileDirectory("tables/");
+		control.setFileDirectory("tables/");
 		control.testForStoreFunction();
 //		control.getAllData();
 //		System.out.println(control.getMotivationQuotes());
@@ -442,6 +442,5 @@ public class StorageController implements InterfaceForStorage {
 	@Override
 	public String getMotivationQuotes() {
 		return motivator.getRandomQuotes();
-//		return "quotes";
 	}
 }
