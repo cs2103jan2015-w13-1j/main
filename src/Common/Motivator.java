@@ -1,8 +1,9 @@
 package Common;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -12,7 +13,7 @@ public class Motivator {
 	public static void main(String[] args) {
 		Motivator motivator = new Motivator();
 		motivator.initialise();
-//		System.out.println(motivator.getRandomQuotes());
+		System.out.println(motivator.getRandomQuotes());
 	}
 
 	/**
@@ -45,8 +46,13 @@ public class Motivator {
 	 */
 	private void copyQuotesFromFile() {
 		try {
-			for (String line : Files.readAllLines(Paths.get("tables/quotes.txt"))) {
-				quotes.add(line);
+			InputStream is = this.getClass().getResourceAsStream("/quotes.txt");
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+			    String line;
+			    while ((line = br.readLine()) != null) {
+			       // process the line.
+			    	quotes.add(line);
+			    }
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
