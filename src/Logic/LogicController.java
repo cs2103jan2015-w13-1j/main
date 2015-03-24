@@ -15,7 +15,7 @@ public class LogicController implements InterfaceForLogic{
 	
 	protected boolean isTesting = false;
 	
-	protected StorageController DC = new StorageController();
+	protected StorageController storageController = new StorageController();
 	protected DATA data;
 	
 	protected TaskList activeTaskList;
@@ -26,7 +26,7 @@ public class LogicController implements InterfaceForLogic{
 	
 	@Override
 	public void initialise() {
-		data = DC.getAllData();
+		data = storageController.getAllData();
 		historyController = new HistoryController();
 		
 		loadData();
@@ -49,7 +49,7 @@ public class LogicController implements InterfaceForLogic{
 		if (!isTesting) {
 			data.setActiveTaskList(activeTaskList);
 			data.setArchivedTaskList(archivedTaskList);
-			DC.storeAllData(data);
+			storageController.storeAllData(data);
 		}
 		return toDoSortedList;
 	}
@@ -299,7 +299,7 @@ public class LogicController implements InterfaceForLogic{
 		logToHistory();
 		
 		archivedTaskList.removeTaskbyId(task.getId());
-		DC.storeAllData(data);
+		storageController.storeAllData(data);
 		return viewArchiveTasks();
 	}
 
@@ -308,6 +308,7 @@ public class LogicController implements InterfaceForLogic{
 		assert(!task.getType().equals("generic"));
 		logToHistory();
 		
+		System.out.println("ID for recurrence task: "+ task.getId());
 		int id = task.getId();
 		int recurrenceId = data.getRecurrenceId();
 		task.setRecurrenceId(recurrenceId);
@@ -465,13 +466,13 @@ public class LogicController implements InterfaceForLogic{
 		}
 		this.data = data;
 		loadData();
-		DC.storeAllData(data);
+		storageController.storeAllData(data);
 		return true;
 	}
 	
 	@Override
 	public String exit(int serialNumber) {
 		data.setSerialNumber(serialNumber);
-		return DC.storeAllData(data);
+		return storageController.storeAllData(data);
 	}
 }
