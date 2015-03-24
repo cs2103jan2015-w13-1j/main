@@ -52,5 +52,19 @@ public class HistoryController implements InterfaceForHistory{
 		DATA previousData = this.logList.pop();
 		return previousData;
 	}
+
+	/**
+	 * @return the logList
+	 */
+	public LinkedList<DATA> getLogList() {
+		return logList;
+	}
+
+	/**
+	 * @param logList the logList to set
+	 */
+	public void setLogList(LinkedList<DATA> logList) {
+		this.logList = logList;
+	}
 	
 }
