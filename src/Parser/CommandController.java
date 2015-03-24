@@ -26,19 +26,19 @@ public class CommandController implements InterfaceForParser {
 	
 	
 	
-	/*public static void main(String[] args){
+	public static void main(String[] args){
 		
 		CommandController test = new CommandController();
 		test.initialiseTasks();
-		//System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
-		//System.out.println(test.returnTasks());
+		System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
+		System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
 		//System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add second generic task"));
 		//System.out.println(test.returnTasks());
 		
 		
-	}*/
+	}
 	
 	
 	
@@ -587,33 +587,33 @@ public class CommandController implements InterfaceForParser {
 		if(recurringPeriod.length()>0){
 			if(recurringPeriod.equalsIgnoreCase("weekly")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.DATE,7); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.DATE,7);
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(startTime, recurringTime,Calendar.DATE,7); 
+					recurringTime = setPeriodOfOccurence(startTime,Calendar.DATE,7); 
 				}
 			}else if(recurringPeriod.equalsIgnoreCase("daily")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.DATE,1); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.DATE,1); 
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(startTime, recurringTime,Calendar.DATE,1); 
+					recurringTime = setPeriodOfOccurence(startTime,Calendar.DATE,1); 
 				}
 			}else if(recurringPeriod.equalsIgnoreCase("hourly")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.HOUR,1); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.HOUR,1); 
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(endTime, recurringTime,Calendar.HOUR,1); 
+					recurringTime = setPeriodOfOccurence(endTime,Calendar.HOUR,1); 
 				}
 			}else if(recurringPeriod.equalsIgnoreCase("monthly")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.MONTH,1); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.MONTH,1); 
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(startTime, recurringTime,Calendar.MONTH,1); 
+					recurringTime = setPeriodOfOccurence(startTime,Calendar.MONTH,1); 
 				}
 			}else if(recurringPeriod.equalsIgnoreCase("yearly")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.YEAR,1); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.YEAR,1); 
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(startTime, recurringTime,Calendar.YEAR,1); 
+					recurringTime = setPeriodOfOccurence(startTime,Calendar.YEAR,1); 
 				}
 			}
 		}
@@ -654,13 +654,13 @@ public class CommandController implements InterfaceForParser {
 		logicController.setSerialNumber(newMaxID);
 		return result;
 	}
-	private void setPeriodOfOccurence(Date dueDate, long recurringTime, int type, int addValue) {
+	private long setPeriodOfOccurence(Date dueDate, int type, int addValue) {
+		
 		Calendar nextOccurence = Calendar.getInstance();
 		nextOccurence.setTime(dueDate);
 		//System.out.println("1-1-1-1"+nextOccurence.getTime());
 		nextOccurence.add(type, addValue);
 		//System.out.println("1-1-1-1"+nextOccurence.getTime());
-		recurringTime = (nextOccurence.getTimeInMillis()-dueDate.getTime());
-		//System.out.println("1-1-1-1"+recurringTime);
+		return (nextOccurence.getTimeInMillis()-dueDate.getTime());
 	}
 }
