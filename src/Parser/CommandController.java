@@ -25,18 +25,20 @@ public class CommandController implements InterfaceForParser {
 	private static final String DATE_FORMAT_ERROR = "Wrong format for date. Please use dd/MM/yyyy";
 	
 	
-	/*
+	
 	public static void main(String[] args){
 		
 		CommandController test = new CommandController();
 		test.initialiseTasks();
-		System.out.println(test.executeCommand("-add this generic task -date 1"));
-		System.out.println(test.returnTasks());
+		//System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
+		//System.out.println(test.returnTasks());
+		//System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
+		//System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add second generic task"));
 		//System.out.println(test.returnTasks());
 		
 		
-	}*/
+	}
 	
 	
 	
@@ -386,7 +388,6 @@ public class CommandController implements InterfaceForParser {
 					currentActiveTasks = logicController.searchByDate(dateOutputString);
 					result = "Searched by date: " + splitInput[2];
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					return result = DATE_FORMAT_ERROR ;
 				}
 				break;
@@ -428,37 +429,136 @@ public class CommandController implements InterfaceForParser {
 		boolean isMeetingTask = false;
 		boolean isRecurring = false;
 		ToDoSortedList retrievedList = new ToDoSortedList();
+		ArrayList<String> userInput = new ArrayList<String>();
 		ArrayList<String> tags = new ArrayList<String>();
 		ArrayList<String> dateAsString = new ArrayList<String>();
 		String recurringPeriod = new String();
 		long recurringTime = 0;
 		int recurrenceNum = 0;
 		
-		//date, priority and tags optional
-		//look through remaining input for more commands
-		for(int i =currentInputPoint; i<inputLength;i++){
-			if(input[i].equalsIgnoreCase("-priority")){
-				priority = Integer.parseInt(input[i+1]);
-			}else if(input[i].equalsIgnoreCase("-tags")){
-				int pointAfterTag = i+1;
-				for(int j=pointAfterTag;j<inputLength;j++){
-					if(input[j].charAt(0)!='-'){
-						tags.add(input[j]);
+		for(int i=0;i<inputLength;i++){
+			userInput.add(input[i]);
+		}
+		
+		if(userInput.contains("-priority")){
+			//find position of info
+			int point = userInput.indexOf("-priority");
+			//check if info needed is specified
+			try{
+				priority = Integer.parseInt(userInput.get(point+1));
+				userInput.remove(point+1);
+			}catch(ArrayIndexOutOfBoundsException|NumberFormatException e){
+				return result = "Error in priority given. Should be a number.";
+			}
+		}
+		if(userInput.contains("-tags")){
+			int point = userInput.indexOf("-tags");
+			try{
+				for(int j = point+1;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						tags.add(userInput.get(j));
+					}else{
+						break;
 					}
 				}
-				break;
+				for(int j=0;j<tags.size();j++){
+					userInput.remove(tags.get(j));
+				}
 				
-			}else if(input[i].equalsIgnoreCase("-date")){
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "Error in tags given.";
+			}
+		}
+		if(userInput.contains("-date")){
+			int point = userInput.indexOf("-date");		
+			isGenericTask = false;
+			try{
+				for(int j = point+1;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						dateAsString.add(userInput.get(j));
+					}else{
+						break;
+					}
+				}
+				for(int j=0;j<dateAsString.size();j++){
+					userInput.remove(dateAsString.get(j));
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "Error in date given.";
+			}
+		}
+		if(userInput.contains("-recurring")){
+			if(isGenericTask){
+				return result = "No date specified, cannot be recurring";
+			}else{
+				isRecurring = true;
+				int point = userInput.indexOf("-recurring");
+				try{
+					if(userInput.get(point+1).charAt(0)!='-'){
+						recurrenceNum = Integer.parseInt(userInput.get(point+1));
+						recurringPeriod = userInput.get(point+2);
+						userInput.remove(point+1);
+						userInput.remove(point+1);
+					}else{
+						return result = "No recurring period stated";
+					}
+				}catch(ArrayIndexOutOfBoundsException | NumberFormatException e){
+					return result = "Error in command format. Try -recurring <num> <period>";
+				}
+			}
+		}
+			
+		//need to loop to get the remaining inputs into descriptions
+		/*if(inputLength>1){
+			try{
+				if(input[currentInputPoint].charAt(0)!='-'){
+					description = description.concat(" " + input[currentInputPoint]).trim();
+				}else{
+					return result =  "No description added.";
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "No description added";
+			}
+		}*/
+		/*
+		/for(int i =currentInputPoint; i<userInput.size();i++){
+			if(userInput.get(i).equalsIgnoreCase("-priority")){
+				//TODO surround with try catch block
+				priority = Integer.parseInt(userInput.get(i+1));
+				userInput.remove(i+1);
+				userInput.remove(i);
+			}else if(userInput.get(i).equalsIgnoreCase("-tags")){
+				int pointAfterTag = i+1;
+				for(int j=pointAfterTag;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						tags.add(userInput.get(j));
+					}
+				}
+				for(int j=pointAfterTag;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						userInput.remove(j);
+					}
+				}
+				userInput.remove(i);
+				//break;
+				
+			}else if(userInput.get(i).equalsIgnoreCase("-date")){
 
 				int pointAfterTag=i+1;
 				for(int j=pointAfterTag;j<inputLength;j++){
-					if(input[j].charAt(0)!='-'){
-						dateAsString.add(input[j]);
+					if(userInput.get(j).charAt(0)!='-'){
+						dateAsString.add(userInput.get(j));
+					}
+				}
+				for(int j=pointAfterTag;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						userInput.remove(j);
 					}
 				}
 				isGenericTask = false;
-				break;
-			}else if(input[i].equalsIgnoreCase("-recurring")){
+				userInput.remove(i);
+				//break;
+			}else if(userInput.get(i).equalsIgnoreCase("-recurring")){
 				//syntax -recurring <recurringNum> <recurringPeriod>
 				if(isGenericTask){
 					return result = "No date specified, cannot be recurring";
@@ -466,9 +566,11 @@ public class CommandController implements InterfaceForParser {
 					isRecurring = true;
 					
 					try{
-						if(input[i+1].charAt(0)!='-'){
-							recurrenceNum = Integer.parseInt(input[i+1]);
-							recurringPeriod = input[i+2];
+						if(userInput.get(i+1).charAt(0)!='-'){
+							recurrenceNum = Integer.parseInt(userInput.get(i+1));
+							recurringPeriod = userInput.get(i+2);
+							userInput.remove(i+1);
+							userInput.remove(i+2);
 						}else{
 							return result = "No recurring period stated";
 						}
@@ -478,9 +580,10 @@ public class CommandController implements InterfaceForParser {
 				}
 			}else{
 				//i.e no other command, add the rest as description
-				description = description.concat(" " + input[i]).trim();
+				description = description.concat(" " + userInput.get(i)).trim();
 			}
-		}
+		}*/
+		
 		
 		//convert dates or time into Date object
 		//----Meeting Task------
@@ -520,8 +623,20 @@ public class CommandController implements InterfaceForParser {
 				return result = DEADLINE_FORMAT_ERROR;
 	
 			}
-		}
+		}else if(dateAsString.size()==2){
 		
+			isDeadlineTask = true;
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HHmm");
+			try {
+				java.util.Date tempDate = dateFormat.parse(dateAsString.get(0)+ " " + dateAsString.get(1));
+				deadLine.setTime(tempDate.getTime());
+				
+			} catch (ParseException e) {
+				
+				return result = DEADLINE_FORMAT_ERROR;
+	
+			}
+		}
 		//parse the recurring portion
 		
 		if(recurringPeriod.length()>0){
