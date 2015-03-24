@@ -408,6 +408,7 @@ public class Task implements Comparable<Task>{
 			deadline.setTime(this.getDeadline().getTime()+period);
 			task = new Task(id, this.description, deadline, this.priority, this.tags);
 		}
+		System.out.println(task);
 		return task;
 	}
 	

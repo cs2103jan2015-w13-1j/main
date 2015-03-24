@@ -40,6 +40,7 @@ public class LogicController implements InterfaceForLogic{
 		activeTaskList = data.getActiveTaskList();
 		archivedTaskList = data.getArchivedTaskList();
 		toDoSortedList = new ToDoSortedList();
+		System.out.println(data.getSerialNumber());
 		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
 			toDoSortedList.addTask(e.getValue());
 		}
@@ -303,18 +304,25 @@ public class LogicController implements InterfaceForLogic{
 		return viewArchiveTasks();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see Logic.InterfaceForLogic#addRecurringTask(Common.Task, long, int)
+	 */
 	@Override
 	public ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum) {
 		assert(!task.getType().equals("generic"));
+		assert(period > 0);
 		logToHistory();
 		
 		System.out.println("ID for recurrence task: "+ task.getId());
+		System.out.println("Period "+period);
 		int id = task.getId();
 		int recurrenceId = data.getRecurrenceId();
 		task.setRecurrenceId(recurrenceId);
 		activeTaskList.addTask(task.getId(), task);
 		for (int i = 1; i < recurrenceNum ; i++) {
 			Task newTask = task.copyWithInterval(id + i, i * period);
+			System.out.println(newTask);
 			newTask.setRecurrenceId(recurrenceId);
 			activeTaskList.addTask(id + i, newTask);
 		}

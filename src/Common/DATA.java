@@ -63,7 +63,7 @@ public class DATA {
 	 * @return the recurrenceId
 	 */
 	public int getRecurrenceId() {
-		return recurrenceId;
+		return this.recurrenceId;
 	}
 	
 	/**
