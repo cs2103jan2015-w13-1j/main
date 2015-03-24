@@ -8,6 +8,15 @@ import java.util.*;
 public class TaskList extends HashMap<Integer, Task>{
 
 	public void addTask(int id, Task task){
+		if (this.containsKey(id)) {
+			try {
+				throw new Exception();
+			} catch (Exception e) {
+				System.out.println("ID: "+id+" already exists in the tasklist");
+				e.printStackTrace();
+				return;
+			}
+		}
 		this.put(id, task);
 	}
 	

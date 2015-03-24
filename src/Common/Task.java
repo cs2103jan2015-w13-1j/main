@@ -401,18 +401,18 @@ public class Task implements Comparable<Task>{
 			Date endTime = new Date();
 			startTime.setTime(this.startTime.getTime() + period);
 			endTime.setTime(this.endTime.getTime() + period);
-			task = new Task(this.id, this.description, startTime, endTime, this.priority, this.tags);
+			task = new Task(id, this.description, startTime, endTime, this.priority, this.tags);
 		}
 		else { // the type is a deadline task
 			Date deadline = new Date();
 			deadline.setTime(this.getDeadline().getTime()+period);
-			task = new Task(this.id, this.description, deadline, this.priority, this.tags);
+			task = new Task(id, this.description, deadline, this.priority, this.tags);
 		}
 		return task;
 	}
 	
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(Object other) {	
 		return this.toString().equals(other.toString());
 	}
 //	

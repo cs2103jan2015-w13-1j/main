@@ -63,7 +63,6 @@ public class LogicControllerTest {
 		d5.setTime(777677777);
 		d6.setTime(776677777);
 		
-		
 		lc.isTesting = true;
 	}
 	@Before
