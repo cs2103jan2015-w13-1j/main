@@ -26,10 +26,10 @@ public class CommandController implements InterfaceForParser {
 	
 	
 	
-	/*public static void main(String[] args){
+	public static void main(String[] args){
 		
-		CommandController test = new CommandController();
-		test.initialiseTasks();
+		//CommandController test = new CommandController();
+		//test.initialiseTasks();
 		//System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
 		//System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
@@ -38,7 +38,7 @@ public class CommandController implements InterfaceForParser {
 		//System.out.println(test.returnTasks());
 		
 		
-	}*/
+	}
 	
 	
 	
@@ -248,7 +248,11 @@ public class CommandController implements InterfaceForParser {
 						java.util.Date tempDate = formatter.parse(splitInput[3]);
 						Date newDeadline = new Date();
 						newDeadline.setTime(tempDate.getTime());
-						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
+						if(taskToChange.isRecurrence()){
+							retrievedSortedList = logicController.editAlldeadline(taskToChange, newDeadline);
+						}else{
+							retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
+						}
 						result = "Deadline changed";
 					} catch (ParseException e) {
 						return result = DEADLINE_FORMAT_ERROR;
@@ -266,8 +270,14 @@ public class CommandController implements InterfaceForParser {
 						java.util.Date tempEnd = formatter.parse(endTimeString);
 						Date newEndTime = new Date();
 						newEndTime.setTime(tempEnd.getTime());
-						//change this later
-						retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
+						//TODO check this later
+						if(taskToChange.isRecurrence()){
+							retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartTime);
+							retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndTime);
+						}else{
+							retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
+							retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
+						}
 						result = "Meeting time changed";
 						
 					} catch (ParseException e) {
@@ -280,13 +290,21 @@ public class CommandController implements InterfaceForParser {
 			}case("priority"):{
 				//syntax: -change priority <taskID> <new priority>
 				int newPriority = Integer.parseInt(splitInput[3]);
-				retrievedSortedList = logicController.editPriority(taskToChange, newPriority);
+				if(taskToChange.isRecurrence()){
+					retrievedSortedList = logicController.editAllPriority(taskToChange, newPriority);
+				}else{
+					retrievedSortedList = logicController.editPriority(taskToChange, newPriority);
+				}
 				result = "Priority changed";
 				break;
 			}case("desc"):{
 				//syntax: -change desc <taskID> <new desc>
 				String newDescription = splitInput[3];
-				retrievedSortedList = logicController.editDescription(taskToChange, newDescription);
+				if(taskToChange.isRecurrence()){
+					retrievedSortedList = logicController.editAllDescription(taskToChange, newDescription);
+				}else{
+					retrievedSortedList = logicController.editDescription(taskToChange, newDescription);
+				}
 				result = "Description changed";
 				break;
 			}
@@ -336,22 +354,62 @@ public class CommandController implements InterfaceForParser {
 
 
 	String deleteCommand(String[] splitInput) {
-		//syntax : -delete [task ID]
+		//syntax : -delete <current/archive> [task ID]
 		String result = new String();
-
-		int taskIDFromUI = Integer.parseInt(splitInput[1]);
-		if(!currentActiveTasks.isEmpty()){
-			Task taskToDelete = currentActiveTasks.get(taskIDFromUI-1);
-
-			result = "Deleted task: " + taskToDelete.getDescription();
-			ToDoSortedList retrievedListFromLogic = logicController.deleteTask(taskToDelete);
-			currentActiveTasks.clear();
-			System.out.println(retrievedListFromLogic);
-			for(Task task : retrievedListFromLogic){
-				currentActiveTasks.add(task);
+		
+		if(splitInput[1].equalsIgnoreCase("current")){
+			int taskIDFromUI = Integer.parseInt(splitInput[2]);
+			if(!currentActiveTasks.isEmpty()){
+				Task taskToDelete = currentActiveTasks.get(taskIDFromUI-1);
+				ToDoSortedList retrievedListFromLogic = new ToDoSortedList();
+	
+				result = "Deleted task from current: " + taskToDelete.getDescription();
+				/*if(taskToDelete.isRecurrence()){
+					retrievedListFromLogic =  logicController.deleteAllRecurringTask(taskToDelete);
+				}else{
+					retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+				}*/
+				retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+				currentActiveTasks.clear();
+				for(Task task : retrievedListFromLogic){
+					currentActiveTasks.add(task);
+				}
+			}else{
+				result = "No tasks to delete";
+			}
+		}else if(splitInput[1].equalsIgnoreCase("archive")){
+			int taskIDFromUI = Integer.parseInt(splitInput[2]);
+			if(!currentArchives.isEmpty()){
+				Task taskToDelete = currentArchives.get(taskIDFromUI-1);
+				result = "Deleted task from archive: " + taskToDelete.getDescription();
+				ArchiveSortedList retrievedListFromLogic = logicController.deleteFromArchive(taskToDelete);
+				currentArchives.clear();
+				for(Task task : retrievedListFromLogic){
+					currentArchives.add(task);
+				}
+			}else{
+				result = "No tasks to delete";
 			}
 		}else{
-			result = "No tasks to delete";
+			int taskIDFromUI = Integer.parseInt(splitInput[1]);
+			if(!currentActiveTasks.isEmpty()){
+				Task taskToDelete = currentActiveTasks.get(taskIDFromUI-1);
+				ToDoSortedList retrievedListFromLogic = new ToDoSortedList();
+	
+				result = "Deleted task from current: " + taskToDelete.getDescription();
+				/*if(taskToDelete.isRecurrence()){
+					retrievedListFromLogic =  logicController.deleteAllRecurringTask(taskToDelete);
+				}else{
+					retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+				}*/
+				retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+				currentActiveTasks.clear();
+				for(Task task : retrievedListFromLogic){
+					currentActiveTasks.add(task);
+				}
+			}else{
+				result = "No tasks to delete";
+			}
 		}
 		
 		return result;
@@ -411,7 +469,7 @@ public class CommandController implements InterfaceForParser {
 	String addCommand(String[] input){
 		
 		//break the commands
-		newMaxID = logicController.getSerialNumber();
+		newMaxID = logicController.getSerialNumber() +1;
 		String result = new String();
 		String description = new String();
 		int inputLength = input.length;
@@ -587,33 +645,33 @@ public class CommandController implements InterfaceForParser {
 		if(recurringPeriod.length()>0){
 			if(recurringPeriod.equalsIgnoreCase("weekly")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.DATE,7); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.DATE,7);
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(startTime, recurringTime,Calendar.DATE,7); 
+					recurringTime = setPeriodOfOccurence(startTime,Calendar.DATE,7); 
 				}
 			}else if(recurringPeriod.equalsIgnoreCase("daily")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.DATE,1); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.DATE,1); 
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(startTime, recurringTime,Calendar.DATE,1); 
+					recurringTime = setPeriodOfOccurence(startTime,Calendar.DATE,1); 
 				}
 			}else if(recurringPeriod.equalsIgnoreCase("hourly")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.HOUR,1); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.HOUR,1); 
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(endTime, recurringTime,Calendar.HOUR,1); 
+					recurringTime = setPeriodOfOccurence(endTime,Calendar.HOUR,1); 
 				}
 			}else if(recurringPeriod.equalsIgnoreCase("monthly")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.MONTH,1); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.MONTH,1); 
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(startTime, recurringTime,Calendar.MONTH,1); 
+					recurringTime = setPeriodOfOccurence(startTime,Calendar.MONTH,1); 
 				}
 			}else if(recurringPeriod.equalsIgnoreCase("yearly")){
 				if(isDeadlineTask){
-					setPeriodOfOccurence(deadLine, recurringTime,Calendar.YEAR,1); 
+					recurringTime = setPeriodOfOccurence(deadLine,Calendar.YEAR,1); 
 				}else if(isMeetingTask){
-					setPeriodOfOccurence(startTime, recurringTime,Calendar.YEAR,1); 
+					recurringTime = setPeriodOfOccurence(startTime,Calendar.YEAR,1); 
 				}
 			}
 		}
@@ -650,17 +708,17 @@ public class CommandController implements InterfaceForParser {
 			currentActiveTasks.add(task);
 		}
 		
-		newMaxID++;
+		newMaxID=newMaxID+recurrenceNum;
 		logicController.setSerialNumber(newMaxID);
 		return result;
 	}
-	private void setPeriodOfOccurence(Date dueDate, long recurringTime, int type, int addValue) {
+	private long setPeriodOfOccurence(Date dueDate, int type, int addValue) {
+		
 		Calendar nextOccurence = Calendar.getInstance();
 		nextOccurence.setTime(dueDate);
 		//System.out.println("1-1-1-1"+nextOccurence.getTime());
 		nextOccurence.add(type, addValue);
 		//System.out.println("1-1-1-1"+nextOccurence.getTime());
-		recurringTime = (nextOccurence.getTimeInMillis()-dueDate.getTime());
-		//System.out.println("1-1-1-1"+recurringTime);
+		return (nextOccurence.getTimeInMillis()-dueDate.getTime());
 	}
 }
