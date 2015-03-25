@@ -5,5 +5,6 @@
 -add deadline3 -date 25/03/2015 1630
 -add deadline4 -date 25/03/2015 1700
 -add deadline5 -date 25/03/2015 1730
+-add withtag -tags tag1
 
 -add recurring deadline -date 25/03/2015 1600 -recurring 10 weekly
