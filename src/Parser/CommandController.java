@@ -28,10 +28,10 @@ public class CommandController implements InterfaceForParser {
 	
 	public static void main(String[] args){
 		
-		CommandController test = new CommandController();
-		test.initialiseTasks();
-		System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
-		System.out.println(test.returnTasks());
+		//CommandController test = new CommandController();
+		//test.initialiseTasks();
+		//System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
+		//System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
 		//System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add second generic task"));
@@ -449,7 +449,7 @@ public class CommandController implements InterfaceForParser {
 	String addCommand(String[] input){
 		
 		//break the commands
-		newMaxID = logicController.getSerialNumber();
+		newMaxID = logicController.getSerialNumber() +1;
 		String result = new String();
 		String description = new String();
 		int inputLength = input.length;
@@ -688,7 +688,7 @@ public class CommandController implements InterfaceForParser {
 			currentActiveTasks.add(task);
 		}
 		
-		newMaxID++;
+		newMaxID=newMaxID+recurrenceNum;
 		logicController.setSerialNumber(newMaxID);
 		return result;
 	}
