@@ -215,7 +215,12 @@ public class UIController implements Initializable {
 				end = "-";
 			}
 			try{
-				due = df.format(taskList.get(i).getDeadline());
+				if (taskList.get(i).getDeadline() == null){
+					due = df.format(taskList.get(i).getStartTime());
+				}
+				else {
+					due = df.format(taskList.get(i).getDeadline());
+				}
 			}catch (NullPointerException e){
 				due = "-";
 			}
