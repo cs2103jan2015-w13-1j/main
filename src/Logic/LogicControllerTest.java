@@ -122,10 +122,11 @@ public class LogicControllerTest {
 	}
 	
 	/**
-	 * Adding one task
+	 * Adding one task and delete it
 	 */
 	@Test
 	public void testAdd1() {
+		assertEquals(0, lc.activeTaskList.size());
 		System.out.println(lc.activeTaskList);
 		lc.addTask(t1);
 		assertEquals(1, lc.activeTaskList.size());
@@ -133,6 +134,10 @@ public class LogicControllerTest {
 		assertEquals(1, lc.toDoSortedList.size());
 		assertEquals(true, lc.toDoSortedList.contains(t1));
 		assertEquals(0, lc.archivedTaskList.size());
+		lc.deleteTask(t1);
+		assertEquals(0, lc.activeTaskList.size());
+		lc.deleteTask(t1);
+		assertEquals(0, lc.activeTaskList.size());
 	}
 	
 	/**
@@ -156,7 +161,7 @@ public class LogicControllerTest {
 	}
 	
 	/**
-	 * Adding two tasks from UI
+	 * Two tasks with the same description
 	 */
 	@Test
 	public void testAddPotentialError() {
