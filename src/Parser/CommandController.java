@@ -390,6 +390,26 @@ public class CommandController implements InterfaceForParser {
 			}else{
 				result = "No tasks to delete";
 			}
+		}else{
+			int taskIDFromUI = Integer.parseInt(splitInput[1]);
+			if(!currentActiveTasks.isEmpty()){
+				Task taskToDelete = currentActiveTasks.get(taskIDFromUI-1);
+				ToDoSortedList retrievedListFromLogic = new ToDoSortedList();
+	
+				result = "Deleted task from current: " + taskToDelete.getDescription();
+				/*if(taskToDelete.isRecurrence()){
+					retrievedListFromLogic =  logicController.deleteAllRecurringTask(taskToDelete);
+				}else{
+					retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+				}*/
+				retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+				currentActiveTasks.clear();
+				for(Task task : retrievedListFromLogic){
+					currentActiveTasks.add(task);
+				}
+			}else{
+				result = "No tasks to delete";
+			}
 		}
 		
 		return result;
