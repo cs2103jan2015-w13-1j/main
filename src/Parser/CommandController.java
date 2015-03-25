@@ -28,12 +28,12 @@ public class CommandController implements InterfaceForParser {
 	
 	public static void main(String[] args){
 		
-		//CommandController test = new CommandController();
-		//test.initialiseTasks();
-		//System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
-		//System.out.println(test.returnTasks());
-		//System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
-		//System.out.println(test.returnTasks());
+		CommandController test = new CommandController();
+		test.initialiseTasks();
+		System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
+		System.out.println(test.returnTasks());
+		System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
+		System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add second generic task"));
 		//System.out.println(test.returnTasks());
 		
@@ -248,11 +248,12 @@ public class CommandController implements InterfaceForParser {
 						java.util.Date tempDate = formatter.parse(splitInput[3]);
 						Date newDeadline = new Date();
 						newDeadline.setTime(tempDate.getTime());
-						if(taskToChange.isRecurrence()){
+						/*if(taskToChange.isRecurrence()){
 							retrievedSortedList = logicController.editAlldeadline(taskToChange, newDeadline);
 						}else{
 							retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
-						}
+						}*/
+						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
 						result = "Deadline changed";
 					} catch (ParseException e) {
 						return result = DEADLINE_FORMAT_ERROR;
@@ -271,13 +272,15 @@ public class CommandController implements InterfaceForParser {
 						Date newEndTime = new Date();
 						newEndTime.setTime(tempEnd.getTime());
 						//TODO check this later
-						if(taskToChange.isRecurrence()){
+						/*if(taskToChange.isRecurrence()){
 							retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartTime);
 							retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndTime);
 						}else{
 							retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
 							retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
-						}
+						}*/
+						retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
+						retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
 						result = "Meeting time changed";
 						
 					} catch (ParseException e) {
@@ -290,21 +293,23 @@ public class CommandController implements InterfaceForParser {
 			}case("priority"):{
 				//syntax: -change priority <taskID> <new priority>
 				int newPriority = Integer.parseInt(splitInput[3]);
-				if(taskToChange.isRecurrence()){
+				/*if(taskToChange.isRecurrence()){
 					retrievedSortedList = logicController.editAllPriority(taskToChange, newPriority);
 				}else{
 					retrievedSortedList = logicController.editPriority(taskToChange, newPriority);
-				}
+				}*/
+				retrievedSortedList = logicController.editPriority(taskToChange, newPriority);
 				result = "Priority changed";
 				break;
 			}case("desc"):{
 				//syntax: -change desc <taskID> <new desc>
 				String newDescription = splitInput[3];
-				if(taskToChange.isRecurrence()){
+				/*if(taskToChange.isRecurrence()){
 					retrievedSortedList = logicController.editAllDescription(taskToChange, newDescription);
 				}else{
 					retrievedSortedList = logicController.editDescription(taskToChange, newDescription);
-				}
+				}*/
+				retrievedSortedList = logicController.editDescription(taskToChange, newDescription);
 				result = "Description changed";
 				break;
 			}
@@ -504,6 +509,9 @@ public class CommandController implements InterfaceForParser {
 			}
 		}
 		description = description.trim();
+		if(description.isEmpty()){
+			return result = "No description added, try again";
+		}
 		
 		if(userInput.contains("-priority")){
 			//find position of info
@@ -699,7 +707,13 @@ public class CommandController implements InterfaceForParser {
 			}
 		}
 		
-		result = "New task added: " + description;
+		if(isGenericTask){
+			result = "New task added: " + description;
+		}else if(isDeadlineTask){
+			result = "New task added with deadline: " + description;
+		}else if(isMeetingTask){
+			result = "New task added for meeting: " + description;
+		}
 		//clear the locally stored tasklist to add the new results
 		currentActiveTasks.clear();
 
@@ -708,7 +722,7 @@ public class CommandController implements InterfaceForParser {
 			currentActiveTasks.add(task);
 		}
 		
-		newMaxID=newMaxID+recurrenceNum;
+		newMaxID+=recurrenceNum+1;
 		logicController.setSerialNumber(newMaxID);
 		return result;
 	}
