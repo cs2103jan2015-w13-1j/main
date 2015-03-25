@@ -14,7 +14,7 @@ import org.junit.Test;
 
 
 public class LogicControllerTestRecurrence {
-	LogicController lc = new LogicController();
+	static LogicController lc = new LogicController();
 
 	
 	static String tag1 = "tagA";
@@ -63,6 +63,7 @@ public class LogicControllerTestRecurrence {
 		d5.setTime(777677777);
 		d6.setTime(776677777);
 		
+		lc.isTesting = true;
 	}
 	@Before
 	public void setUp() throws Exception {
