@@ -120,7 +120,7 @@ public class UIController implements Initializable {
 		uiCommandList.add(new UICommand("Removing tags from a task", "-remove -tag <taskID><value>"));
 		uiCommandList.add(new UICommand("Searching for tasks", "-search [option: desc|date|priority|tag|keywords] <value>"));
 		uiCommandList.add(new UICommand("Undo last user input","-undo"));
-		uiCommandList.add(new UICommand("Sort list", "-sort [either date|priority|tag]"));
+		uiCommandList.add(new UICommand("Sort list", "-sort [either: date|priority|tag]"));
 		uiCommandList.add(new UICommand("Default tables view", "-refresh"));
 		uiCommandList.add(new UICommand("Change motto of the day", "-changemotto"));
 		
@@ -188,7 +188,7 @@ public class UIController implements Initializable {
 			String description = taskList.get(i).getDescription();
 			
 			if (taskList.get(i).isRecurrence()){
-				description = description + "(Reccur)";
+				description = description + "(R)";
 			}
 			
 			String priority = Integer.toString(taskList.get(i).getPriority());
@@ -205,7 +205,12 @@ public class UIController implements Initializable {
 				start = "-";
 			}
 			try{
-				end = tf.format(taskList.get(i).getEndTime());
+				if (taskList.get(i).getEndTime() == null){
+					end = tf.format(taskList.get(i).getDeadline());
+				}
+				else{
+					end = tf.format(taskList.get(i).getEndTime());
+				}
 			}catch (NullPointerException e){
 				end = "-";
 			}
