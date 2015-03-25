@@ -1,7 +1,5 @@
 package GUI;
 
-import java.util.ArrayList;
-
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 

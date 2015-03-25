@@ -57,6 +57,13 @@ public class UIController implements Initializable {
 	TableColumn<UITask, String> taskDue;
 	@FXML
 	TableColumn<UITask, String> taskTags;
+	
+	@FXML
+	TableView<UICommand> commandTable;
+	@FXML
+	TableColumn<UICommand, String> commandFunction;
+	@FXML
+	TableColumn<UICommand, String> commandCommand;
 
 	@FXML
 	TableView<UITask> archiveTable;
@@ -70,12 +77,12 @@ public class UIController implements Initializable {
 	
 	CommandController commandController = new CommandController();
 	StorageController storageController = new StorageController();
-	private static ArrayList<Task> taskList = new ArrayList<Task>();
+	public static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 	
 	final ObservableList<UITask> uiTaskList = FXCollections.observableArrayList();
-	
 	final ObservableList<UITask> uiArchiveList = FXCollections.observableArrayList();
+	final ObservableList<UICommand> uiCommandList = FXCollections.observableArrayList();
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources){
@@ -98,6 +105,24 @@ public class UIController implements Initializable {
 		
 		archiveList = commandController.initialiseArchives();
 		addToArchiveDisplay();
+		
+		commandFunction.setCellValueFactory(new PropertyValueFactory<UICommand, String>("function"));
+		commandCommand.setCellValueFactory(new PropertyValueFactory<UICommand, String>("command"));
+		commandTable.setItems(uiCommandList);
+		
+		//initialize uiCommandList here
+		uiCommandList.add(new UICommand("Go to a panel", "-goto <panel name>"));
+		uiCommandList.add(new UICommand("Add a new task", "-add <task description> [option: -date|-priority|-tag|-recurring] <value>"));
+		uiCommandList.add(new UICommand("Delete an entry", "-delete <taskID>"));
+		uiCommandList.add(new UICommand("Archive a task", "-archive <taskID>"));
+		uiCommandList.add(new UICommand("Change an entry", "-change [option: desc|date|priority] <taskID> <new value>"));
+		uiCommandList.add(new UICommand("Add tags to task","-addtag <taskID><value>"));
+		uiCommandList.add(new UICommand("Removing tags from a task", "-remove -tag <taskID><value>"));
+		uiCommandList.add(new UICommand("Searching for tasks", "-search [option: desc|date|priority|tag|keywords] <value>"));
+		uiCommandList.add(new UICommand("Undo last user input","-undo"));
+		uiCommandList.add(new UICommand("Sort list", "-sort [either date|priority|tag]"));
+		uiCommandList.add(new UICommand("Default tables view", "-refresh"));
+		uiCommandList.add(new UICommand("Change motto of the day", "-changemotto"));
 		
 		motivationalQuote.setText(storageController.getMotivationQuotes());
 	}
@@ -151,7 +176,7 @@ public class UIController implements Initializable {
 		outputMessageText.setText(message);
 	}
 	
-	private void addToTaskDisplay() {
+	public void addToTaskDisplay() {
 		uiTaskList.clear();
 		
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/YYYY");
@@ -207,7 +232,7 @@ public class UIController implements Initializable {
 		}
 	}
 	
-	private void addToArchiveDisplay() {
+	public void addToArchiveDisplay() {
 		uiArchiveList.clear();
 		for(int i = 0; i < archiveList.size(); i++){
 			int id = i+1;

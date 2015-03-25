@@ -50,17 +50,6 @@
                   </Text>
                </children>
             </Group>
-            <Group fx:id="helpGroup">
-               <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="150.0" layoutX="340.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
-                  <Label layoutX="407.0" layoutY="-76.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Commands" textFill="WHITE">
-                     <font>
-                        <Font size="44.0" />
-                     </font>
-                  </Label>
-               </children>
-            </Group>
             <Group fx:id="taskGroup">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
@@ -93,6 +82,23 @@
                               <TableColumn fx:id="archiveDescription" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Description" />
                            </columns>
                         </TableColumn>
+                    </columns>
+                  </TableView>
+               </children>
+            </Group>
+            <Group fx:id="helpGroup">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="150.0" layoutX="340.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
+                  <Label layoutX="407.0" layoutY="-76.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Commands" textFill="WHITE">
+                     <font>
+                        <Font size="44.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="commandTable" layoutX="5.0" layoutY="11.0" prefHeight="345.0" prefWidth="1038.0">
+                    <columns>
+                      <TableColumn fx:id="commandFunction" prefWidth="214.0" text="Function" />
+                      <TableColumn fx:id="commandCommand" minWidth="0.0" prefWidth="814.0" text="Command" />
                     </columns>
                   </TableView>
                </children>
