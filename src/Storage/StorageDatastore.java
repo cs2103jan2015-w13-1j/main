@@ -87,6 +87,7 @@ public class StorageDatastore {
 	 * @return data in JSON object 
 	 */
 	public JSONObject getData() {
+		initialise();
 		JSONObject dataJSON = new JSONObject();
 		if (isStorageExist(getStorageRelativePath()) == true) {
 			logger.log(Level.INFO, MESSAGE_GET_ALL_DATA_STORAGE_EXIST);

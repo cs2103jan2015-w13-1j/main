@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Label;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import Common.Motivator;
 import Common.Task;
 import Parser.CommandController;
 import Storage.StorageController;
@@ -76,7 +77,8 @@ public class UIController implements Initializable {
 	private int archiveNumber = 1;
 	
 	CommandController commandController = new CommandController();
-	StorageController storageController = new StorageController();
+//	StorageController storageController = new StorageController();
+	Motivator motivator = new Motivator();
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 	
@@ -124,7 +126,7 @@ public class UIController implements Initializable {
 		uiCommandList.add(new UICommand("Default tables view", "-refresh"));
 		uiCommandList.add(new UICommand("Change motto of the day", "-changemotto"));
 		
-		motivationalQuote.setText(storageController.getMotivationQuotes());
+		motivationalQuote.setText(motivator.getRandomQuotes());
 	}
 	
 	public void chooseDirectory(ActionEvent event){
@@ -163,7 +165,7 @@ public class UIController implements Initializable {
 		}
 		else if (firstCommand.equals("-changemotto")){
 			message = "New motto for the day!";
-			String quote = storageController.getMotivationQuotes();
+			String quote = motivator.getRandomQuotes();
 			motivationalQuote.setText(quote);
 		}
 		else{

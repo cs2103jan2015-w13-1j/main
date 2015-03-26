@@ -442,9 +442,4 @@ public class StorageController implements InterfaceForStorage {
 	public void setData(DATA data) {
 		this.data = data;
 	}
-
-	@Override
-	public String getMotivationQuotes() {
-		return motivator.getRandomQuotes();
-	}
 }
