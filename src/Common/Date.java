@@ -1,6 +1,12 @@
+/**
+ * @author Yichen
+ *
+ */
+
 package Common;
 import java.text.SimpleDateFormat;
 
+@SuppressWarnings("serial")
 public class Date extends java.util.Date{
 	
 	public String getDateRepresentation() {
@@ -14,12 +20,12 @@ public class Date extends java.util.Date{
 	 */
 	public static long getMiliseconds(String interval) {
 		switch(interval) {
-		case "oneHour":
-			return 3600000;
-		case "oneDay":
-			return 86400000;
-		case "oneWeek":
-			return 604800000;
+			case "oneHour" :
+				return 3600000;
+			case "oneDay" :
+				return 86400000;
+			case "oneWeek" :
+				return 604800000;
 		}
 		return 0;
 	}

@@ -1,10 +1,12 @@
-package Common;
-import java.util.*;
-
 /**
  * Used for creating task lists for both todo list and archived list
  * @author Yichen
  */
+
+package Common;
+import java.util.*;
+
+@SuppressWarnings("serial")
 public class TaskList extends HashMap<Integer, Task>{
 
 	public void addTask(int id, Task task){
@@ -12,7 +14,7 @@ public class TaskList extends HashMap<Integer, Task>{
 			try {
 				throw new Exception();
 			} catch (Exception e) {
-				System.out.println("ID: "+id+" already exists in the tasklist");
+				System.out.println("ID: " + id + " already exists in the tasklist");
 				System.out.println(task);
 				e.printStackTrace();
 				return;

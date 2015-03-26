@@ -6,6 +6,7 @@ package Common;
  * Support add, delete, update, and extract top_n tasks.
  * @author Yichen
  */
+@SuppressWarnings("serial")
 public class ArchiveSortedList extends GeneralSortedList{
 
 	/**

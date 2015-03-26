@@ -1,12 +1,18 @@
-package Common;
-import java.util.*;
-
 /**
  * Use to represent one single Task
  * @author Yichen
  */
+
+package Common;
+import java.util.*;
+
 public class Task implements Comparable<Task>{
 	
+	private static final int MILISECONDS_IN_HOUR = 3600000;
+	private static final int MILISECONDS_IN_MINUTE = 60000;
+	private static final String STRING_DEADLINE = "deadline";
+	private static final String STRING_MEETING = "meeting";
+
 	/*
 	 * Might need to be edited here
 	 */
@@ -60,7 +66,7 @@ public class Task implements Comparable<Task>{
 		this(id, description, priority, tags);
 		this.startTime = start;
 		this.endTime = end;
-		this.setType("meeting");
+		this.setType(STRING_MEETING);
 	}
 	
 	/**
@@ -74,7 +80,7 @@ public class Task implements Comparable<Task>{
 	public Task(int id, String description, Date deadline, int priority, ArrayList<String> tags){
 		this(id, description, priority, tags);
 		this.deadline = deadline;
-		this.setType("deadline");
+		this.setType(STRING_DEADLINE);
 	}
 
 	/**
@@ -115,13 +121,11 @@ public class Task implements Comparable<Task>{
 	 * @return the 'time' of the task
 	 */
 	public Date getTime() {
-		if (this.getType() == "meeting") {
+		if (this.getType() == STRING_MEETING) {
 			return this.getStartTime();
-		}
-		else if (this.getType() == "deadline") {
+		} else if (this.getType() == STRING_DEADLINE) {
 			return this.getDeadline();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -177,14 +181,14 @@ public class Task implements Comparable<Task>{
 	 * @return the duration of the Task in terms of minutes
 	 */
 	public int getDurationInMinutes() {
-		return (int)(this.getDuration()/60000);
+		return (int)(this.getDuration() / MILISECONDS_IN_MINUTE);
 	}
 	
 	/**
 	 * @return the duration of the Task in terms of hours
 	 */
 	public int getDurationInHours() {
-		return (int)(this.getDuration()/3600000);
+		return (int)(this.getDuration() / MILISECONDS_IN_HOUR);
 	}
 	
 	/**
@@ -269,15 +273,12 @@ public class Task implements Comparable<Task>{
 		if (t2.getTime() == null) {
 			if (t1.getTime() == null) {
 					return 0;
-			}
-			else {
+			} else {
 				return -1;
 			}
-		}
-		else if (t1.getTime() == null) {
+		} else if (t1.getTime() == null) {
 			return 1;
-		}
-		else {
+		} else {
 			return t1.getTime().compareTo(t2.getTime());
 		}
 	}
@@ -300,15 +301,13 @@ public class Task implements Comparable<Task>{
 	public static Comparator<Task> dateThenPriority = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
 			int dateCompare = compareTime(t1, t2);
-			if(dateCompare != 0) {
+			if (dateCompare != 0) {
 				return dateCompare;
-			}
-			else {
+			} else {
 				int priorityCompare = comparePriority(t1, t2);
 				if (priorityCompare != 0) {
 					return priorityCompare;
-				}
-				else {
+				} else {
 					return compareId(t1, t2);
 				}
 			}
@@ -321,20 +320,17 @@ public class Task implements Comparable<Task>{
 	public static Comparator<Task> reverseDateThenPriority = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
 			int finishCompare = compareFinishTime(t1, t2);
-			if(finishCompare != 0) {
+			if (finishCompare != 0) {
 				return finishCompare;
-			}
-			else {
+			} else {
 				int priorityCompare = comparePriority(t1, t2);
 				if (priorityCompare != 0) {
 					return priorityCompare;
-				}
-				else {
+				} else {
 					int dateCompare = compareTime(t2, t1);
-					if(dateCompare != 0) {
+					if (dateCompare != 0) {
 						return dateCompare;
-					}
-					else {
+					} else {
 						return compareId(t2, t1);
 					}
 				}
@@ -348,15 +344,13 @@ public class Task implements Comparable<Task>{
 	public static Comparator<Task> priorityThenDate = new Comparator<Task>(){
 		public int compare(Task t1, Task t2) {
 			int priorityCompare = comparePriority(t1, t2);
-			if(priorityCompare != 0) {
+			if (priorityCompare != 0) {
 				return priorityCompare;
-			}
-			else {
+			} else {
 				int dateCompare = compareTime(t1, t2);
-				if(dateCompare != 0) {
+				if (dateCompare != 0) {
 					return dateCompare;
-				}
-				else {
+				} else {
 					return compareId(t1, t2);
 				}
 			}
@@ -396,16 +390,15 @@ public class Task implements Comparable<Task>{
 	 */
 	public Task copyWithInterval(int id, long period) {
 		Task task;
-		if (this.type.equals("meeting")) {
+		if (this.type.equals(STRING_MEETING)) {
 			Date startTime = new Date();
 			Date endTime = new Date();
 			startTime.setTime(this.startTime.getTime() + period);
 			endTime.setTime(this.endTime.getTime() + period);
 			task = new Task(id, this.description, startTime, endTime, this.priority, this.tags);
-		}
-		else { // the type is a deadline task
+		} else { // the type is a deadline task
 			Date deadline = new Date();
-			deadline.setTime(this.getDeadline().getTime()+period);
+			deadline.setTime(this.getDeadline().getTime() + period);
 			task = new Task(id, this.description, deadline, this.priority, this.tags);
 		}
 		System.out.println(task);

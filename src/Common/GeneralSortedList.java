@@ -1,15 +1,19 @@
-package Common;
-import java.security.InvalidKeyException;
-import java.util.*;
-import java.util.Map.Entry;
-
 /**
  * General sorted list used to store the tasks in sorted order when the program is running
  * Support add, delete, update, and extract top_n tasks.
  * @author Yichen
  */
+
+package Common;
+import java.security.InvalidKeyException;
+import java.util.*;
+import java.util.Map.Entry;
+
+@SuppressWarnings("serial")
 public class GeneralSortedList extends TreeSet<Task>{
 	
+	private static final String MESSAGE_ERROR_DELETE = "Id does not exist";
+
 	protected GeneralSortedList(Comparator<Task> c) {
 		super(c);
 	}
@@ -41,9 +45,8 @@ public class GeneralSortedList extends TreeSet<Task>{
 		}
 		if (toBeDeleted != null) {
 			this.remove(toBeDeleted);
-		}
-		else {
-			throw new InvalidKeyException("Id dose not exist");
+		} else {
+			throw new InvalidKeyException(MESSAGE_ERROR_DELETE);
 		}
 	}
 	
@@ -64,14 +67,19 @@ public class GeneralSortedList extends TreeSet<Task>{
 		}
 	}
 	
+	/**
+	 * @param n
+	 * @return arraylist
+	 */
 	public ArrayList<Task> getTopNTasks(int n) {
 		ArrayList<Task> taskList = new ArrayList<Task>(n);
 		Iterator<Task> taskIterator = this.iterator();
-		for (int i=0; i<n; i++) {
+		for (int i = 0; i < n; i++) {
 			if (taskIterator.hasNext()) {
 				taskList.add(taskIterator.next());
+			} else {
+				break;
 			}
-			else break;
 		}
 		return taskList;
 	}
