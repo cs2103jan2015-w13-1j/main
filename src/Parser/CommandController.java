@@ -142,30 +142,73 @@ public class CommandController implements InterfaceForParser {
 				result = undoCommand();
 				break;
 			}case(10):{
-				result = addtagCommand();
+				result = addtagCommand(splitInput);
 				break;
 			}case(11):{
-				result = removetagCommand();
+				result = removetagCommand(splitInput);
 				break;
 			}
 		}
 		return result;
 	}
-	private String removetagCommand() {
-		// TODO Auto-generated method stub
-		return null;
+	private String removetagCommand(String[] splitInput) {
+		String result = new String();
+		int taskID = 0;
+		String tagToRemove = new String();
+		try{
+			taskID = Integer.parseInt(splitInput[1]);
+		}catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
+			return result = "Please specify ID of task to remove tag from";
+		}
+		try{
+			tagToRemove = splitInput[2];
+		}catch(ArrayIndexOutOfBoundsException e){
+			return result = "Please specify the tag to remove";
+		}
+		if(currentActiveTasks.size()<taskID){
+			return result = "Task does not exist";
+		}else if(!currentActiveTasks.get(taskID-1).getTags().contains(tagToRemove)){
+			return result = "Tag does not exist";
+		}else{
+			Task taskToChange = currentActiveTasks.get(taskID-1);
+			ToDoSortedList retrievedSortedList = logicController.removeTag(taskToChange, tagToRemove);
+			currentActiveTasks.clear();
+			for(Task task : retrievedSortedList){
+				currentActiveTasks.add(task);
+			}
+			return result = "Tag \"" +tagToRemove +"\" removed from task " + taskID;
+		}
+
 	}
 
-
-
-
-	private String addtagCommand() {
-		// TODO Auto-generated method stub
-		return null;
+	private String addtagCommand(String[] splitInput) {
+		String result = new String();
+		int taskID = 0;
+		String tagToAdd = new String();
+		try{
+			taskID = Integer.parseInt(splitInput[1]);
+		}catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
+			return result = "Please specify ID of task to remove tag from";
+		}
+		try{
+			tagToAdd = splitInput[2];
+		}catch(ArrayIndexOutOfBoundsException e){
+			return result = "Please specify the tag to remove";
+		}
+		if(currentActiveTasks.size()<taskID){
+			return result = "Task does not exist";
+		}else if(currentActiveTasks.get(taskID-1).getTags().contains(tagToAdd)){
+			return result = "Tag already exists";
+		}else{
+			Task taskToChange = currentActiveTasks.get(taskID-1);
+			ToDoSortedList retrievedSortedList = logicController.addTag(taskToChange, tagToAdd);
+			currentActiveTasks.clear();
+			for(Task task : retrievedSortedList){
+				currentActiveTasks.add(task);
+			}
+			return result = "Tag \"" +tagToAdd +"\" added to task " + taskID;
+		}
 	}
-
-
-
 
 	private String undoCommand() {
 		boolean isSuccessful = logicController.undo();
