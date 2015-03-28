@@ -155,15 +155,17 @@ public class UIController implements Initializable {
 		
 		String message = commandController.executeCommand(input);
 		
-		if (firstCommand.equals("-goto")){
+		
+		
+		if (firstCommand.charAt(0) == 'g'){
 			executeGoTo(splitCommand[1]);
 			message = "You are at the " + splitCommand[1] + " panel";
 		}
-		else if (firstCommand.equals("-exit")){
+		else if (firstCommand.equals("exit")){
 		    Stage stage = (Stage) commandField.getScene().getWindow();
 		    stage.close();
 		}
-		else if (firstCommand.equals("-changemotto")){
+		else if (firstCommand.equals("changemotto")){
 			message = "New motto for the day!";
 			String quote = motivator.getRandomQuotes();
 			motivationalQuote.setText(quote);
