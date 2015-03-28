@@ -162,7 +162,15 @@ public class UIController implements Initializable {
 		
 		if (firstCommand.charAt(0) == 'g'){
 			executeGoTo(splitCommand[1]);
-			message = "You are at the " + splitCommand[1] + " panel";
+			if (splitCommand[1].charAt(0) == 't'){
+				message = "You are at the task panel";
+			}
+			else if (splitCommand[1].charAt(0) == 'c'){
+				message = "You are at the commands panel";
+			}
+			else if (splitCommand[1].charAt(0) == 's'){
+				message = "You are at the settings panel";
+			}
 		}
 		else if (firstCommand.equals("directory")){
 			fileDirectory.setText(splitCommand[1]);
