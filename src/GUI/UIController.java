@@ -41,6 +41,8 @@ public class UIController implements Initializable {
 	private Label outputMessageText;
 	@FXML
 	private Label motivationalQuote;
+	@FXML
+	private Label fileDirectory;
 	
 	@FXML
 	TableView<UITask> taskTable;
@@ -77,7 +79,7 @@ public class UIController implements Initializable {
 	private int archiveNumber = 1;
 	
 	CommandController commandController = new CommandController();
-//	StorageController storageController = new StorageController();
+	StorageController storageController = new StorageController();
 	Motivator motivator = new Motivator();
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
@@ -97,7 +99,6 @@ public class UIController implements Initializable {
 		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>("due"));
 		taskTags.setCellValueFactory(new PropertyValueFactory<UITask, String>("tags"));
 		taskTable.setItems(uiTaskList);
-		
 		taskList = commandController.initialiseTasks();
 		addToTaskDisplay();
 		
@@ -127,9 +128,11 @@ public class UIController implements Initializable {
 		uiCommandList.add(new UICommand("Change motto of the day", "-changemotto"));
 		
 		motivationalQuote.setText(motivator.getRandomQuotes());
+		
+		fileDirectory.setText(storageController.getFileDirectory());
 	}
 	
-	public void chooseDirectory(ActionEvent event){
+	/*public void chooseDirectory(ActionEvent event){
 		
 		String directoryPath;
 		
@@ -143,7 +146,7 @@ public class UIController implements Initializable {
 			directoryPath = selectedDirectory.getAbsolutePath();
 			System.out.println(directoryPath);
 		}
-	}
+	}*/
 	
 	public void inputCommand(ActionEvent event){
 		
@@ -160,6 +163,9 @@ public class UIController implements Initializable {
 		if (firstCommand.charAt(0) == 'g'){
 			executeGoTo(splitCommand[1]);
 			message = "You are at the " + splitCommand[1] + " panel";
+		}
+		else if (firstCommand.equals("directory")){
+			fileDirectory.setText(splitCommand[1]);
 		}
 		else if (firstCommand.equals("exit")){
 		    Stage stage = (Stage) commandField.getScene().getWindow();
@@ -285,13 +291,13 @@ public class UIController implements Initializable {
 	}
 
 	private void executeGoTo(String input) {
-		if (input.equals("tasks")){
+		if (input.charAt(0) == 't'){
 			taskGroup.toFront();
 		}
-		if (input.equals("commands")){
+		else if (input.charAt(0) == 'c'){
 			helpGroup.toFront();
 		}
-		if (input.equals("settings")) {
+		else if (input.charAt(0) == 's') {
 			settingsGroup.toFront();
 		}
 	}

@@ -55,12 +55,12 @@
                         <Font size="44.0" />
                      </font>
                   </Label>
-                  <Button fx:id="directoryChooserBtn" layoutX="355.0" layoutY="67.0" mnemonicParsing="false" onAction="#chooseDirectory" prefHeight="15.0" prefWidth="337.0" style="-fx-background-radius: 10;" text="Open...">
+                  <Label fx:id="fileDirectory" layoutX="218.0" layoutY="21.0" prefHeight="47.0" prefWidth="611.0" text="Label">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="25.0" />
                      </font>
-                  </Button>
-                  <Text layoutX="390.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose storage location:">
+                  </Label>
+                  <Text layoutX="17.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Storage location:">
                      <font>
                         <Font size="25.0" />
                      </font>
