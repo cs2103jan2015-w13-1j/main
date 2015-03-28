@@ -32,8 +32,8 @@ public class CommandController implements InterfaceForParser {
 		test.initialiseTasks();
 		System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
 		System.out.println(test.returnTasks());
-		System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
-		System.out.println(test.returnTasks());
+		//System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
+		//System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add second generic task"));
 		//System.out.println(test.returnTasks());
 		
@@ -141,10 +141,32 @@ public class CommandController implements InterfaceForParser {
 			}case(9):{
 				result = undoCommand();
 				break;
+			}case(10):{
+				result = addtagCommand();
+				break;
+			}case(11):{
+				result = removetagCommand();
+				break;
 			}
 		}
 		return result;
 	}
+	private String removetagCommand() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+	private String addtagCommand() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
 	private String undoCommand() {
 		boolean isSuccessful = logicController.undo();
 		refreshCurrent();
@@ -153,7 +175,7 @@ public class CommandController implements InterfaceForParser {
 		if(isSuccessful){
 			return result = "Undo successful";
 		} else{
-			return result = "Undo unsuccessful, maybe nothing to undo";
+			return result = "Undo unsuccessful, nothing to undo";
 		}
 
 	}
@@ -195,11 +217,21 @@ public class CommandController implements InterfaceForParser {
 
 	String modifyCommand(String[] splitInput) {
 		String result = new String();
-		String modifyParameter = splitInput[1];
+		String modifyParameter = new String();
 		ToDoSortedList retrievedSortedList = new ToDoSortedList();
-		int taskID = Integer.parseInt(splitInput[2])-1;
-		Task taskToChange = currentActiveTasks.get(taskID);
+		int taskID =0;
+		try{
+			taskID = Integer.parseInt(splitInput[1])-1;
+		}catch(NumberFormatException|ArrayIndexOutOfBoundsException e){
+			return result = "Please specify task ID to change first.";
+		}
+		try{
+			modifyParameter = splitInput[2];
+		}catch(ArrayIndexOutOfBoundsException e){
+			return result = "Please specify what to change";
+		}
 		
+		Task taskToChange = currentActiveTasks.get(taskID);
 		switch(modifyParameter){
 			case("date"):{
 				//find task ID, get task
@@ -312,6 +344,8 @@ public class CommandController implements InterfaceForParser {
 				retrievedSortedList = logicController.editDescription(taskToChange, newDescription);
 				result = "Description changed";
 				break;
+			}default:{
+				return result = "Value to change does not exist. Please try again";
 			}
 		}
 		
@@ -581,19 +615,7 @@ public class CommandController implements InterfaceForParser {
 			}
 		}
 			
-		//need to loop to get the remaining inputs into descriptions
-		/*if(inputLength>1){
-			try{
-				if(input[currentInputPoint].charAt(0)!='-'){
-					description = description.concat(" " + input[currentInputPoint]).trim();
-				}else{
-					return result =  "No description added.";
-				}
-			}catch(ArrayIndexOutOfBoundsException e){
-				return result = "No description added";
-			}
-		}*/
-	
+
 		
 		
 		//convert dates or time into Date object

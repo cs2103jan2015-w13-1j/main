@@ -28,12 +28,12 @@ public class Parser {
 		String firstCommand = splitCommand[0];
 		int commandNum=0;
 		
-		
+		commandNum = commandCheck(firstCommand,splitCommand);
 		//check first word for command
-		if(firstCommand.charAt(0)=='-'){
+		/*if(firstCommand.charAt(0)==''){
 			//command found
-			commandNum = commandCheck(firstCommand,splitCommand);
-		}
+			
+		}*/
 		
 		return commandNum;
 		
@@ -45,35 +45,41 @@ public class Parser {
 	
 		int commandNum = 0;
 		switch(command){
-			case("-add"):{
+			case("add"):{
 				//run "add" functions
 				//return to commandController what command to execute
 				//commandController.result(integer)
 				commandNum = 1;
 				break;
-			}case("-search"):{
+			}case("search"):{
 				commandNum = 2;
 				break;
-			}case("-delete"):{
+			}case("delete"):{
 				commandNum = 3;
 				break;
-			}case("-archive"):{
+			}case("archive"):{
 				commandNum = 4;
 				break;
-			}case("-exit"):{
+			}case("exit"):{
 				commandNum = 5;
 				break;
-			}case("-change"):{
+			}case("change"):{
 				commandNum = 6;
 				break;
-			}case("-directory"):{
+			}case("directory"):{
 				commandNum = 7;
 				break;
-			}case("-refresh"):{
+			}case("refresh"):{
 				commandNum = 8;
 				break;
-			}case("-undo"):{
+			}case("undo"):{
 				commandNum = 9;
+				break;
+			}case("addtag"):{
+				commandNum = 10;
+				break;
+			}case("removetag"):{
+				commandNum = 11;
 				break;
 			}
 			default:
