@@ -440,4 +440,10 @@ public class StorageController implements InterfaceForStorage {
 	public void setData(DATA data) {
 		this._data = data;
 	}
+
+	@Override
+	public String importFromFile(String directory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
