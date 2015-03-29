@@ -7,6 +7,7 @@ import java.util.Calendar;
 
 import Common.ArchiveSortedList;
 import Common.Date;
+import Common.PrioritySortedList;
 import Common.Task;
 import Common.ToDoSortedList;
 import Logic.LogicController;
@@ -30,7 +31,7 @@ public class CommandController implements InterfaceForParser {
 		
 		CommandController test = new CommandController();
 		test.initialiseTasks();
-		System.out.println(test.executeCommand("-add recur -date 23/03/2015 -recurring 2 monthly"));
+		System.out.println(test.executeCommand("add recur -date 23/03/2015 -recurring 2 monthly"));
 		System.out.println(test.returnTasks());
 		//System.out.println(test.executeCommand("-add tagstest -tags hehehe -date 23/03/2015"));
 		//System.out.println(test.returnTasks());
@@ -147,10 +148,45 @@ public class CommandController implements InterfaceForParser {
 			}case(11):{
 				result = removetagCommand(splitInput);
 				break;
+			}case(12):{
+				result = sortCommand(splitInput);
+				break;
 			}
 		}
 		return result;
 	}
+	private String sortCommand(String[] splitInput) {
+		String result = new String();
+		String sortType = new String();
+		try{
+			sortType = splitInput[1];
+			if(splitInput[1].equalsIgnoreCase("time")|splitInput[1].equalsIgnoreCase("t")){
+				ToDoSortedList retrievedSortedList = logicController.sortByTime();
+				currentActiveTasks.clear();
+				for(Task task : retrievedSortedList){
+					currentActiveTasks.add(task);
+				}
+				result = "Tasks sorted by time";
+			}else if(splitInput[1].equalsIgnoreCase("priority")|splitInput[1].equalsIgnoreCase("p")){
+				PrioritySortedList retrievedSortedList = logicController.sortByPriority();
+				currentActiveTasks.clear();
+				for(Task task : retrievedSortedList){
+					currentActiveTasks.add(task);
+				}
+				result = "Tasks sorted by priority";
+			}else{
+				return result = "Invalid, can sort by time or date only";
+			}
+			
+		}catch(ArrayIndexOutOfBoundsException e){
+			return result = "Please specify what to sort by";
+		}
+		return result;
+	}
+
+
+
+
 	private String removetagCommand(String[] splitInput) {
 		String result = new String();
 		int taskID = 0;
@@ -665,6 +701,40 @@ public class CommandController implements InterfaceForParser {
 			}
 		}else if(userInput.contains("-d")){
 			int point = userInput.indexOf("-d");		
+			isGenericTask = false;
+			try{
+				for(int j = point+1;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						dateAsString.add(userInput.get(j));
+					}else{
+						break;
+					}
+				}
+				for(int j=0;j<dateAsString.size();j++){
+					userInput.remove(dateAsString.get(j));
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "Error in date given.";
+			}
+		}else if(userInput.contains("-by")){
+			int point = userInput.indexOf("-by");		
+			isGenericTask = false;
+			try{
+				for(int j = point+1;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						dateAsString.add(userInput.get(j));
+					}else{
+						break;
+					}
+				}
+				for(int j=0;j<dateAsString.size();j++){
+					userInput.remove(dateAsString.get(j));
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "Error in date given.";
+			}
+		}else if(userInput.contains("-b")){
+			int point = userInput.indexOf("-b");		
 			isGenericTask = false;
 			try{
 				for(int j = point+1;j<userInput.size();j++){

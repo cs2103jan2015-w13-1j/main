@@ -81,6 +81,9 @@ public class Parser {
 			}case("removetag"):{
 				commandNum = 11;
 				break;
+			}case("sort"):{
+				commandNum = 12;
+				break;
 			}
 			default:
 				System.out.println("Invalid command");

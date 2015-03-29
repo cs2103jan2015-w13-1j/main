@@ -13,20 +13,20 @@ public class CommandControllerTest {
 		test.initialiseTasks();
 		
 		//no description
-		assertEquals("No description added, try again", test.executeCommand("-add"));
+		assertEquals("No description added, try again", test.executeCommand("add"));
 		//wrong syntax in add command
-		assertEquals("Invalid command", test.executeCommand("add"));
+		assertEquals("Invalid command", test.executeCommand("a"));
 		//wrong syntax in priority
 		//wrong syntax in tags
 		//wrong syntax in date
 		//date end < start
 		//date already passed
 		//add generic
-		assertEquals("New task added: generic task",test.executeCommand("-add generic task"));
+		assertEquals("New task added: generic task",test.executeCommand("add generic task"));
 		//add deadline
-		assertEquals("New task added with deadline: deadline task",test.executeCommand("-add deadline task -date 22/11/2015"));
+		assertEquals("New task added with deadline: deadline task",test.executeCommand("add deadline task -date 22/11/2015"));
 		//add meeting
-		assertEquals("New task added for meeting: meeting task",test.executeCommand("-add meeting task -date 11/11/2015 1100 1200"));
+		assertEquals("New task added for meeting: meeting task",test.executeCommand("add meeting task -date 11/11/2015 1100 1200"));
 	}
 	
 	@Test
@@ -34,7 +34,7 @@ public class CommandControllerTest {
 		
 		test.initialiseTasks();
 		int size =test.returnTasks().size();
-		test.executeCommand("-delete 1");
+		test.executeCommand("delete 1");
 		int size2 =test.returnTasks().size();
 		assertEquals(size-1,size2);
 	}
