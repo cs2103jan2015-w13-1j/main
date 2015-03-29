@@ -9,3 +9,6 @@
 -add withtag -tags tag1
 
 -add recurring deadline -date 25/03/2015 1600 -recurring 5 weekly
+
+
+add tutorial -date 01/04/2015 -recurring 3 weekly -tags MA1101R<< show 2 entries only
