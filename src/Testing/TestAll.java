@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import Storage.HistoryADT;
+import History.HistoryADT;
 import Storage.StorageADT;
 
 @RunWith(Suite.class)
