@@ -6,6 +6,7 @@
 
 package Common;
 
+@SuppressWarnings("serial")
 public class ToDoSortedList extends GeneralSortedList{
 	
 	/**

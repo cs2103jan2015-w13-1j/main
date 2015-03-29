@@ -10,7 +10,7 @@
       <operations public="true" package="true" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="Testing.StorageADT" project="main" file="/main/src/Testing/StorageADT.java" 
+  <class id="2" language="java" name="Storage.StorageADT" project="main" file="/main/src/Storage/StorageADT.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="452" y="400"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
