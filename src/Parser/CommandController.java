@@ -151,10 +151,31 @@ public class CommandController implements InterfaceForParser {
 			}case(12):{
 				result = sortCommand(splitInput);
 				break;
+			}case(13):{
+				result = importCommand(splitInput);
+				break;
 			}
 		}
 		return result;
 	}
+	private String importCommand(String[] splitInput) {
+		String directoryToImport = new String();
+		try{
+			directoryToImport = splitInput[1];
+			String relativeDirectory = storageController.importFromFile(directoryToImport);
+			initialiseTasks();
+			initialiseArchives();
+			return "Imported from " + relativeDirectory ;
+		}catch(ArrayIndexOutOfBoundsException e){
+			return "Please specify a directory to import from";
+		}
+		
+
+	}
+
+
+
+
 	private String sortCommand(String[] splitInput) {
 		String result = new String();
 		String sortType = new String();
@@ -183,8 +204,6 @@ public class CommandController implements InterfaceForParser {
 		}
 		return result;
 	}
-
-
 
 
 	private String removetagCommand(String[] splitInput) {
@@ -295,6 +314,7 @@ public class CommandController implements InterfaceForParser {
 
 
 	String modifyCommand(String[] splitInput) {
+		//for recurring changes, change all <taskID> <..parameters>
 		String result = new String();
 		String modifyParameter = new String();
 		ToDoSortedList retrievedSortedList = new ToDoSortedList();
@@ -537,7 +557,12 @@ public class CommandController implements InterfaceForParser {
 	String searchCommand(String[] splitInput) {
 		// check input for what to search for (date/tag/priority/desc)
 		String result = new String();
-		String searchParameter = splitInput[1];
+		String searchParameter = new String();
+		try{
+			searchParameter = splitInput[1];
+		}catch (ArrayIndexOutOfBoundsException e){
+			return result = "Please specify what to search for";
+		}
 		currentActiveTasks.clear();
 		switch(searchParameter){
 			case("today"):{
