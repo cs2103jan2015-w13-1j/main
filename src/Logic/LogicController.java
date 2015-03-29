@@ -1,6 +1,7 @@
 package Logic;
 import java.util.ArrayList;
 import java.util.Map.Entry;
+
 import Common.ArchiveSortedList;
 import Common.DATA;
 import Common.Date;
@@ -90,6 +91,15 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	@Override
+	public ToDoSortedList removeDeadline(Task task) {
+		assert(task.getType().equals("deadline"));
+		logToHistory();
+		task.changeDeadline(null);
+		task.setType("generic");
+		return update_Save_ReturnTodo();
+	}
+	
+	@Override
 	public ToDoSortedList editDeadline(Task task, Date deadline) {
 		assert (task.getType().equals("deadline"));
 		logToHistory();
@@ -125,7 +135,7 @@ public class LogicController implements InterfaceForLogic{
 		logToHistory();
 		
 		task.changeEndTime(end);
-		return storeAndReturnToDo();
+		return update_Save_ReturnTodo();
 	}
 	
 	@Override
@@ -178,18 +188,14 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	@Override
-	public ToDoSortedList deleteTask(Task task) {
-		assert(activeTaskList.containsValue(task) || archivedTaskList.containsValue(task));
+	public ToDoSortedList unArchive(Task task) {
+		assert (archivedTaskList.containsValue(task));
 		logToHistory();
-		
-		if (!task.isArchived()){
-			toDoSortedList.deleteTask(task);
-			activeTaskList.removeTaskbyId(task.getId());
-		}
-		else{
-			archivedTaskList.removeTaskbyId(task.getId());
-		}
-		return storeAndReturnToDo();
+		task.removeFromArchive();
+		int id = task.getId();
+		archivedTaskList.removeTaskbyId(id);
+		activeTaskList.addTask(id, task);
+		return update_Save_ReturnTodo();
 	}
 	
 	// Only for tasks in the to do list
@@ -295,34 +301,47 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	@Override
+	public ToDoSortedList deleteTask(Task task) {
+		assert(activeTaskList.containsValue(task));
+		logToHistory();
+		toDoSortedList.deleteTask(task);
+		activeTaskList.removeTaskbyId(task.getId());
+		return storeAndReturnToDo();
+	}
+	
+	@Override
+	public ToDoSortedList deleteByTag(String tag) {
+		logToHistory();
+		for (Task task: toDoSortedList) {
+			ArrayList<String> tags = task.getTags();
+			if (tags.contains(tag)) {
+				toDoSortedList.deleteTask(task);
+				activeTaskList.removeTaskbyId(task.getId());
+			}
+		}
+		return storeAndReturnToDo();
+	}
+	
+	@Override
 	public ArchiveSortedList deleteFromArchive(Task task) {
 		assert(archivedTaskList.containsValue(task));
 		logToHistory();
-		
 		archivedTaskList.removeTaskbyId(task.getId());
 		storageController.storeAllData(data);
 		return viewArchiveTasks();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see Logic.InterfaceForLogic#addRecurringTask(Common.Task, long, int)
-	 */
 	@Override
 	public ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum) {
 		assert(!task.getType().equals("generic"));
 		assert(period > 0);
 		logToHistory();
-		
-		System.out.println("ID for recurrence task: "+ task.getId());
-		System.out.println("Period "+period);
 		int id = task.getId();
 		int recurrenceId = data.getRecurrenceId();
 		task.setRecurrenceId(recurrenceId);
 		activeTaskList.addTask(task.getId(), task);
 		for (int i = 1; i < recurrenceNum ; i++) {
 			Task newTask = task.copyWithInterval(id + i, i * period);
-			System.out.println(newTask);
 			newTask.setRecurrenceId(recurrenceId);
 			activeTaskList.addTask(id + i, newTask);
 		}
@@ -466,6 +485,44 @@ public class LogicController implements InterfaceForLogic{
 		return storeAndReturnToDo();
 	}
 
+	@Override
+	public ToDoSortedList repeatExistingTask(Task task, long period, int recurrenceNum) {
+		assert(!task.getType().equals("generic"));
+		assert(period > 0);
+		logToHistory();
+		int recurrenceId = data.getRecurrenceId();
+		task.setRecurrenceId(recurrenceId);
+		for (int i = 1; i < recurrenceNum ; i++) {
+			Task newTask = task.copyWithInterval(getSerialNumber() + i, i * period);
+			newTask.setRecurrenceId(recurrenceId);
+			activeTaskList.addTask(getSerialNumber() + i, newTask);
+		}
+		data.setRecurrenceId(getSerialNumber() + recurrenceNum);
+		data.increamentRecurrenceId();
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ArchiveSortedList deleteAllRecurringInArchive(Task task) {
+		assert(archivedTaskList.containsValue(task));
+		logToHistory();
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		for (Task t: archivedTaskList.values()) {
+			if (t.getRecurrenceId() == task.getRecurrenceId()) {
+				tasks.add(t);
+			}
+		}
+		for (Task t: tasks) {
+			archivedTaskList.removeTaskbyId(t.getId());
+		}
+		if (!isTesting) {
+			data.setActiveTaskList(activeTaskList);
+			data.setArchivedTaskList(archivedTaskList);
+			storageController.storeAllData(data);
+		}
+		return viewArchiveTasks();
+	}
+	
 	@Override
 	public boolean undo() {
 		DATA data = historyController.undo();
