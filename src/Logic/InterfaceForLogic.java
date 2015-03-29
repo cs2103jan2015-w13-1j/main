@@ -1,9 +1,6 @@
 package Logic;
 
 import java.util.ArrayList;
-
-import javax.activity.InvalidActivityException;
-
 import Common.ArchiveSortedList;
 import Common.Date;
 import Common.PrioritySortedList;
