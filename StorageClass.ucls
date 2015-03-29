@@ -58,7 +58,7 @@
   </class>  
   <association id="8">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="9" name="data">        
+      <attribute id="9" name="_data">        
         <position height="0" width="0" x="640" y="379"/>      
       </attribute>      
       <multiplicity id="10" minimum="0" maximum="1">        
@@ -86,7 +86,7 @@
   </realization>  
   <association id="15">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="16" name="datastore">        
+      <attribute id="16" name="_datastore">        
         <position height="0" width="0" x="-158" y="72"/>      
       </attribute>      
       <multiplicity id="17" minimum="0" maximum="1">        

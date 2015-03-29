@@ -25,7 +25,6 @@ import org.json.simple.parser.ParseException;
 
 import Common.DATA;
 import Common.Date;
-import Common.Motivator;
 import Common.Task;
 import Common.TaskList;
 
@@ -57,9 +56,8 @@ public class StorageController implements InterfaceForStorage {
 
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
 	
-	private DATA data;
-	private Motivator motivator = new Motivator();
-	private StorageDatastore datastore = new StorageDatastore();
+	private DATA _data;
+	private StorageDatastore _datastore = new StorageDatastore();
 	
 	public static void main(String[] args) {
 		StorageController control = new StorageController();
@@ -74,22 +72,22 @@ public class StorageController implements InterfaceForStorage {
 	 * for testing purpose
 	 */
 	private void testForStoreFunction() {
-		this.data = initialiseNewDataObject();
+		this._data = initialiseNewDataObject();
 		createDummyData();
-		storeAllData(this.data);
+		storeAllData(this._data);
 	}
 	
 	@Override
 	public DATA getAllData() {
-		this.data = convertJSONObjectToData(datastore.getData());
-		return data;
+		this._data = convertJsonObjectToData(_datastore.getData());
+		return _data;
 	}
 	
 	/**
 	 * @param dataJSON
 	 * @return DATA object
 	 */
-	private DATA convertJSONObjectToData(JSONObject dataJSON) {
+	private DATA convertJsonObjectToData(JSONObject dataJSON) {		
 		if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false) {
 			logger.log(Level.WARNING, MESSAGE_CONVERT_DATA_FAILURE);
 			return initialiseNewDataObject();
@@ -101,17 +99,17 @@ public class StorageController implements InterfaceForStorage {
 		newData.setSerialNumber(gson.fromJson(String.valueOf(dataJSON.get(STRING_SERIAL_NUMBER)) , int.class));
 		// retrieve recurrence ID and store into data
 		newData.setRecurrenceId(gson.fromJson(String.valueOf(dataJSON.get(STRING_RECURRENCE_ID)) , int.class));
-		TaskList activeTaskList = getTaskListFromJSONByTaskList(dataJSON, STRING_ACTIVE_TASK_LIST);
+		TaskList activeTaskList = getTaskListFromJsonByTaskList(dataJSON, STRING_ACTIVE_TASK_LIST);
 		newData.setActiveTaskList(activeTaskList);
-		TaskList archivedTaskList = getTaskListFromJSONByTaskList(dataJSON, STRING_ARCHIVED_TASK_LIST);
+		TaskList archivedTaskList = getTaskListFromJsonByTaskList(dataJSON, STRING_ARCHIVED_TASK_LIST);
 		newData.setArchivedTaskList(archivedTaskList);
 	    return newData;
 	}
 
 	@Override
 	public String storeAllData(DATA data) {
-		this.data = data;
-		if (datastore.storeJSONIntoStorage(convertDataToJSONObject()) == true) {
+		this._data = data;
+		if (_datastore.storeJsonIntoStorage(convertDataToJSONObject()) == true) {
 			logger.log(Level.INFO, MESSAGE_STORE_DATA_SUCCESS);
 			return MESSAGE_STORE_DATA_SUCCESS;
 		}
@@ -125,7 +123,7 @@ public class StorageController implements InterfaceForStorage {
 	 * @return taskList
 	 */
 	@SuppressWarnings("rawtypes")
-	private TaskList getTaskListFromJSONByTaskList(JSONObject dataJSON, String taskList) {
+	private TaskList getTaskListFromJsonByTaskList(JSONObject dataJSON, String taskList) {
 		TaskList taskListHashMap = new TaskList();
 		try {
 			JSONObject tasklistJSON = (JSONObject) dataJSON.get(taskList);
@@ -135,7 +133,7 @@ public class StorageController implements InterfaceForStorage {
 		    	Map.Entry pair = (Map.Entry)it.next();
 		    	JSONObject taskJSON = (JSONObject) tasklistJSON.get(pair.getKey()); 
 
-		    	Task task = convertJSONObjectToTask(taskJSON);
+		    	Task task = convertJsonObjectToTask(taskJSON);
 				
 				taskListHashMap.addTask(task.getId(), task);
 		    	it.remove(); // avoids a ConcurrentModificationException
@@ -151,7 +149,7 @@ public class StorageController implements InterfaceForStorage {
 	 * @param taskJSON
 	 * @return task object
 	 */
-	private Task convertJSONObjectToTask(JSONObject taskJSON) {
+	private Task convertJsonObjectToTask(JSONObject taskJSON) {
 		// Generic Type attributes
 		Gson gson = new Gson();
 		int id = gson.fromJson(String.valueOf(taskJSON.get(STRING_ID)) , int.class);
@@ -249,7 +247,7 @@ public class StorageController implements InterfaceForStorage {
 		try {
 			Gson gson = new Gson();
 			JSONParser parser = new JSONParser();
-			dataJSON = (JSONObject) parser.parse(gson.toJson(this.data));
+			dataJSON = (JSONObject) parser.parse(gson.toJson(this._data));
 			modifyDataJsonByTaskList(dataJSON, STRING_ACTIVE_TASK_LIST);
 			modifyDataJsonByTaskList(dataJSON, STRING_ARCHIVED_TASK_LIST);
 		} catch (ParseException e) {
@@ -315,9 +313,9 @@ public class StorageController implements InterfaceForStorage {
 	@SuppressWarnings("rawtypes")
 	private Iterator setIteratorByTaskList(String taskList, Iterator it) {
 		if (taskList.equals(STRING_ACTIVE_TASK_LIST)) {
-			it = data.getActiveTaskList().entrySet().iterator();
+			it = _data.getActiveTaskList().entrySet().iterator();
 		} else if (taskList.equals(STRING_ARCHIVED_TASK_LIST)) {
-			it = data.getArchivedTaskList().entrySet().iterator();
+			it = _data.getArchivedTaskList().entrySet().iterator();
 		}
 		return it;
 	}
@@ -327,24 +325,24 @@ public class StorageController implements InterfaceForStorage {
 	 */
 	public DATA initialiseNewDataObject() {
 		logger.log(Level.FINE, MESSAGE_INITIALISE_NEW_DATA_OBJECT);
-		this.data = new DATA();
-		this.data.setActiveTaskList(new TaskList());
-		this.data.setArchivedTaskList(new TaskList());
-		this.data.setSerialNumber(STARTING_INDEX);
-		this.data.setRecurrenceId(STARTING_INDEX);
-		return this.data;
+		this._data = new DATA();
+		this._data.setActiveTaskList(new TaskList());
+		this._data.setArchivedTaskList(new TaskList());
+		this._data.setSerialNumber(STARTING_INDEX);
+		this._data.setRecurrenceId(STARTING_INDEX);
+		return this._data;
 	}
 
 	@Override
 	public String getFileDirectory() {
-		return datastore.getDirectory();
+		return _datastore.getDirectory();
 	}
 
 	@Override
 	// change the file directory
 	public String setFileDirectory(String fileDirectory) {
-		datastore.setDirectory(fileDirectory);
-		return datastore.getDirectory();
+		_datastore.setDirectory(fileDirectory);
+		return _datastore.getDirectory();
 	}
 	
 	// create 9 dummy tasks and store into data for testing
@@ -405,19 +403,19 @@ public class StorageController implements InterfaceForStorage {
 		dummyDeadlineTask1.moveToArchive(deadline2);
 		dummyMeetingTask2.moveToArchive(deadline3);
 
-		data.setSerialNumber(10); // hard-coded serial number
-		data.setRecurrenceId(STARTING_INDEX); // hard-coded recurrence id
+		_data.setSerialNumber(10); // hard-coded serial number
+		_data.setRecurrenceId(STARTING_INDEX); // hard-coded recurrence id
 
-		data.getActiveTaskList().addTask(dummyGenericTask1.getId(), dummyGenericTask1);
-		data.getActiveTaskList().addTask(dummyGenericTask3.getId(), dummyGenericTask3);
-		data.getActiveTaskList().addTask(dummyDeadlineTask2.getId(), dummyDeadlineTask2);
-		data.getActiveTaskList().addTask(dummyDeadlineTask3.getId(), dummyDeadlineTask3);
-		data.getActiveTaskList().addTask(dummyMeetingTask1.getId(), dummyMeetingTask1);
-		data.getActiveTaskList().addTask(dummyMeetingTask3.getId(), dummyMeetingTask3);
+		_data.getActiveTaskList().addTask(dummyGenericTask1.getId(), dummyGenericTask1);
+		_data.getActiveTaskList().addTask(dummyGenericTask3.getId(), dummyGenericTask3);
+		_data.getActiveTaskList().addTask(dummyDeadlineTask2.getId(), dummyDeadlineTask2);
+		_data.getActiveTaskList().addTask(dummyDeadlineTask3.getId(), dummyDeadlineTask3);
+		_data.getActiveTaskList().addTask(dummyMeetingTask1.getId(), dummyMeetingTask1);
+		_data.getActiveTaskList().addTask(dummyMeetingTask3.getId(), dummyMeetingTask3);
 
-		data.getArchivedTaskList().addTask(dummyGenericTask2.getId(), dummyGenericTask2);
-		data.getArchivedTaskList().addTask(dummyDeadlineTask1.getId(), dummyDeadlineTask1);
-		data.getArchivedTaskList().addTask(dummyMeetingTask2.getId(), dummyMeetingTask2);
+		_data.getArchivedTaskList().addTask(dummyGenericTask2.getId(), dummyGenericTask2);
+		_data.getArchivedTaskList().addTask(dummyDeadlineTask1.getId(), dummyDeadlineTask1);
+		_data.getArchivedTaskList().addTask(dummyMeetingTask2.getId(), dummyMeetingTask2);
 		logger.log(Level.INFO, MESSAGE_DUMMY_DATA);
 		return MESSAGE_DUMMY_DATA;
 	}
@@ -426,20 +424,20 @@ public class StorageController implements InterfaceForStorage {
 	 * @return datastore.getStorageRelativePath();
 	 */
 	public String getFileRelativePath() {
-		return datastore.getStorageRelativePath();
+		return _datastore.getStorageRelativePath();
 	}
 
 	/**
 	 * @return the data
 	 */
 	public DATA getData() {
-		return data;
+		return _data;
 	}
 
 	/**
 	 * @param data the data to set
 	 */
 	public void setData(DATA data) {
-		this.data = data;
+		this._data = data;
 	}
 }

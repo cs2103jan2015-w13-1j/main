@@ -17,17 +17,30 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class StorageDatastore {
-	private String directory;
-	private String storageName;
+	
+	private String _directory;
+	private String _storageName;
+	private static final int NEGATIVE_ONE = -1;
+	private static final String STRING_DIRECTORY = "directory";
+	private static final String STRING_STORAGE_NAME = "storageName";
 	private static final String STRING_UTILITY_FILE_NAME = "tables/utility.json";
-	private static final String MESSAGE_NEW_FILE_DIRECTORY = "New directory : ";
-	private static final String MESSAGE_CREATE_STORAGE_FILE = "Creating storage file ";
+	private static final String STRING_DEFAULT_STORAGE_NAME_VALUE = "storage.json";
+	private static final String STRING_DEFAULT_DIRECTORY_VALUE = "tables/";
+	private static final String STRING_SERIAL_NUMBER = "serialNumber";
+	private static final String MESSAGE_INIT_ERROR_INVALID_CONTENT = STRING_UTILITY_FILE_NAME + " content invalid.";
+	private static final String MESSAGE_INIT_ERROR_STORAGE_NOT_FOUND = STRING_UTILITY_FILE_NAME + " does not exist.";
+	private static final String MESSAGE_NEW_FILE_DIRECTORY = "New directory : %1$s";
+	private static final String MESSAGE_CREATE_STORAGE_FILE = "Creating storage file : %1$s";
 	private static final String MESSAGE_ADD_DEFAULT_UTIL_SETTINGS = "Add default settings to utility. Directory: \"tables/\" Storage: \"storage.json\"";
 	private static final String MESSAGE_PROCESS_STORAGE_NOT_FOUND = "Storage does not exist.";
 	private static final String MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST = "Storage file does not exist.";
 	private static final String MESSAGE_GET_ALL_DATA_STORAGE_EXIST = "Storage file exists. Retrieving DATA from storage.";
 	private static final String MESSAGE_RETRIEVE_SUCCESS = "Data is retrieved.";
 	private static final String MESSAGE_RETRIEVE_FROM_EMPTY_FILE = "File is empty. No data is retrieved.";
+	private static final String MESSAGE_DELETE_FILE = "%1$s is deleted.";
+	private static final String MESSAGE_STORE_FAILURE = "%1$s not saved.";
+	private static final String MESSAGE_STORE_SUCCESS = "%1$s is saved successfully.";
+	private static final String MESSAGE_RETRIEVE_ERROR_FILE_CONTENT_INVALID = "File content invalid. No data is retrieved.";
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
 	
 	public static void main(String[] args) {
@@ -47,40 +60,50 @@ public class StorageDatastore {
 	 * Retrieve datastore settings if exists, otherwise, creates new utility file and set it with default settings
 	 */
 	private void initialise() {
-		JSONObject utilJSON = new JSONObject();
 		if (isStorageExist(STRING_UTILITY_FILE_NAME) == false) {
-			logger.log(Level.WARNING, STRING_UTILITY_FILE_NAME + " does not exist.");
-			createStorage(STRING_UTILITY_FILE_NAME);
+			initPhaseOne();
+		} else {
+			initPhaseTwo();
+		}
+	}
+
+	private void initPhaseTwo() {
+		JSONObject utilJSON = new JSONObject();
+		try {
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(new FileReader(STRING_UTILITY_FILE_NAME));
+			utilJSON = (JSONObject) obj;
+			initPhaseThree(utilJSON);
+			
+		} catch (IOException | ParseException e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	private void initPhaseThree(JSONObject utilJSON) {
+		if (utilJSON.containsKey(STRING_DIRECTORY) == false) {
+			logger.log(Level.WARNING, MESSAGE_INIT_ERROR_INVALID_CONTENT);
 			resetToDefaultSettings();
 		} else {
-			logger.log(Level.FINE, STRING_UTILITY_FILE_NAME + " exists.");
-			try {
-				JSONParser parser = new JSONParser();
-				Object obj = parser.parse(new FileReader(STRING_UTILITY_FILE_NAME));
-				utilJSON = (JSONObject) obj;
-				if (utilJSON.containsKey("directory") == false) {
-					logger.log(Level.WARNING, STRING_UTILITY_FILE_NAME + " content invalid.");
-					resetToDefaultSettings();
-				} else {
-					this.storageName = String.valueOf(utilJSON.get("storageName"));
-					this.directory = String.valueOf(utilJSON.get("directory"));					
-				}
-				
-			} catch (IOException | ParseException e) {
-				logger.log(Level.SEVERE, e.getMessage());
-			}
+			this._storageName = String.valueOf(utilJSON.get(STRING_STORAGE_NAME));
+			this._directory = String.valueOf(utilJSON.get(STRING_DIRECTORY));					
 		}
-//		logger.log(Level.INFO, "process storage utility [OK]");
+	}
+
+	private void initPhaseOne() {
+		logger.log(Level.WARNING, MESSAGE_INIT_ERROR_STORAGE_NOT_FOUND);
+		createStorage(STRING_UTILITY_FILE_NAME);
+		resetToDefaultSettings();
 	}
 	
 	/**
 	 * @param json object
 	 * @return true if storing is successful
 	 */
-	public boolean storeJSONIntoStorage(JSONObject json) {
+	public boolean storeJsonIntoStorage(JSONObject json) {
 		initialise();
 		processStorage();
-		return storeJSONIntoStorage(json, getStorageRelativePath());
+		return storeJsonIntoStorage(json, getStorageRelativePath());
 	}
 	
 	/**
@@ -122,8 +145,8 @@ public class StorageDatastore {
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(new FileReader(fileName));
 			dataJSON = (JSONObject) obj; 
-			if (dataJSON.containsKey("serialNumber") == false) {
-				logger.log(Level.WARNING, "File content invalid. No data is retrieved.");
+			if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false) {
+				logger.log(Level.WARNING, MESSAGE_RETRIEVE_ERROR_FILE_CONTENT_INVALID);
 				dataJSON = new JSONObject();
 				return dataJSON;
 			}
@@ -140,8 +163,8 @@ public class StorageDatastore {
 	 */
 	private void resetToDefaultSettings() {
 		logger.log(Level.INFO, MESSAGE_ADD_DEFAULT_UTIL_SETTINGS);
-		this.directory = "tables/";			// default settings
-		this.storageName = "storage.json";	// default settings
+		this._directory = STRING_DEFAULT_DIRECTORY_VALUE;			// default settings
+		this._storageName = STRING_DEFAULT_STORAGE_NAME_VALUE;	// default settings
 		saveSettingsToUtility();
 	}
 
@@ -151,9 +174,9 @@ public class StorageDatastore {
 	@SuppressWarnings("unchecked")
 	private void saveSettingsToUtility() {
 		JSONObject utilJSON = new JSONObject();
-		utilJSON.put("directory", this.directory);
-		utilJSON.put("storageName", this.storageName);
-		storeJSONIntoStorage(utilJSON, STRING_UTILITY_FILE_NAME);
+		utilJSON.put(STRING_DIRECTORY, this._directory);
+		utilJSON.put(STRING_STORAGE_NAME, this._storageName);
+		storeJsonIntoStorage(utilJSON, STRING_UTILITY_FILE_NAME);
 	}
 	
 	/**
@@ -171,10 +194,10 @@ public class StorageDatastore {
 	 * @param file name
 	 * @return true if storing is successful
 	 */
-	private boolean storeJSONIntoStorage(JSONObject json, String fileName) {
+	private boolean storeJsonIntoStorage(JSONObject json, String fileName) {
 		File file = new File(fileName);
 		long timeBeforeModification = file.lastModified();
-		long timeAfterModification = -1;
+		long timeAfterModification = NEGATIVE_ONE;
 		try {
 			FileWriter fileWriter = new FileWriter(fileName);
 			fileWriter.write(json.toJSONString());
@@ -185,12 +208,20 @@ public class StorageDatastore {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
 		boolean result = timeAfterModification > timeBeforeModification;
-		if (result == true) {
-			logger.log(Level.INFO, fileName + " is saved successfully.");
-		} else {
-			logger.log(Level.WARNING, fileName + " not saved.");
-		}
+		logStoreResult(fileName, result);
 		return result;
+	}
+
+	/**
+	 * @param fileName
+	 * @param result
+	 */
+	private void logStoreResult(String fileName, boolean result) {
+		if (result == true) {
+			logger.log(Level.INFO, String.format(MESSAGE_STORE_SUCCESS, fileName));
+		} else {
+			logger.log(Level.WARNING, String.format(MESSAGE_STORE_FAILURE, fileName));
+		}
 	}
 	
 	/**
@@ -206,7 +237,7 @@ public class StorageDatastore {
 	 * @param File Relative Path
 	 */
 	private void createStorage(String fileRelativePath) {
-		logger.log(Level.INFO, MESSAGE_CREATE_STORAGE_FILE + fileRelativePath);
+		logger.log(Level.INFO, String.format(MESSAGE_CREATE_STORAGE_FILE, fileRelativePath));
 		try {
 			File storageFile = new File(fileRelativePath);
 			if (storageFile.getParentFile() != null) {
@@ -222,16 +253,16 @@ public class StorageDatastore {
 	 * @return directory
 	 */
 	public String getDirectory() {
-		return directory;
+		return _directory;
 	}
 	/**
 	 * @param directory the directory to set
 	 */
 	public void setDirectory(String directory) {
 		deleteFile(getStorageRelativePath());	// remove old storage file if it exists
-		this.directory = directory;
+		this._directory = directory;
 		saveSettingsToUtility();
-		logger.log(Level.INFO, MESSAGE_NEW_FILE_DIRECTORY + this.getDirectory());
+		logger.log(Level.INFO, String.format(MESSAGE_NEW_FILE_DIRECTORY, this.getDirectory()));
 	}
 	
 	/**
@@ -242,7 +273,7 @@ public class StorageDatastore {
 		oldFile.setWritable(true);
 		if (oldFile.exists()) {
 			oldFile.delete();
-			logger.log(Level.INFO, fileName + " is deleted.");
+			logger.log(Level.INFO, String.format(MESSAGE_DELETE_FILE, fileName));
 		}
 	}
 	
@@ -250,13 +281,13 @@ public class StorageDatastore {
 	 * @return the storageName
 	 */
 	public String getStorageName() {
-		return storageName;
+		return _storageName;
 	}
 	/**
 	 * @param storageName the storageName to set
 	 */
 	public void setStorageName(String storageName) {
-		this.storageName = storageName;
+		this._storageName = storageName;
 	}
 	
 	/**

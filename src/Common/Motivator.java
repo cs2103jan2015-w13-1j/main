@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class Motivator {
 	
-	private ArrayList<String> quotes;
+	private ArrayList<String> _quotes;
 	public static void main(String[] args) {
 		Motivator motivator = new Motivator();
 		motivator.initialise();
@@ -34,15 +34,15 @@ public class Motivator {
 	public String getRandomQuotes() {
 		//note a single Random object is reused here
 	    Random randomGenerator = new Random();
-	    int randomInt = randomGenerator.nextInt(this.quotes.size() - 1);
-		return quotes.get(randomInt);
+	    int randomInt = randomGenerator.nextInt(this._quotes.size() - 1);
+		return _quotes.get(randomInt);
 	}
 	
 	/**
 	 * initialise quotes list
 	 */
 	private void initialise() {
-		this.quotes = new ArrayList<String>();
+		this._quotes = new ArrayList<String>();
 		copyQuotesFromFile();
 	}
 	
@@ -56,7 +56,7 @@ public class Motivator {
 			    String line;
 			    while ((line = br.readLine()) != null) {
 			       // process the line.
-			    	quotes.add(line);
+			    	_quotes.add(line);
 			    }
 			}
 		} catch (IOException e) {
@@ -68,14 +68,14 @@ public class Motivator {
 	 * @return the quotes
 	 */
 	public ArrayList<String> getQuotes() {
-		return quotes;
+		return _quotes;
 	}
 
 	/**
 	 * @param quotes the quotes to set
 	 */
 	public void setQuotes(ArrayList<String> quotes) {
-		this.quotes = quotes;
+		this._quotes = quotes;
 	}
 
 }

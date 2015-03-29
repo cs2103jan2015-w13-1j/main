@@ -15,41 +15,45 @@ import Common.DATA;
 
 public class HistoryController implements InterfaceForHistory{
 
+	private static final String MESSAGE_UNDO_NOT_SUCCESSFUL = "Undo not successful. No previous command entry found.";
+	private static final String MESSAGE_LOG_PREVIOUS_DATA_WAS_NOT_SUCCESSFUL = "Log previous DATA was not successful.";
+	private static final String MESSAGE_LOG_PREVIOUS_DATA_SUCCESSFULLY = "Log previous DATA successfully.";
+	private static final String MESSAGE_LOG_LIST_IS_INITIALISED = "Log list is initialised.";
 	private final int SIZE = 10;
-	private LinkedList<DATA> logList;
-	private StorageController storageControl;
+	private LinkedList<DATA> _logList;
+	private StorageController _storageControl;
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
 	
 	public HistoryController() {
-		this.logList = new LinkedList<DATA>();
-		storageControl = new StorageController();
-		logger.log(Level.INFO, "Log list is initialised.");
+		this._logList = new LinkedList<DATA>();
+		_storageControl = new StorageController();
+		logger.log(Level.INFO, MESSAGE_LOG_LIST_IS_INITIALISED);
 	}
 
 	@Override
 	public boolean log() {
-		if (this.logList.size() == SIZE) {
-			this.logList.removeLast();
+		if (this._logList.size() == SIZE) {
+			this._logList.removeLast();
 		}
 		
-		DATA previousData = storageControl.getAllData();
-		this.logList.push(previousData);
-		if (this.logList.contains(previousData) == true) {
-			logger.log(Level.INFO, "Log previous DATA successfully.");
+		DATA previousData = _storageControl.getAllData();
+		this._logList.push(previousData);
+		if (this._logList.contains(previousData) == true) {
+			logger.log(Level.INFO, MESSAGE_LOG_PREVIOUS_DATA_SUCCESSFULLY);
 			return true;
 		} else {
-			logger.log(Level.WARNING, "Log previous DATA was not successful.");
+			logger.log(Level.WARNING, MESSAGE_LOG_PREVIOUS_DATA_WAS_NOT_SUCCESSFUL);
 			return false;
 		}
 	}
 
 	@Override
 	public DATA undo() {
-		if (this.logList.isEmpty() == true) {
-			logger.log(Level.WARNING, "Undo not successful. No previous command entry found.");
+		if (this._logList.isEmpty() == true) {
+			logger.log(Level.WARNING, MESSAGE_UNDO_NOT_SUCCESSFUL);
 			return null;
 		}
-		DATA previousData = this.logList.pop();
+		DATA previousData = this._logList.pop();
 		return previousData;
 	}
 
@@ -57,14 +61,14 @@ public class HistoryController implements InterfaceForHistory{
 	 * @return the logList
 	 */
 	public LinkedList<DATA> getLogList() {
-		return logList;
+		return _logList;
 	}
 
 	/**
 	 * @param logList the logList to set
 	 */
 	public void setLogList(LinkedList<DATA> logList) {
-		this.logList = logList;
+		this._logList = logList;
 	}
 	
 }
