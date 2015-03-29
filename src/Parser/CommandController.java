@@ -600,9 +600,36 @@ public class CommandController implements InterfaceForParser {
 			}catch(ArrayIndexOutOfBoundsException|NumberFormatException e){
 				return result = "Error in priority given. Should be a number.";
 			}
+		}else if(userInput.contains("-p")){
+			//find position of info
+			int point = userInput.indexOf("-p");
+			//check if info needed is specified
+			try{
+				priority = Integer.parseInt(userInput.get(point+1));
+				userInput.remove(point+1);
+			}catch(ArrayIndexOutOfBoundsException|NumberFormatException e){
+				return result = "Error in priority given. Should be a number.";
+			}
 		}
 		if(userInput.contains("-tags")){
 			int point = userInput.indexOf("-tags");
+			try{
+				for(int j = point+1;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						tags.add(userInput.get(j));
+					}else{
+						break;
+					}
+				}
+				for(int j=0;j<tags.size();j++){
+					userInput.remove(tags.get(j));
+				}
+				
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "Error in tags given.";
+			}
+		}else if(userInput.contains("-t")){
+			int point = userInput.indexOf("-t");
 			try{
 				for(int j = point+1;j<userInput.size();j++){
 					if(userInput.get(j).charAt(0)!='-'){
@@ -636,6 +663,23 @@ public class CommandController implements InterfaceForParser {
 			}catch(ArrayIndexOutOfBoundsException e){
 				return result = "Error in date given.";
 			}
+		}else if(userInput.contains("-d")){
+			int point = userInput.indexOf("-d");		
+			isGenericTask = false;
+			try{
+				for(int j = point+1;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						dateAsString.add(userInput.get(j));
+					}else{
+						break;
+					}
+				}
+				for(int j=0;j<dateAsString.size();j++){
+					userInput.remove(dateAsString.get(j));
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "Error in date given.";
+			}
 		}
 		if(userInput.contains("-recurring")){
 			if(isGenericTask){
@@ -643,6 +687,25 @@ public class CommandController implements InterfaceForParser {
 			}else{
 				isRecurring = true;
 				int point = userInput.indexOf("-recurring");
+				try{
+					if(userInput.get(point+1).charAt(0)!='-'){
+						recurrenceNum = Integer.parseInt(userInput.get(point+1));
+						recurringPeriod = userInput.get(point+2);
+						userInput.remove(point+1);
+						userInput.remove(point+1);
+					}else{
+						return result = "No recurring period stated";
+					}
+				}catch(ArrayIndexOutOfBoundsException | NumberFormatException e){
+					return result = "Error in command format. Try -recurring <num> <period>";
+				}
+			}
+		}else if(userInput.contains("-r")){
+			if(isGenericTask){
+				return result = "No date specified, cannot be recurring";
+			}else{
+				isRecurring = true;
+				int point = userInput.indexOf("-r");
 				try{
 					if(userInput.get(point+1).charAt(0)!='-'){
 						recurrenceNum = Integer.parseInt(userInput.get(point+1));
