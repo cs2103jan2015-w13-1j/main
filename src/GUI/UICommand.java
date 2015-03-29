@@ -5,10 +5,12 @@ import javafx.beans.property.SimpleStringProperty;
 public class UICommand {
 	private final SimpleStringProperty function;
 	private final SimpleStringProperty command;
+	private final SimpleStringProperty shortcuts;
 	
-	public UICommand(String function, String command){
+	public UICommand(String function, String command, String shortcuts){
 		this.function = new SimpleStringProperty(function);
 		this.command = new SimpleStringProperty(command);
+		this.shortcuts = new SimpleStringProperty(shortcuts);
 	}
 	
 	
@@ -20,11 +22,19 @@ public class UICommand {
 		return command.get();
 	}
 	
+	public String getShortcuts() {
+		return shortcuts.get();
+	}
+	
 	public void setFunction(String function){
 		this.function.set(function);
 	}
 	
 	public void setCommand(String command){
 		this.command.set(command);
+	}
+	
+	public void setShortcuts(String shortcuts){
+		this.shortcuts.set(shortcuts);
 	}
 }

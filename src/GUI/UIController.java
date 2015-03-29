@@ -67,6 +67,8 @@ public class UIController implements Initializable {
 	TableColumn<UICommand, String> commandFunction;
 	@FXML
 	TableColumn<UICommand, String> commandCommand;
+	@FXML
+	TableColumn<UICommand, String> commandShortcuts;
 
 	@FXML
 	TableView<UITask> archiveTable;
@@ -105,19 +107,20 @@ public class UIController implements Initializable {
 	private void initialiseCommand() {
 		commandFunction.setCellValueFactory(new PropertyValueFactory<UICommand, String>("function"));
 		commandCommand.setCellValueFactory(new PropertyValueFactory<UICommand, String>("command"));
+		commandShortcuts.setCellValueFactory(new PropertyValueFactory<UICommand, String>("shortcuts"));
 		commandTable.setItems(uiCommandList);
-		uiCommandList.add(new UICommand("Go to a panel", "-goto <panel name>"));
-		uiCommandList.add(new UICommand("Add a new task", "-add <task description> [option: -date|-priority|-tag|-recurring] <value>"));
-		uiCommandList.add(new UICommand("Delete an entry", "-delete <taskID>"));
-		uiCommandList.add(new UICommand("Archive a task", "-archive <taskID>"));
-		uiCommandList.add(new UICommand("Change an entry", "-change [option: desc|date|priority] <taskID> <new value>"));
-		uiCommandList.add(new UICommand("Add tags to task","-addtag <taskID><value>"));
-		uiCommandList.add(new UICommand("Removing tags from a task", "-remove -tag <taskID><value>"));
-		uiCommandList.add(new UICommand("Searching for tasks", "-search [option: desc|date|priority|tag|keywords] <value>"));
-		uiCommandList.add(new UICommand("Undo last user input","-undo"));
-		uiCommandList.add(new UICommand("Sort list", "-sort [either: date|priority|tag]"));
-		uiCommandList.add(new UICommand("Default tables view", "-refresh"));
-		uiCommandList.add(new UICommand("Change motto of the day", "-changemotto"));
+		uiCommandList.add(new UICommand("Go to a panel", "-goto <panel name>", "g t/c/s"));
+		uiCommandList.add(new UICommand("Add a new task", "-add <task description> [option: -date|-priority|-tag|-recurring] <value>", "-"));
+		uiCommandList.add(new UICommand("Delete an entry", "-delete <taskID>", "-"));
+		uiCommandList.add(new UICommand("Archive a task", "-archive <taskID>", "-"));
+		uiCommandList.add(new UICommand("Change an entry", "-change [option: desc|date|priority] <taskID> <new value>", "-"));
+		uiCommandList.add(new UICommand("Add tags to task","-addtag <taskID><value>", "-"));
+		uiCommandList.add(new UICommand("Removing tags from a task", "-remove -tag <taskID><value>", "-"));
+		uiCommandList.add(new UICommand("Searching for tasks", "-search [option: desc|date|priority|tag|keywords] <value>", "-"));
+		uiCommandList.add(new UICommand("Undo last user input","-undo", "-"));
+		uiCommandList.add(new UICommand("Sort list", "-sort [either: date|priority|tag]", "-"));
+		uiCommandList.add(new UICommand("Default tables view", "-refresh", "-"));
+		uiCommandList.add(new UICommand("Change motto of the day", "-changemotto", "-"));
 	}
 
 	private void initialiseArchive() {
