@@ -105,7 +105,7 @@ public class Date extends java.util.Date{
 		Date today = setTime(cal, 0, 0, 0, 0);
 		long deadlineTime = deadline.getTime();
 		long todayTime = today.getTime();
-		int numOfDays = (int) ((todayTime - deadlineTime)/getMiliseconds("oneDay")) + 1;
+		int numOfDays = (int) ((todayTime - deadlineTime)/getMiliseconds("oneDay"));
 		return numOfDays;
 	}
 
