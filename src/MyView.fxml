@@ -81,8 +81,8 @@
                               <TableColumn fx:id="taskPriority" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="Pr" />
                               <TableColumn fx:id="taskStart" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="Start" />
                               <TableColumn fx:id="taskEnd" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="End" />
-                              <TableColumn fx:id="taskDue" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="Date" />
-                              <TableColumn fx:id="taskTags" maxWidth="210.0" minWidth="210.0" prefWidth="210.0" style="-fx-text-alignment: center;" text="Tags" />
+                              <TableColumn fx:id="taskDue" maxWidth="150.0" minWidth="90.0" prefWidth="140.0" text="Date" />
+                              <TableColumn fx:id="taskTags" maxWidth="210.0" minWidth="150.0" prefWidth="160.0" style="-fx-text-alignment: center;" text="Tags" />
                            </columns>
                         </TableColumn>
                     </columns>

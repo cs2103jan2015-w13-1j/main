@@ -1,6 +1,6 @@
 package GUI;
 
-import java.io.File;
+//import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Label;
-import javafx.stage.DirectoryChooser;
+//import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import Common.Motivator;
 import Common.Task;
@@ -77,8 +77,8 @@ public class UIController implements Initializable {
 	@FXML
 	TableColumn<UITask, String> archiveDescription;
 	
-	private int taskNumber = 1;
-	private int archiveNumber = 1;
+	//private int taskNumber = 1;
+	//private int archiveNumber = 1;
 	
 	CommandController commandController = new CommandController();
 	StorageController storageController = new StorageController();
@@ -257,10 +257,20 @@ public class UIController implements Initializable {
 			}
 			try{
 				if (taskList.get(i).getDeadline() == null){
-					due = df.format(taskList.get(i).getStartTime());
+					if (taskList.get(i).getOverdueDays() == -1){
+						due = df.format(taskList.get(i).getStartTime());
+					}
+					else {
+						due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
+					}
 				}
 				else {
-					due = df.format(taskList.get(i).getDeadline());
+					if (taskList.get(i).getOverdueDays() == -1){
+						due = df.format(taskList.get(i).getDeadline());
+					}
+					else{
+						due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
+					}
 				}
 			}catch (NullPointerException e){
 				due = "-";
