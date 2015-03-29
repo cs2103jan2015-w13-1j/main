@@ -427,6 +427,19 @@ public class Task implements Comparable<Task>{
 	public boolean equals(Object other) {	
 		return this.toString().equals(other.toString());
 	}
+
+	public int getOverdueDays() {
+		if (this.getFinishedTime()==null) {
+			Date now = new Date();
+			if (this.getType().equals("deadline") && (now.compareTo(this.getDeadline()) > 0)) {
+				return Date.getOverdueDays(this.getDeadline());
+			}
+			if (this.getType().equals("meeting") && (now.compareTo(this.getEndTime()) > 0)) {
+				return Date.getOverdueDays(this.getEndTime());
+			}
+		}
+		return -1;
+	}
 //	
 //	@Override
 //	public int hashCode() {

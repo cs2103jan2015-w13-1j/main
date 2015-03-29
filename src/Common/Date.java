@@ -95,6 +95,19 @@ public class Date extends java.util.Date{
 		cal.add(Calendar.DATE, 1);
 		return setTime(cal, hour, minute, 0, 0);
 	}
+	
+	/**
+	 * @param deadline the deadline or endtime of a task 
+	 * @return number of days overdue
+	 */
+	public static int getOverdueDays(Date deadline) {
+		Calendar cal = new GregorianCalendar();
+		Date today = setTime(cal, 0, 0, 0, 0);
+		long deadlineTime = deadline.getTime();
+		long todayTime = today.getTime();
+		int numOfDays = (int) ((todayTime - deadlineTime)/getMiliseconds("oneDay")) + 1;
+		return numOfDays;
+	}
 
 //	/**
 //	 * @param day
