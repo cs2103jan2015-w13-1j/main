@@ -162,6 +162,24 @@ public class Task implements Comparable<Task>{
 		this.tags.remove(toBeRemovedTag);
 	}
 	
+	public boolean hasTagExact(String searchTag) {
+		for (String tag : getTags()) {
+			if (tag.equals(searchTag)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean containsTag(String searchTag) {
+		for (String tag : getTags()) {
+			if (tag.toLowerCase().contains(searchTag.toLowerCase())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public Date getStartTime(){
 		return this.startTime;
 	}

@@ -229,8 +229,7 @@ public class LogicController implements InterfaceForLogic{
 	public ArrayList<Task> searchByTag(String tag) {
 		ArrayList<Task> taskByTag = new ArrayList<Task>();
 		for (Task task: toDoSortedList) {
-			ArrayList<String> tags = task.getTags();
-			if (tags.contains(tag)) {
+			if (task.containsTag(tag)) {
 				taskByTag.add(task);
 			}
 		}
@@ -313,8 +312,7 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList deleteByTag(String tag) {
 		logToHistory();
 		for (Task task: toDoSortedList) {
-			ArrayList<String> tags = task.getTags();
-			if (tags.contains(tag)) {
+			if (task.hasTagExact(tag)) {
 				toDoSortedList.deleteTask(task);
 				activeTaskList.removeTaskbyId(task.getId());
 			}
@@ -450,10 +448,9 @@ public class LogicController implements InterfaceForLogic{
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
-			if (t.getTags().contains(tag)) {
-				return null;
-			}
-			t.addTag(tag);
+			if (!t.getTags().contains(tag)) {
+				t.addTag(tag);
+			}	
 		}
 		return storeAndReturnToDo();
 	}
@@ -465,10 +462,9 @@ public class LogicController implements InterfaceForLogic{
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
-			if (!t.getTags().contains(tag)) {
-				return null;
+			if (t.containsTag(tag)) {
+				t.removeTag(tag);
 			}
-			t.removeTag(tag);
 		}
 		return storeAndReturnToDo();
 	}
