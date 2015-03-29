@@ -91,29 +91,21 @@ public class UIController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources){
 	
-		taskId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
-		taskDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
-		taskPriority.setCellValueFactory(new PropertyValueFactory<UITask, String>("priority"));
-		taskStart.setCellValueFactory(new PropertyValueFactory<UITask, String>("start"));
-		taskEnd.setCellValueFactory(new PropertyValueFactory<UITask, String>("end"));
-		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>("due"));
-		taskTags.setCellValueFactory(new PropertyValueFactory<UITask, String>("tags"));
-		taskTable.setItems(uiTaskList);
-		taskList = commandController.initialiseTasks();
-		addToTaskDisplay();
+		initialiseTasks();
 		
-		archiveId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
-		archiveDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
-		archiveTable.setItems(uiArchiveList);
+		initialiseArchive();
 		
-		archiveList = commandController.initialiseArchives();
-		addToArchiveDisplay();
+		initialiseCommand();
 		
+		motivationalQuote.setText(motivator.getRandomQuotes());
+		
+		fileDirectory.setText(storageController.getFileDirectory());
+	}
+
+	private void initialiseCommand() {
 		commandFunction.setCellValueFactory(new PropertyValueFactory<UICommand, String>("function"));
 		commandCommand.setCellValueFactory(new PropertyValueFactory<UICommand, String>("command"));
 		commandTable.setItems(uiCommandList);
-		
-		//initialize uiCommandList here
 		uiCommandList.add(new UICommand("Go to a panel", "-goto <panel name>"));
 		uiCommandList.add(new UICommand("Add a new task", "-add <task description> [option: -date|-priority|-tag|-recurring] <value>"));
 		uiCommandList.add(new UICommand("Delete an entry", "-delete <taskID>"));
@@ -126,10 +118,27 @@ public class UIController implements Initializable {
 		uiCommandList.add(new UICommand("Sort list", "-sort [either: date|priority|tag]"));
 		uiCommandList.add(new UICommand("Default tables view", "-refresh"));
 		uiCommandList.add(new UICommand("Change motto of the day", "-changemotto"));
-		
-		motivationalQuote.setText(motivator.getRandomQuotes());
-		
-		fileDirectory.setText(storageController.getFileDirectory());
+	}
+
+	private void initialiseArchive() {
+		archiveId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
+		archiveDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
+		archiveTable.setItems(uiArchiveList);
+		archiveList = commandController.initialiseArchives();
+		addToArchiveDisplay();
+	}
+
+	private void initialiseTasks() {
+		taskId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
+		taskDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
+		taskPriority.setCellValueFactory(new PropertyValueFactory<UITask, String>("priority"));
+		taskStart.setCellValueFactory(new PropertyValueFactory<UITask, String>("start"));
+		taskEnd.setCellValueFactory(new PropertyValueFactory<UITask, String>("end"));
+		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>("due"));
+		taskTags.setCellValueFactory(new PropertyValueFactory<UITask, String>("tags"));
+		taskTable.setItems(uiTaskList);
+		taskList = commandController.initialiseTasks();
+		addToTaskDisplay();
 	}
 	
 	/*public void chooseDirectory(ActionEvent event){
@@ -158,19 +167,16 @@ public class UIController implements Initializable {
 		
 		String message = commandController.executeCommand(input);
 		
+		message = commandFilter(splitCommand, firstCommand, message);
 		
-		
+		outputMessageText.setText(message);
+	}
+
+	private String commandFilter(String[] splitCommand, String firstCommand,
+			String message) {
 		if (firstCommand.charAt(0) == 'g'){
 			executeGoTo(splitCommand[1]);
-			if (splitCommand[1].charAt(0) == 't'){
-				message = "You are at the task panel";
-			}
-			else if (splitCommand[1].charAt(0) == 'c'){
-				message = "You are at the commands panel";
-			}
-			else if (splitCommand[1].charAt(0) == 's'){
-				message = "You are at the settings panel";
-			}
+			message = displayGotoMessage(splitCommand, message);
 		}
 		else if (firstCommand.equals("directory")){
 			fileDirectory.setText(splitCommand[1]);
@@ -190,8 +196,20 @@ public class UIController implements Initializable {
 			archiveList = commandController.returnArchive();
 			addToArchiveDisplay();
 		}
-		
-		outputMessageText.setText(message);
+		return message;
+	}
+
+	private String displayGotoMessage(String[] splitCommand, String message) {
+		if (splitCommand[1].charAt(0) == 't'){
+			message = "You are at the task panel";
+		}
+		else if (splitCommand[1].charAt(0) == 'c'){
+			message = "You are at the commands panel";
+		}
+		else if (splitCommand[1].charAt(0) == 's'){
+			message = "You are at the settings panel";
+		}
+		return message;
 	}
 	
 	public void addToTaskDisplay() {
