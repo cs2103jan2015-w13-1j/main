@@ -8,7 +8,7 @@ import History.HistoryADT;
 import Storage.StorageADT;
 
 @RunWith(Suite.class)
-@SuiteClasses({HistoryADT.class, StorageADT.class, Logic.LogicControllerTest.class, Logic.LogicControllerTestRecurrence.class})
+@SuiteClasses({History.HistoryADT.class, Storage.StorageADT.class, Logic.LogicControllerTest.class, Logic.LogicControllerTestRecurrence.class})
 public class TestAll {
 
 }
