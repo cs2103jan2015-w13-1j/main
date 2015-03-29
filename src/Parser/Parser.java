@@ -84,6 +84,9 @@ public class Parser {
 			}case("sort"):{
 				commandNum = 12;
 				break;
+			}case("import"):{
+				commandNum = 13;
+				break;
 			}
 			default:
 				System.out.println("Invalid command");
