@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -260,9 +261,34 @@ public class StorageDatastore {
 	 */
 	public void setDirectory(String directory) {
 		deleteFile(getStorageRelativePath());	// remove old storage file if it exists
-		this._directory = directory;
+		URI uri = fileToUri(directory);
+		String absolutePath = uriToString(uri);
+		this._directory = new String();
+		this._directory = absolutePath;
 		saveSettingsToUtility();
 		logger.log(Level.INFO, String.format(MESSAGE_NEW_FILE_DIRECTORY, this.getDirectory()));
+	}
+
+	/**
+	 * @param uri
+	 * @return string
+	 */
+	private String uriToString(URI uri) {
+		String absolutePath = uri.getPath().replaceFirst("/", "");
+		if (absolutePath.endsWith("/") == false) {
+			absolutePath = absolutePath.concat("/");
+		}
+		return absolutePath;
+	}
+
+	/**
+	 * @param directory
+	 * @return Uri
+	 */
+	private URI fileToUri(String directory) {
+		File newDirectory = new File(directory);
+		URI url = newDirectory.toURI();
+		return url;
 	}
 	
 	/**

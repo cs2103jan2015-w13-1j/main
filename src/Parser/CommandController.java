@@ -306,9 +306,15 @@ public class CommandController implements InterfaceForParser {
 
 	String fileDirectoryCommand(String[] splitInput) {
 		String result = new String();
-		String specifiedFileDirectory = splitInput[1];
+		String tempPath = splitInput[1];
+		if (splitInput.length > 2) {
+			for (int i = 2; i < splitInput.length; i++) {
+				tempPath = tempPath.concat(" ").concat(splitInput[i]);
+			}
+		}
+		String specifiedFileDirectory = tempPath;
 		String acknowledgeCheck = storageController.setFileDirectory(specifiedFileDirectory);
-		result = "File stored at: " + specifiedFileDirectory;
+		result = "File stored at: " + storageController.getFileDirectory();
 		return result;
 	}
 

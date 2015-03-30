@@ -30,7 +30,7 @@ public class StorageADT {
 	 */
 	@Test
 	public void testForRetrievalOfDirectory() {
-		assertEquals("tables/", program.getFileDirectory());
+		assertEquals("C:/Users/Esmond/Desktop/main/tables/", program.getFileDirectory());
 	}
 	
 	/**
@@ -38,9 +38,9 @@ public class StorageADT {
 	 */
 	@Test
 	public void testForDirectoryChange() {
-		assertEquals("storage/", program.setFileDirectory("storage/"));
-		assertEquals("folder/", program.setFileDirectory("folder/"));
-		assertEquals("folder/", program.getFileDirectory());
+		assertEquals("C:/Users/Esmond/Desktop/main/storage/", program.setFileDirectory("storage"));
+		assertEquals("C:/Users/Esmond/Desktop/main/folder/", program.setFileDirectory("folder"));
+		assertEquals("C:/Users/Esmond/Desktop/main/folder/", program.getFileDirectory());
 	}
 	
 	/**
@@ -74,6 +74,6 @@ public class StorageADT {
 	
 	@After
 	public void cleanUp() {
-		program.setFileDirectory("tables/");
+		program.setFileDirectory("tables");
 	}
 }
