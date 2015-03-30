@@ -65,8 +65,8 @@ public class StorageController implements InterfaceForStorage {
 		StorageController control = new StorageController();
 //		System.out.println(control.getFileDirectory());
 //		control.setFileDirectory("C:\\Users\\Esmond\\Google Drive\\esmond");
-//		control.testForStoreFunction();
-		control.importFromFile("C:\\Users\\Esmond\\Google Drive\\NUS\\Essentials of Clear Writing\\storage.json");
+		control.testForStoreFunction();
+//		control.importFromFile("C:\\Users\\Esmond\\Google Drive\\NUS\\Essentials of Clear Writing\\storage.json");
 //		control.getAllData();
 //		System.out.println(control.getMotivationQuotes());
 	}

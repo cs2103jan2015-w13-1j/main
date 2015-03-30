@@ -109,20 +109,22 @@ public class UIController implements Initializable {
 		commandCommand.setCellValueFactory(new PropertyValueFactory<UICommand, String>("command"));
 		commandShortcuts.setCellValueFactory(new PropertyValueFactory<UICommand, String>("shortcuts"));
 		commandTable.setItems(uiCommandList);
-		uiCommandList.add(new UICommand("Go to a panel", "goto <panel name>", "g t/c/s"));
 		uiCommandList.add(new UICommand("Add a new task", "add <task description> [option: -date|-priority|-tag|-recurring] <value>", "add <task description> -d|p|t|r <value>"));
-		uiCommandList.add(new UICommand("Delete an entry", "delete current|archive <taskID>", "delete <taskID>, delete archive <taskID>"));
+		uiCommandList.add(new UICommand("Add tags to task","addtag <taskID> <value>", "-"));
 		uiCommandList.add(new UICommand("Archive a task", "archive <taskID>", "-"));
 		uiCommandList.add(new UICommand("Change an entry", "change <taskID> [option: desc|date|priority] <new value>", "-"));
-		uiCommandList.add(new UICommand("Add tags to task","addtag <taskID> <value>", "-"));
+		uiCommandList.add(new UICommand("Change directory", "directory <folder>|<absolute path of the folder>", "-"));
+		uiCommandList.add(new UICommand("Change motto of the day", "changemotto", "-"));
+		uiCommandList.add(new UICommand("Default tables view", "refresh", "-"));
+		uiCommandList.add(new UICommand("Delete an entry", "delete current|archive <taskID>", "delete <taskID>, delete archive <taskID>"));
+		uiCommandList.add(new UICommand("Exit program", "exit", "-"));
+		uiCommandList.add(new UICommand("Go to a panel", "goto <panel name>", "g t/c/s"));
+		uiCommandList.add(new UICommand("Import from existing storage file", "import <absolute path of the file>", "-"));
 		uiCommandList.add(new UICommand("Removing tags from a task", "removetag <taskID> <value>", "-"));
 		uiCommandList.add(new UICommand("Searching for tasks", "search [option: desc|date|priority|tag] <value> or search today|tmr", "-"));
-		uiCommandList.add(new UICommand("Undo last user input","undo", "-"));
 		uiCommandList.add(new UICommand("Sort list", "sort [either: date|priority|tag]", "-"));
-		uiCommandList.add(new UICommand("Default tables view", "refresh", "-"));
-		uiCommandList.add(new UICommand("Change motto of the day", "changemotto", "-"));
-		uiCommandList.add(new UICommand("Change directory", "directory <folder>/", "-"));
-		uiCommandList.add(new UICommand("Exit program", "exit", "-"));
+		uiCommandList.add(new UICommand("Undo last user input","undo", "-"));
+		
 	}
 
 	private void initialiseArchive() {
