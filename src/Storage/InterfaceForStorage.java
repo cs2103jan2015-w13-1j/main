@@ -31,8 +31,8 @@ public interface InterfaceForStorage {
 	String getFileDirectory();
 	
 	/**
-	 * @param directory
-	 * @return the given relative path of the directory
+	 * @param file
+	 * @return true if import is successful
 	 */
-	String importFromFile(String directory);
+	boolean importFromFile(String file);
 }

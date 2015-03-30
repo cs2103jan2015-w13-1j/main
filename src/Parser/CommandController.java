@@ -162,10 +162,19 @@ public class CommandController implements InterfaceForParser {
 		String directoryToImport = new String();
 		try{
 			directoryToImport = splitInput[1];
-			String relativeDirectory = storageController.importFromFile(directoryToImport);
-			initialiseTasks();
-			initialiseArchives();
-			return "Imported from " + relativeDirectory ;
+			if (splitInput.length > 2) {
+				for (int i = 2; i < splitInput.length; i++) {
+					directoryToImport = directoryToImport.concat(" ").concat(splitInput[i]);
+				}
+			}
+			if (storageController.importFromFile(directoryToImport) == true) {
+				String relativeDirectory = storageController.getFileDirectory();
+				initialiseTasks();
+				initialiseArchives();
+				return "Imported from " + relativeDirectory ;
+			} else {
+				return "Fail to import from file. File invalid.";
+			}
 		}catch(ArrayIndexOutOfBoundsException e){
 			return "Please specify a directory to import from";
 		}

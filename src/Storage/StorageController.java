@@ -13,6 +13,8 @@
 
 package Storage;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,13 +47,13 @@ public class StorageController implements InterfaceForStorage {
 	private static final String STRING_ID = "id";
 	private static final String STRING_RECURRENCE_ID = "recurrenceId";
 	private static final String STRING_SERIAL_NUMBER = "serialNumber";
+	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
+	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
 	private static final String MESSAGE_CONVERT_DATA_FAILURE = "Unable to get DATA from storage.";
 	private static final String MESSAGE_DUMMY_DATA = "9 Dummy data created.";
 	private static final String MESSAGE_INITIALISE_NEW_DATA_OBJECT = "Initialise new DATA object.";
 	private static final String MESSAGE_STORE_DATA_FAILURE = "failure in storing";
 	private static final String MESSAGE_STORE_DATA_SUCCESS = "success in storing";
-	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
-	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
 	private static final int STARTING_INDEX = 0;
 
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
@@ -62,10 +64,40 @@ public class StorageController implements InterfaceForStorage {
 	public static void main(String[] args) {
 		StorageController control = new StorageController();
 //		System.out.println(control.getFileDirectory());
-		control.setFileDirectory("C:\\Users\\Esmond\\Google Drive\\esmond");
-		control.testForStoreFunction();
+//		control.setFileDirectory("C:\\Users\\Esmond\\Google Drive\\esmond");
+//		control.testForStoreFunction();
+		control.importFromFile("C:\\Users\\Esmond\\Google Drive\\NUS\\Essentials of Clear Writing\\storage.json");
 //		control.getAllData();
 //		System.out.println(control.getMotivationQuotes());
+	}
+	
+	@Override
+	public boolean importFromFile(String fileName) {
+		// TODO Auto-generated method stub
+		// check if file is valid, 
+		//		if yes, store parent folder into utility
+		// 		if not, return false
+		File importedFile = new File(fileName);
+		URI uri = importedFile.toURI();
+		String importedFileAbsolutePath = uri.getPath().replaceFirst("/", "");
+//		System.out.println("import from: " + importedFileAbsolutePath);
+		if (_datastore.isStorageExist(importedFileAbsolutePath)) {
+			JSONObject importedJsonData = _datastore.retrieveDataFromStorage(importedFileAbsolutePath);
+			if (importedJsonData.containsKey(STRING_SERIAL_NUMBER) == false || importedJsonData.containsKey(STRING_ACTIVE_TASK_LIST) == false
+					|| importedJsonData.containsKey(STRING_RECURRENCE_ID) == false || importedJsonData.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
+				// wrong format of data
+				return false;
+			} else {
+				String importedFileFolderAbsolutePath = importedFile.getParentFile().toURI().getPath().replaceFirst("/", "");
+//				System.out.println("folder: " + importedFileFolderAbsolutePath);
+				this.setFileDirectory(importedFileFolderAbsolutePath);
+				return true;
+			}
+		} else {
+			// file not found
+			return false;
+		}
+		
 	}
 	
 	/**
@@ -88,7 +120,8 @@ public class StorageController implements InterfaceForStorage {
 	 * @return DATA object
 	 */
 	private DATA convertJsonObjectToData(JSONObject dataJSON) {		
-		if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false) {
+		if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
+				|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
 			logger.log(Level.WARNING, MESSAGE_CONVERT_DATA_FAILURE);
 			return initialiseNewDataObject();
 		}
@@ -441,9 +474,5 @@ public class StorageController implements InterfaceForStorage {
 		this._data = data;
 	}
 
-	@Override
-	public String importFromFile(String directory) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }

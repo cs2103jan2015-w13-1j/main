@@ -27,7 +27,10 @@ public class StorageDatastore {
 	private static final String STRING_UTILITY_FILE_NAME = "tables/utility.json";
 	private static final String STRING_DEFAULT_STORAGE_NAME_VALUE = "storage.json";
 	private static final String STRING_DEFAULT_DIRECTORY_VALUE = "tables/";
+	private static final String STRING_RECURRENCE_ID = "recurrenceId";
 	private static final String STRING_SERIAL_NUMBER = "serialNumber";
+	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
+	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
 	private static final String MESSAGE_INIT_ERROR_INVALID_CONTENT = STRING_UTILITY_FILE_NAME + " content invalid.";
 	private static final String MESSAGE_INIT_ERROR_STORAGE_NOT_FOUND = STRING_UTILITY_FILE_NAME + " does not exist.";
 	private static final String MESSAGE_NEW_FILE_DIRECTORY = "New directory : %1$s";
@@ -115,7 +118,7 @@ public class StorageDatastore {
 		JSONObject dataJSON = new JSONObject();
 		if (isStorageExist(getStorageRelativePath()) == true) {
 			logger.log(Level.INFO, MESSAGE_GET_ALL_DATA_STORAGE_EXIST);
-			dataJSON = retrieveDataFromStorage();
+			dataJSON = retrieveDataFromStorage(getStorageRelativePath());
 		} else {
 			// must store data first, cannot create new storage because user might change directory
 			logger.log(Level.WARNING, MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST);
@@ -126,9 +129,8 @@ public class StorageDatastore {
 	/**
 	 * @return data in JSON object 
 	 */
-	private JSONObject retrieveDataFromStorage() {
+	public JSONObject retrieveDataFromStorage(String fileName) {
 		// do nothing if task list is empty
-		String fileName = getStorageRelativePath();
 		JSONObject dataJSON = new JSONObject();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
@@ -146,7 +148,8 @@ public class StorageDatastore {
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(new FileReader(fileName));
 			dataJSON = (JSONObject) obj; 
-			if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false) {
+			if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
+					|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
 				logger.log(Level.WARNING, MESSAGE_RETRIEVE_ERROR_FILE_CONTENT_INVALID);
 				dataJSON = new JSONObject();
 				return dataJSON;
@@ -229,7 +232,7 @@ public class StorageDatastore {
 	 * @param File Relative Path
 	 * @return True if file exist
 	 */
-	private boolean isStorageExist(String fileRelativePath) {
+	public boolean isStorageExist(String fileRelativePath) {
 		File file = new File(fileRelativePath);
 		return file.exists();
 	}
@@ -287,8 +290,8 @@ public class StorageDatastore {
 	 */
 	private URI fileToUri(String directory) {
 		File newDirectory = new File(directory);
-		URI url = newDirectory.toURI();
-		return url;
+		URI uri = newDirectory.toURI();
+		return uri;
 	}
 	
 	/**
