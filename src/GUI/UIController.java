@@ -184,7 +184,13 @@ public class UIController implements Initializable {
 			message = displayGotoMessage(splitCommand, message);
 		}
 		else if (firstCommand.equals("directory")){
-			fileDirectory.setText(splitCommand[1]);
+			String tempPath = splitCommand[1];
+			if (splitCommand.length > 2) {
+				for (int i = 2; i < splitCommand.length; i++) {
+					tempPath = tempPath.concat(" ").concat(splitCommand[i]);
+				}
+			}
+			fileDirectory.setText(tempPath);
 		}
 		else if (firstCommand.equals("exit")){
 		    Stage stage = (Stage) commandField.getScene().getWindow();
