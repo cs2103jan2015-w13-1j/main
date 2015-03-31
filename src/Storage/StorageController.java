@@ -75,12 +75,18 @@ public class StorageController implements InterfaceForStorage {
 
 	@Override
 	public boolean exportToDirectory(String fileName) {
-		File importedFile = new File(fileName);
-		URI uri = importedFile.toURI();
+		File exportFile = new File(fileName);
+		URI uri = exportFile.toURI();
 		String importedFileAbsolutePath = uri.getPath().replaceFirst("/", "");
 		System.out.println("export to: " + importedFileAbsolutePath);
 		_datastore.processStorage(importedFileAbsolutePath);
-		return false;
+		if (_datastore.storeJsonIntoStorage(_datastore.getData(), importedFileAbsolutePath) == true) {
+			logger.log(Level.INFO, "Successful export to " + importedFileAbsolutePath);
+			return true;
+		} else {
+			logger.log(Level.WARNING, "Unsuccessful export.");
+			return false;
+		}
 	}
 	
 	@Override
@@ -91,7 +97,7 @@ public class StorageController implements InterfaceForStorage {
 		File importedFile = new File(fileName);
 		URI uri = importedFile.toURI();
 		String importedFileAbsolutePath = uri.getPath().replaceFirst("/", "");
-		System.out.println("import from: " + importedFileAbsolutePath);
+//		System.out.println("import from: " + importedFileAbsolutePath);
 		if (_datastore.isStorageExist(importedFileAbsolutePath)) {
 			JSONObject importedJsonData = _datastore.retrieveDataFromStorage(importedFileAbsolutePath);
 			if (importedJsonData.containsKey(STRING_SERIAL_NUMBER) == false || importedJsonData.containsKey(STRING_ACTIVE_TASK_LIST) == false

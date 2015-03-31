@@ -161,12 +161,27 @@ public class CommandController implements InterfaceForParser {
 		return result;
 	}
 	private String exportCommand(String[] splitInput) {
+		String directoryToExport = new String();
 		if(splitInput[1].equals("to")){
 			//execution
+			try{
+				directoryToExport = splitInput[2];
+				if (splitInput.length > 3) {
+					for (int i = 3; i < splitInput.length; i++) {
+						directoryToExport = directoryToExport.concat(" ").concat(splitInput[i]);
+					}
+				}
+				if (storageController.exportToDirectory(directoryToExport) == true) {
+					return "Current data exported to " + directoryToExport ;
+				} else {
+					return "Fail to export to " + directoryToExport;
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return "Please specify a file path to export to";
+			}
 		}else{
 			return "Invalid command, try \"export to\"";
 		}
-		return null;
 	}
 
 
@@ -188,7 +203,7 @@ public class CommandController implements InterfaceForParser {
 					String relativeDirectory = storageController.getFileDirectory();
 					initialiseTasks();
 					initialiseArchives();
-					return "Imported from " + relativeDirectory ;
+					return "Imported from " + directoryToImport ;
 				} else {
 					return "Fail to import from file. File invalid.";
 				}
