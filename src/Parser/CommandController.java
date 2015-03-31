@@ -2,8 +2,8 @@ package Parser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
+
 
 import Common.ArchiveSortedList;
 import Common.Date;
@@ -333,14 +333,24 @@ public class CommandController implements InterfaceForParser {
 		String result = new String();
 		String modifyParameter = new String();
 		ToDoSortedList retrievedSortedList = new ToDoSortedList();
+		ArrayList<String> inputArray = new ArrayList<String>();
+		boolean isChangeAll = false;
+		int position = 0;
+		for(int i = 0; i< splitInput.length; i++){
+			inputArray.add(splitInput[i]);
+		}
+		if(inputArray.contains("all")){
+			isChangeAll = true;
+			position = inputArray.indexOf("all");
+		}
 		int taskID =0;
 		try{
-			taskID = Integer.parseInt(splitInput[1])-1;
+			taskID = Integer.parseInt(inputArray.get(position+1))-1;
 		}catch(NumberFormatException|ArrayIndexOutOfBoundsException e){
 			return result = "Please specify task ID to change first.";
 		}
 		try{
-			modifyParameter = splitInput[2];
+			modifyParameter = inputArray.get(position+2);
 		}catch(ArrayIndexOutOfBoundsException e){
 			return result = "Please specify what to change";
 		}
@@ -358,8 +368,8 @@ public class CommandController implements InterfaceForParser {
 						//if change to meeting task
 						//syntax: -change date <taskID> dd/MM/yyyy HHmm HHmm
 						SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
-						String startTimeString = splitInput[3] + " " + splitInput[4];
-						String endTimeString = splitInput[3] + " " + splitInput[5];
+						String startTimeString = inputArray.get(position+3) + " " + inputArray.get(position+4);
+						String endTimeString = inputArray.get(position+3) + " " + inputArray.get(position+4);
 						try {
 							java.util.Date tempStart = formatter.parse(startTimeString);
 							Date newStartTime = new Date();
@@ -377,7 +387,7 @@ public class CommandController implements InterfaceForParser {
 						//syntax: -change date dd/MM/yyyy
 						SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 						try {
-							java.util.Date tempDate = formatter.parse(splitInput[3]);
+							java.util.Date tempDate = formatter.parse(inputArray.get(position+3));
 							Date newDeadline = new Date();
 							newDeadline.setTime(tempDate.getTime());
 							retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
@@ -391,15 +401,20 @@ public class CommandController implements InterfaceForParser {
 					//syntax: -change date dd/MM/yyyy
 					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 					try {
-						java.util.Date tempDate = formatter.parse(splitInput[3]);
+						java.util.Date tempDate = formatter.parse(inputArray.get(position+3));
 						Date newDeadline = new Date();
 						newDeadline.setTime(tempDate.getTime());
-						/*if(taskToChange.isRecurrence()){
-							retrievedSortedList = logicController.editAlldeadline(taskToChange, newDeadline);
+						if(isChangeAll){
+							if(taskToChange.isRecurrence()){
+								retrievedSortedList = logicController.editAlldeadline(taskToChange, newDeadline);
+							}else{
+								return result = "Cannot change all, not recurring task";
+							}
 						}else{
 							retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
-						}*/
-						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
+						}
+						
+						//retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
 						result = "Deadline changed";
 					} catch (ParseException e) {
 						return result = DEADLINE_FORMAT_ERROR;
@@ -408,8 +423,8 @@ public class CommandController implements InterfaceForParser {
 					//change start and end time
 					//syntax:-change date dd/MM/yyyy HHmm HHmm
 					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
-					String startTimeString = splitInput[3] + " " + splitInput[4];
-					String endTimeString = splitInput[3] + " " + splitInput[5];
+					String startTimeString = inputArray.get(position+3) + " " + inputArray.get(position+4);
+					String endTimeString = inputArray.get(position+3) + " " + inputArray.get(position+5);
 					try {
 						java.util.Date tempStart = formatter.parse(startTimeString);
 						Date newStartTime = new Date();
@@ -418,15 +433,21 @@ public class CommandController implements InterfaceForParser {
 						Date newEndTime = new Date();
 						newEndTime.setTime(tempEnd.getTime());
 						//TODO check this later
-						/*if(taskToChange.isRecurrence()){
-							retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartTime);
-							retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndTime);
+						if(isChangeAll){
+							if(taskToChange.isRecurrence()){
+								retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartTime);
+								retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndTime);
+							}else{
+								return result = "Cannot change all, not recurring task";
+							}
 						}else{
 							retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
 							retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
-						}*/
+						}
+						/*
 						retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
 						retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
+						*/
 						result = "Meeting time changed";
 						
 					} catch (ParseException e) {
@@ -438,24 +459,42 @@ public class CommandController implements InterfaceForParser {
 				break;
 			}case("priority"):{
 				//syntax: -change priority <taskID> <new priority>
-				int newPriority = Integer.parseInt(splitInput[3]);
-				/*if(taskToChange.isRecurrence()){
-					retrievedSortedList = logicController.editAllPriority(taskToChange, newPriority);
+				int newPriority = Integer.parseInt(inputArray.get(position+3));
+				if(isChangeAll){
+					if(taskToChange.isRecurrence()){
+						retrievedSortedList = logicController.editAllPriority(taskToChange, newPriority);
+					}else{
+						return result = "Cannot change all, not recurring task";
+					}
 				}else{
 					retrievedSortedList = logicController.editPriority(taskToChange, newPriority);
-				}*/
-				retrievedSortedList = logicController.editPriority(taskToChange, newPriority);
+				}
+				//retrievedSortedList = logicController.editPriority(taskToChange, newPriority);
 				result = "Priority changed";
 				break;
 			}case("desc"):{
 				//syntax: -change desc <taskID> <new desc>
-				String newDescription = splitInput[3];
-				/*if(taskToChange.isRecurrence()){
-					retrievedSortedList = logicController.editAllDescription(taskToChange, newDescription);
+				//String newDescription = splitInput[3];
+				int descStartPoint = position+3;
+				ArrayList<String> newDescription = new ArrayList<String>();
+				for(int i= descStartPoint; i<inputArray.size();i++){
+					newDescription.add(inputArray.get(i));
+				}
+				String newDescriptionString = new String();
+				for(int i=0;i<newDescription.size();i++){
+					newDescriptionString = newDescriptionString.concat(newDescription.get(i)+" ");
+				}
+				newDescriptionString = newDescriptionString.trim();
+				if(isChangeAll){
+					if(taskToChange.isRecurrence()){
+						retrievedSortedList = logicController.editAllDescription(taskToChange, newDescriptionString);
+					}else{
+						return result = "Cannot change all, not recurring task";
+					}
 				}else{
-					retrievedSortedList = logicController.editDescription(taskToChange, newDescription);
-				}*/
-				retrievedSortedList = logicController.editDescription(taskToChange, newDescription);
+					retrievedSortedList = logicController.editDescription(taskToChange, newDescriptionString);
+				}
+				//retrievedSortedList = logicController.editDescription(taskToChange, newDescriptionString);
 				result = "Description changed";
 				break;
 			}default:{
@@ -624,7 +663,7 @@ public class CommandController implements InterfaceForParser {
 		return result;
 	}
 
-	String addCommand(String[] input){
+String addCommand(String[] input){
 		
 		//break the commands
 		newMaxID = logicController.getSerialNumber() +1;
@@ -722,43 +761,11 @@ public class CommandController implements InterfaceForParser {
 				return result = "Error in tags given.";
 			}
 		}
-		if(userInput.contains("-date")){
-			int point = userInput.indexOf("-date");		
-			isGenericTask = false;
-			try{
-				for(int j = point+1;j<userInput.size();j++){
-					if(userInput.get(j).charAt(0)!='-'){
-						dateAsString.add(userInput.get(j));
-					}else{
-						break;
-					}
-				}
-				for(int j=0;j<dateAsString.size();j++){
-					userInput.remove(dateAsString.get(j));
-				}
-			}catch(ArrayIndexOutOfBoundsException e){
-				return result = "Error in date given.";
-			}
-		}else if(userInput.contains("-d")){
-			int point = userInput.indexOf("-d");		
-			isGenericTask = false;
-			try{
-				for(int j = point+1;j<userInput.size();j++){
-					if(userInput.get(j).charAt(0)!='-'){
-						dateAsString.add(userInput.get(j));
-					}else{
-						break;
-					}
-				}
-				for(int j=0;j<dateAsString.size();j++){
-					userInput.remove(dateAsString.get(j));
-				}
-			}catch(ArrayIndexOutOfBoundsException e){
-				return result = "Error in date given.";
-			}
-		}else if(userInput.contains("-by")){
+		
+		if(userInput.contains("-by")){
 			int point = userInput.indexOf("-by");		
 			isGenericTask = false;
+			isDeadlineTask = true;
 			try{
 				for(int j = point+1;j<userInput.size();j++){
 					if(userInput.get(j).charAt(0)!='-'){
@@ -776,6 +783,43 @@ public class CommandController implements InterfaceForParser {
 		}else if(userInput.contains("-b")){
 			int point = userInput.indexOf("-b");		
 			isGenericTask = false;
+			isDeadlineTask = true;
+			try{
+				for(int j = point+1;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						dateAsString.add(userInput.get(j));
+					}else{
+						break;
+					}
+				}
+				for(int j=0;j<dateAsString.size();j++){
+					userInput.remove(dateAsString.get(j));
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "Error in date given.";
+			}
+		}else if(userInput.contains("-on")){
+			int point = userInput.indexOf("-on");		
+			isGenericTask = false;
+			isMeetingTask = true;
+			try{
+				for(int j = point+1;j<userInput.size();j++){
+					if(userInput.get(j).charAt(0)!='-'){
+						dateAsString.add(userInput.get(j));
+					}else{
+						break;
+					}
+				}
+				for(int j=0;j<dateAsString.size();j++){
+					userInput.remove(dateAsString.get(j));
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return result = "Error in date given.";
+			}
+		}else if(userInput.contains("-o")){
+			int point = userInput.indexOf("-o");		
+			isGenericTask = false;
+			isMeetingTask =true;
 			try{
 				for(int j = point+1;j<userInput.size();j++){
 					if(userInput.get(j).charAt(0)!='-'){
@@ -830,6 +874,7 @@ public class CommandController implements InterfaceForParser {
 				}
 			}
 		}
+
 			
 
 		
@@ -840,7 +885,78 @@ public class CommandController implements InterfaceForParser {
 		
 		//----Deadline Task
 		// DD-MM-YYYY
-
+		
+		if(!dateAsString.isEmpty()){
+			ArrayList<String> deadlineFormats = new ArrayList<String>();
+			Collections.addAll(deadlineFormats, "dd MMMMM yyyy hha", "dd MMMMM yyyy HHmm","dd MMMMM yyyy", "dd/MM/yyyy HHmm", "dd/MM/yyyy");
+			ArrayList<String> meetingFormats = new ArrayList<String>();
+			Collections.addAll(meetingFormats, "dd MMMMM yyyy hha", "dd MMMMM yyyy HHmm", "dd/MM/yyyy HHmm", "dd/MM/yyyy hha");
+			String dateString = new String();
+			boolean dateParseSuccess = false;
+			System.out.println(dateAsString);
+			for(int i =0; i<dateAsString.size();i++){
+				
+				dateString = dateString.concat(dateAsString.get(i)+" ");
+			}
+			dateString = dateString.trim();
+			
+			if(isDeadlineTask){
+				for(String format : deadlineFormats){
+					SimpleDateFormat myDateFormat = new SimpleDateFormat(format);
+					try{
+						java.util.Date tempDate = myDateFormat.parse(dateString);	
+						deadLine.setTime(tempDate.getTime());
+						dateParseSuccess = true;
+						//System.out.println(tempDate);
+						break;
+					}catch(ParseException e){
+						
+					}	
+					
+				}
+				if(!dateParseSuccess){
+					throw new IllegalArgumentException("Invalid deadline format");
+				}
+			}else if(isMeetingTask){
+				for(String format : meetingFormats){
+					SimpleDateFormat myDateFormat = new SimpleDateFormat(format);
+					int fromPosition = dateAsString.indexOf("from");
+					int toPosition = dateAsString.indexOf("to");
+					String startTimeString = new String();
+					String endTimeString = new String();
+					if(dateAsString.size() >3){
+						//i.e in dd MMMMM yyyy form
+						String datePart = new String();
+						for(int i=0; i<fromPosition;i++){
+							datePart = datePart.concat(dateAsString.get(i)+" ");
+						}
+						datePart = datePart.trim();
+						startTimeString = datePart +" " +dateAsString.get(fromPosition+1);
+						endTimeString = datePart + " " + dateAsString.get(toPosition+1);
+					}else{
+						startTimeString = dateAsString.get(0)+ " " + dateAsString.get(fromPosition+1);
+						endTimeString = dateAsString.get(0)+ " " + dateAsString.get(toPosition+1);
+					}
+					
+					try{
+						java.util.Date tempDate = myDateFormat.parse(startTimeString);	
+						startTime.setTime(tempDate.getTime());
+						tempDate = myDateFormat.parse(endTimeString);
+						endTime.setTime(tempDate.getTime());
+						dateParseSuccess = true;
+						//System.out.println(tempDate);
+						break;
+					}catch(ParseException e){
+						
+					}
+					
+				}
+				if(!dateParseSuccess)
+					throw new IllegalArgumentException("Invalid time format");
+			}
+			
+		}
+		/*
 		if(dateAsString.size() == 3){
 			//cannot be more than 2
 			//start and end time
@@ -885,7 +1001,7 @@ public class CommandController implements InterfaceForParser {
 				return result = DEADLINE_FORMAT_ERROR;
 	
 			}
-		}
+		}*/
 		//parse the recurring portion
 		
 		if(recurringPeriod.length()>0){
@@ -960,7 +1076,7 @@ public class CommandController implements InterfaceForParser {
 			currentActiveTasks.add(task);
 		}
 		
-		newMaxID+=recurrenceNum+1;
+		newMaxID+=recurrenceNum;
 		logicController.setSerialNumber(newMaxID);
 		return result;
 	}
