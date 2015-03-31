@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
 import Common.ArchiveSortedList;
 import Common.Date;
 import Common.PrioritySortedList;
@@ -154,30 +153,52 @@ public class CommandController implements InterfaceForParser {
 			}case(13):{
 				result = importCommand(splitInput);
 				break;
+			}case(14):{
+				result = exportCommand(splitInput);
+				break;
 			}
 		}
 		return result;
 	}
+	private String exportCommand(String[] splitInput) {
+		if(splitInput[1].equals("to")){
+			//execution
+		}else{
+			return "Invalid command, try \"export to\"";
+		}
+		return null;
+	}
+
+
+
+
 	private String importCommand(String[] splitInput) {
 		String directoryToImport = new String();
-		try{
-			directoryToImport = splitInput[1];
-			if (splitInput.length > 2) {
-				for (int i = 2; i < splitInput.length; i++) {
-					directoryToImport = directoryToImport.concat(" ").concat(splitInput[i]);
+		int position = 0;
+		if(splitInput[1].equals("from")){
+			position = 2;
+			try{
+				directoryToImport = splitInput[2];
+				if (splitInput.length > 3) {
+					for (int i = 3; i < splitInput.length; i++) {
+						directoryToImport = directoryToImport.concat(" ").concat(splitInput[i]);
+					}
 				}
+				if (storageController.importFromDirectory(directoryToImport) == true) {
+					String relativeDirectory = storageController.getFileDirectory();
+					initialiseTasks();
+					initialiseArchives();
+					return "Imported from " + relativeDirectory ;
+				} else {
+					return "Fail to import from file. File invalid.";
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				return "Please specify a directory to import from";
 			}
-			if (storageController.importFromDirectory(directoryToImport) == true) {
-				String relativeDirectory = storageController.getFileDirectory();
-				initialiseTasks();
-				initialiseArchives();
-				return "Imported from " + relativeDirectory ;
-			} else {
-				return "Fail to import from file. File invalid.";
-			}
-		}catch(ArrayIndexOutOfBoundsException e){
-			return "Please specify a directory to import from";
+		}else{
+			return "Invalid command, try \"import from \"";
 		}
+		
 		
 
 	}
