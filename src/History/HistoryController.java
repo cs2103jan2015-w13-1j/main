@@ -15,11 +15,11 @@ import Common.DATA;
 
 public class HistoryController implements InterfaceForHistory{
 
-	private static final String MESSAGE_REDO_NOT_SUCCESSFUL = "Redo not successful. No previous command entry found.";
-	private static final String MESSAGE_UNDO_NOT_SUCCESSFUL = "Undo not successful. No previous command entry found.";
-	private static final String MESSAGE_LOG_PREVIOUS_DATA_WAS_NOT_SUCCESSFUL = "Log previous DATA was not successful.";
-	private static final String MESSAGE_LOG_PREVIOUS_DATA_SUCCESSFULLY = "Log previous DATA successfully.";
-	private static final String MESSAGE_LOG_LIST_IS_INITIALISED = "Log list is initialised.";
+	private static final String MESSAGE_ERROR_REDO = "Redo not successful. No previous command entry found.";
+	private static final String MESSAGE_ERROR_UNDO = "Undo not successful. No previous command entry found.";
+	private static final String MESSAGE_ERROR_LOG = "Log previous DATA was not successful.";
+	private static final String MESSAGE_SUCCESS_LOG = "Log previous DATA successfully.";
+	private static final String MESSAGE_SUCCESS_INITIALISE = "Log list is initialised.";
 	private final int SIZE = 10;
 	private LinkedList<DATA> _logList;
 	private LinkedList<DATA> _redoList;
@@ -30,7 +30,7 @@ public class HistoryController implements InterfaceForHistory{
 		this._logList = new LinkedList<DATA>();
 		this._redoList = new LinkedList<DATA>();
 		_storageControl = new StorageController();
-//		logger.log(Level.INFO, MESSAGE_LOG_LIST_IS_INITIALISED);
+		logger.log(Level.INFO, MESSAGE_SUCCESS_INITIALISE);
 	}
 
 	@Override
@@ -44,10 +44,10 @@ public class HistoryController implements InterfaceForHistory{
 		DATA previousData = _storageControl.getAllData();
 		this._logList.push(previousData);
 		if (this._logList.contains(previousData) == true) {
-//			logger.log(Level.INFO, MESSAGE_LOG_PREVIOUS_DATA_SUCCESSFULLY);
+			logger.log(Level.INFO, MESSAGE_SUCCESS_LOG);
 			return true;
 		} else {
-			logger.log(Level.WARNING, MESSAGE_LOG_PREVIOUS_DATA_WAS_NOT_SUCCESSFUL);
+			logger.log(Level.WARNING, MESSAGE_ERROR_LOG);
 			return false;
 		}
 	}
@@ -55,7 +55,7 @@ public class HistoryController implements InterfaceForHistory{
 	@Override
 	public DATA undo() {
 		if (this._logList.isEmpty() == true) {
-			logger.log(Level.WARNING, MESSAGE_UNDO_NOT_SUCCESSFUL);
+			logger.log(Level.WARNING, MESSAGE_ERROR_UNDO);
 			return null;
 		}
 		// retrieve DATA from storage and push into redoList
@@ -69,7 +69,7 @@ public class HistoryController implements InterfaceForHistory{
 	@Override
 	public DATA redo() {
 		if (this._redoList.isEmpty() == true) {
-			logger.log(Level.WARNING, MESSAGE_REDO_NOT_SUCCESSFUL);
+			logger.log(Level.WARNING, MESSAGE_ERROR_REDO);
 			return null;
 		}
 		// pop DATA from redoList and return DATA

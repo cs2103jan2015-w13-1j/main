@@ -25,23 +25,23 @@ public class StorageADT {
 		program.initialiseNewDataObject();
 	}
 	
-	/**
-	 * Test for retrieval of directory
-	 */
-	@Test
-	public void testForRetrievalOfDirectory() {
-		assertEquals("C:/Users/Esmond/Desktop/main/tables/", program.getFileDirectory());
-	}
-	
-	/**
-	 * Test for change of directory
-	 */
-	@Test
-	public void testForDirectoryChange() {
-		assertEquals("C:/Users/Esmond/Desktop/main/storage/", program.setFileDirectory("storage"));
-		assertEquals("C:/Users/Esmond/Desktop/main/folder/", program.setFileDirectory("folder"));
-		assertEquals("C:/Users/Esmond/Desktop/main/folder/", program.getFileDirectory());
-	}
+//	/**
+//	 * Test for retrieval of directory
+//	 */
+//	@Test
+//	public void testForRetrievalOfDirectory() {
+//		assertEquals("C:/Users/Esmond/Desktop/main/tables/", program.getFileDirectory());
+//	}
+//	
+//	/**
+//	 * Test for change of directory
+//	 */
+//	@Test
+//	public void testForDirectoryChange() {
+//		assertEquals("C:/Users/Esmond/Desktop/main/storage/", program.setFileDirectory("storage"));
+//		assertEquals("C:/Users/Esmond/Desktop/main/folder/", program.setFileDirectory("folder"));
+//		assertEquals("C:/Users/Esmond/Desktop/main/folder/", program.getFileDirectory());
+//	}
 	
 	/**
 	 * Test for creation of dummy data

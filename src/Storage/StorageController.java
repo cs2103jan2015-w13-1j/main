@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class StorageController implements InterfaceForStorage {
+	private static final String STRING_GENERIC = "generic";
 	private static final String STRING_FINISHED_TIME = "finishedTime";
 	private static final String STRING_END_TIME = "endTime";
 	private static final String STRING_START_TIME = "startTime";
@@ -49,11 +50,12 @@ public class StorageController implements InterfaceForStorage {
 	private static final String STRING_SERIAL_NUMBER = "serialNumber";
 	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
 	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
-	private static final String MESSAGE_CONVERT_DATA_FAILURE = "Unable to get DATA from storage.";
+	private static final String MESSAGE_ERROR_CREATE_TASK = "Unable to create task due to invalid task type";
+	private static final String MESSAGE_ERROR_CONVERT_DATA = "Unable to get DATA from storage.";
 	private static final String MESSAGE_DUMMY_DATA = "9 Dummy data created.";
 	private static final String MESSAGE_INITIALISE_NEW_DATA_OBJECT = "Initialise new DATA object.";
-	private static final String MESSAGE_STORE_DATA_FAILURE = "failure in storing";
-	private static final String MESSAGE_STORE_DATA_SUCCESS = "success in storing";
+	private static final String MESSAGE_ERROR_STORE = "failure in storing";
+	private static final String MESSAGE_SUCCESS_STORE = "success in storing";
 	private static final int STARTING_INDEX = 0;
 
 	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
@@ -73,7 +75,6 @@ public class StorageController implements InterfaceForStorage {
 	
 	@Override
 	public boolean importFromFile(String fileName) {
-		// TODO Auto-generated method stub
 		// check if file is valid, 
 		//		if yes, store parent folder into utility
 		// 		if not, return false
@@ -122,32 +123,35 @@ public class StorageController implements InterfaceForStorage {
 	private DATA convertJsonObjectToData(JSONObject dataJSON) {		
 		if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
 				|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
-			logger.log(Level.WARNING, MESSAGE_CONVERT_DATA_FAILURE);
+			logger.log(Level.WARNING, MESSAGE_ERROR_CONVERT_DATA);
 			return initialiseNewDataObject();
+		} else {
+			DATA newData = new DATA();
+			Gson gson = new Gson();
+			// retrieve serial number and store into data
+			newData.setSerialNumber(gson.fromJson(String.valueOf(dataJSON.get(STRING_SERIAL_NUMBER)) , int.class));
+			// retrieve recurrence ID and store into data
+			newData.setRecurrenceId(gson.fromJson(String.valueOf(dataJSON.get(STRING_RECURRENCE_ID)) , int.class));
+			// retrieve active list and store into data
+			TaskList activeTaskList = getTaskListFromJsonByTaskList(dataJSON, STRING_ACTIVE_TASK_LIST);
+			newData.setActiveTaskList(activeTaskList);
+			// retrieve archive list and store into data
+			TaskList archivedTaskList = getTaskListFromJsonByTaskList(dataJSON, STRING_ARCHIVED_TASK_LIST);
+			newData.setArchivedTaskList(archivedTaskList);
+			return newData;
 		}
-		
-		DATA newData = new DATA();
-		Gson gson = new Gson();
-		// retrieve serial number and store into data
-		newData.setSerialNumber(gson.fromJson(String.valueOf(dataJSON.get(STRING_SERIAL_NUMBER)) , int.class));
-		// retrieve recurrence ID and store into data
-		newData.setRecurrenceId(gson.fromJson(String.valueOf(dataJSON.get(STRING_RECURRENCE_ID)) , int.class));
-		TaskList activeTaskList = getTaskListFromJsonByTaskList(dataJSON, STRING_ACTIVE_TASK_LIST);
-		newData.setActiveTaskList(activeTaskList);
-		TaskList archivedTaskList = getTaskListFromJsonByTaskList(dataJSON, STRING_ARCHIVED_TASK_LIST);
-		newData.setArchivedTaskList(archivedTaskList);
-	    return newData;
 	}
 
 	@Override
 	public String storeAllData(DATA data) {
 		this._data = data;
 		if (_datastore.storeJsonIntoStorage(convertDataToJSONObject()) == true) {
-			logger.log(Level.INFO, MESSAGE_STORE_DATA_SUCCESS);
-			return MESSAGE_STORE_DATA_SUCCESS;
+			logger.log(Level.INFO, MESSAGE_SUCCESS_STORE);
+			return MESSAGE_SUCCESS_STORE;
+		} else {
+			logger.log(Level.WARNING, MESSAGE_ERROR_STORE);
+			return MESSAGE_ERROR_STORE;
 		}
-		logger.log(Level.WARNING, MESSAGE_STORE_DATA_FAILURE);
-		return MESSAGE_STORE_DATA_FAILURE;
 	}
 
 	/**
@@ -165,16 +169,13 @@ public class StorageController implements InterfaceForStorage {
 		    while (it.hasNext()) {
 		    	Map.Entry pair = (Map.Entry)it.next();
 		    	JSONObject taskJSON = (JSONObject) tasklistJSON.get(pair.getKey()); 
-
 		    	Task task = convertJsonObjectToTask(taskJSON);
-				
 				taskListHashMap.addTask(task.getId(), task);
 		    	it.remove(); // avoids a ConcurrentModificationException
 	        }
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
-		
 		return taskListHashMap;
 	}
 
@@ -208,7 +209,7 @@ public class StorageController implements InterfaceForStorage {
 	 */
 	private Task createTaskFromAttribute(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags,	int priority, boolean archived) {
 		Task task = createTask(taskJSON, id, description, type, tags, priority);
-		determineTaskArchive(taskJSON, archived, task);
+		determineTaskIsArchived(taskJSON, archived, task);
 		return task;
 	}
 
@@ -242,9 +243,11 @@ public class StorageController implements InterfaceForStorage {
 				endDate.setTime(long_end_date);
 				
 				task = new Task(id, description, startDate, endDate, priority, tags);
-			} else {
+			} else if (type.equals(STRING_GENERIC)) {
 				// Generic type
 				task = new Task(id, description, priority, tags);
+			} else {
+				logger.log(Level.WARNING, MESSAGE_ERROR_CREATE_TASK);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
@@ -257,7 +260,7 @@ public class StorageController implements InterfaceForStorage {
 	 * @param archived
 	 * @param task
 	 */
-	private void determineTaskArchive(JSONObject taskJSON,	boolean archived, Task task) {
+	private void determineTaskIsArchived(JSONObject taskJSON, boolean archived, Task task) {
 		Gson gson = new Gson();
 		try {
 			if (archived == true) {
@@ -377,6 +380,27 @@ public class StorageController implements InterfaceForStorage {
 		_datastore.setDirectory(fileDirectory);
 		return _datastore.getDirectory();
 	}
+
+	/**
+	 * @return datastore.getStorageRelativePath();
+	 */
+	public String getFileRelativePath() {
+		return _datastore.getStorageRelativePath();
+	}
+
+	/**
+	 * @return the data
+	 */
+	public DATA getData() {
+		return _data;
+	}
+
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(DATA data) {
+		this._data = data;
+	}
 	
 	// create 9 dummy tasks and store into data for testing
 	/**
@@ -452,27 +476,4 @@ public class StorageController implements InterfaceForStorage {
 		logger.log(Level.INFO, MESSAGE_DUMMY_DATA);
 		return MESSAGE_DUMMY_DATA;
 	}
-
-	/**
-	 * @return datastore.getStorageRelativePath();
-	 */
-	public String getFileRelativePath() {
-		return _datastore.getStorageRelativePath();
-	}
-
-	/**
-	 * @return the data
-	 */
-	public DATA getData() {
-		return _data;
-	}
-
-	/**
-	 * @param data the data to set
-	 */
-	public void setData(DATA data) {
-		this._data = data;
-	}
-
-	
 }
