@@ -19,4 +19,9 @@ public interface InterfaceForHistory {
 	 * @return previous DATA object if logList is not empty. Otherwise, return null
 	 */
 	DATA undo();
+	
+	/**
+	 * @return undo DATA object if redoList is not empty. Otherwise, return null
+	 */
+	DATA redo();
 }

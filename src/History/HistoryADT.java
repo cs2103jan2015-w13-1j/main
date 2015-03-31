@@ -52,7 +52,9 @@ public class HistoryADT {
 	 */
 	@Test
 	public void testForUndoWithEmptyStack() {
+		// Verify logList is empty
 		assertEquals(0, program.getLogList().size());
+		// Perform 1 unsuccessful undo()
 		assertNull(program.undo());
 	}
 	
@@ -61,11 +63,64 @@ public class HistoryADT {
 	 */
 	@Test
 	public void testForUndoWithOneLog() {
+		// Perform 1 log()
 		assertEquals(0, program.getLogList().size());
-		testForSingleLog();
+		assertEquals(true, program.log());
+		// Verify logList size is 1
 		assertEquals(1, program.getLogList().size());
+		// Perform 1 successful undo()
 		assertNotNull(program.undo());
+		// Verify logList is empty
 		assertEquals(0, program.getLogList().size());
+	}
+	
+	@Test
+	public void testForRedoWithEmptyStack() {
+		// Verify both logList and redoList are empty
+		assertEquals(0, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+		// Perform 1 unsuccessful redo()
+		assertNull(program.redo());
+	}
+	
+	@Test
+	public void testForRedoWithOneUndo() {
+		// Perform 1 log()
+		assertEquals(true, program.log());
+		// Verify logList size is 1 and redoList is empty
+		assertEquals(1, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+		// Perform 1 unsuccessful redo()
+		assertNull(program.redo());
+		// Perform 1 successful undo()
+		assertNotNull(program.undo());
+		// Verify logList is empty and redoList size is 1
+		assertEquals(0, program.getLogList().size());
+		assertEquals(1, program.getRedoList().size());
+		// Perform 1 successful redo()
+		assertNotNull(program.redo());
+		// Verify both logList and redoList are empty
+		assertEquals(0, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+	}
+	
+	@Test
+	public void testForOneUndoThenLog() {
+		// Perform 1 log()
+		assertEquals(true, program.log());
+		// Verify logList size is 1 and redoList is empty
+		assertEquals(1, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+		// Perform 1 successful undo()
+		assertNotNull(program.undo());
+		// Verify logList is empty and redoList size is 1
+		assertEquals(0, program.getLogList().size());
+		assertEquals(1, program.getRedoList().size());
+		// Perform 1 successful undo()
+		assertEquals(true, program.log());
+		// Verify logList size is 1 and redoList is empty
+		assertEquals(1, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
 	}
 	
 	/**
@@ -74,5 +129,6 @@ public class HistoryADT {
 	@After
 	public void cleanUp() {
 		program.getLogList().clear();
+		program.getRedoList().clear();
 	}
 }
