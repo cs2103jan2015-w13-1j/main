@@ -21,10 +21,10 @@ public interface InterfaceForStorage {
 	 */
 	String storeAllData(DATA data); 
 	/**
-	 * @param relative path of the directory
-	 * @return the given relative path of the directory
+	 * @param path of the directory
+	 * @return the given path of the directory
 	 */
-	String setFileDirectory(String directory);
+	String changeFileDirectory(String directory);
 	/**
 	 * @return the current relative path of the directory
 	 */
@@ -34,5 +34,10 @@ public interface InterfaceForStorage {
 	 * @param file
 	 * @return true if import is successful
 	 */
-	boolean importFromFile(String file);
+	boolean importFromDirectory(String file);
+	/**
+	 * @param file
+	 * @return true if export is successful
+	 */
+	boolean exportToDirectory(String file);
 }

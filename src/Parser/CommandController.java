@@ -167,7 +167,7 @@ public class CommandController implements InterfaceForParser {
 					directoryToImport = directoryToImport.concat(" ").concat(splitInput[i]);
 				}
 			}
-			if (storageController.importFromFile(directoryToImport) == true) {
+			if (storageController.importFromDirectory(directoryToImport) == true) {
 				String relativeDirectory = storageController.getFileDirectory();
 				initialiseTasks();
 				initialiseArchives();
@@ -322,7 +322,7 @@ public class CommandController implements InterfaceForParser {
 			}
 		}
 		String specifiedFileDirectory = tempPath;
-		String acknowledgeCheck = storageController.setFileDirectory(specifiedFileDirectory);
+		String acknowledgeCheck = storageController.changeFileDirectory(specifiedFileDirectory);
 		result = "File stored at: " + storageController.getFileDirectory();
 		return result;
 	}

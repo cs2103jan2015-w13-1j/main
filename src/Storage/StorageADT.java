@@ -74,6 +74,6 @@ public class StorageADT {
 	
 	@After
 	public void cleanUp() {
-		program.setFileDirectory("tables");
+		program.changeFileDirectory("tables");
 	}
 }

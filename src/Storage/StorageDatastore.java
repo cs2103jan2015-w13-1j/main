@@ -75,7 +75,9 @@ public class StorageDatastore {
 		JSONObject utilJSON = new JSONObject();
 		try {
 			JSONParser parser = new JSONParser();
-			Object obj = parser.parse(new FileReader(STRING_UTILITY_FILE_NAME));
+			FileReader readFile = new FileReader(STRING_UTILITY_FILE_NAME);
+			Object obj = parser.parse(readFile);
+			readFile.close();
 			utilJSON = (JSONObject) obj;
 			initPhaseThree(utilJSON);
 			
@@ -106,8 +108,8 @@ public class StorageDatastore {
 	 */
 	public boolean storeJsonIntoStorage(JSONObject json) {
 		initialise();
-		processStorage();
-		return storeJsonIntoStorage(json, getStorageRelativePath());
+		processStorage(getStorageFilePath());
+		return storeJsonIntoStorage(json, getStorageFilePath());
 	}
 	
 	/**
@@ -116,9 +118,9 @@ public class StorageDatastore {
 	public JSONObject getData() {
 		initialise();
 		JSONObject dataJSON = new JSONObject();
-		if (isStorageExist(getStorageRelativePath()) == true) {
+		if (isStorageExist(getStorageFilePath()) == true) {
 			logger.log(Level.INFO, MESSAGE_GET_ALL_DATA_STORAGE_EXIST);
-			dataJSON = retrieveDataFromStorage(getStorageRelativePath());
+			dataJSON = retrieveDataFromStorage(getStorageFilePath());
 		} else {
 			// must store data first, cannot create new storage because user might change directory
 			logger.log(Level.WARNING, MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST);
@@ -133,20 +135,25 @@ public class StorageDatastore {
 		// do nothing if task list is empty
 		JSONObject dataJSON = new JSONObject();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(fileName));
+			FileReader fileRead = new FileReader(fileName);
+			BufferedReader br = new BufferedReader(fileRead);
 			if (br.readLine() == null) {
 				logger.log(Level.WARNING, MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
 				br.close();
+				fileRead.close();
 				return dataJSON;
 			}
 			br.close();
+			fileRead.close();
 		} catch (IOException e1) {
 			logger.log(Level.SEVERE, e1.getMessage());
 		}
 		
 		try {
 			JSONParser parser = new JSONParser();
-			Object obj = parser.parse(new FileReader(fileName));
+			FileReader fileRead = new FileReader(fileName);
+			Object obj = parser.parse(fileRead);
+			fileRead.close();
 			dataJSON = (JSONObject) obj; 
 			if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
 					|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
@@ -186,10 +193,10 @@ public class StorageDatastore {
 	/**
 	 * Create new storage if storage not found
 	 */
-	private void processStorage() {
-		if (isStorageExist(getStorageRelativePath()) == false) {
+	public void processStorage(String storage) {
+		if (isStorageExist(storage) == false) {
 			logger.log(Level.WARNING, MESSAGE_PROCESS_STORAGE_NOT_FOUND);
-			createStorage(getStorageRelativePath());
+			createStorage(storage);
 		}
 	}
 	
@@ -198,7 +205,7 @@ public class StorageDatastore {
 	 * @param file name
 	 * @return true if storing is successful
 	 */
-	private boolean storeJsonIntoStorage(JSONObject json, String fileName) {
+	public boolean storeJsonIntoStorage(JSONObject json, String fileName) {
 		File file = new File(fileName);
 		long timeBeforeModification = file.lastModified();
 		long timeAfterModification = NEGATIVE_ONE;
@@ -232,18 +239,18 @@ public class StorageDatastore {
 	 * @param File Relative Path
 	 * @return True if file exist
 	 */
-	public boolean isStorageExist(String fileRelativePath) {
-		File file = new File(fileRelativePath);
+	public boolean isStorageExist(String filePath) {
+		File file = new File(filePath);
 		return file.exists();
 	}
 	
 	/**
 	 * @param File Relative Path
 	 */
-	private void createStorage(String fileRelativePath) {
-		logger.log(Level.INFO, String.format(MESSAGE_CREATE_STORAGE_FILE, fileRelativePath));
+	private void createStorage(String filePath) {
+		logger.log(Level.INFO, String.format(MESSAGE_CREATE_STORAGE_FILE, filePath));
 		try {
-			File storageFile = new File(fileRelativePath);
+			File storageFile = new File(filePath);
 			if (storageFile.getParentFile() != null) {
 				storageFile.getParentFile().mkdirs();
 			}
@@ -260,15 +267,33 @@ public class StorageDatastore {
 		return _directory;
 	}
 	/**
-	 * @param directory the directory to set
+	 * @param _directory the _directory to set
 	 */
 	public void setDirectory(String directory) {
-		deleteFile(getStorageRelativePath());	// remove old storage file if it exists
+		this._directory = directory;
+	}
+	/**
+	 * @param directory the directory to set
+	 */
+	public void changeDirectory(String directory) {
+		initialise();
+		JSONObject dataJSON = new JSONObject();
+		String previousDirectory = getStorageFilePath();
+		if (isStorageExist(getStorageFilePath()) == true) {
+			dataJSON = retrieveDataFromStorage(getStorageFilePath());
+			deleteFile(getStorageFilePath());	// remove old storage file if it exists
+		}
 		URI uri = fileToUri(directory);
 		String absolutePath = uriToString(uri);
 		this._directory = new String();
 		this._directory = absolutePath;
 		saveSettingsToUtility();
+		if ((dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
+				|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) == false) {
+			processStorage(getStorageFilePath());
+			storeJsonIntoStorage(dataJSON, getStorageFilePath());
+		}
+		deleteFile(previousDirectory);	// remove old storage file if it exists
 		logger.log(Level.INFO, String.format(MESSAGE_NEW_FILE_DIRECTORY, this.getDirectory()));
 	}
 
@@ -322,8 +347,8 @@ public class StorageDatastore {
 	/**
 	 * @return directory + storageName
 	 */
-	public String getStorageRelativePath() {
-		String relativePath = getDirectory().concat(getStorageName());
-		return relativePath;
+	public String getStorageFilePath() {
+		String path = getDirectory().concat(getStorageName());
+		return path;
 	}
 }
