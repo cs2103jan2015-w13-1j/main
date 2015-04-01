@@ -29,6 +29,42 @@
       </Label>
       <Group layoutX="74.0" layoutY="204.0">
          <children>
+            <Group fx:id="taskGroup">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="150.0" layoutX="-27.0" layoutY="-91.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
+                  <TableView fx:id="taskTable" layoutX="-13.0" layoutY="-1.0" prefHeight="370.0" prefWidth="815.0">
+                    <columns>
+                      <TableColumn maxWidth="810.0" minWidth="810.0" prefWidth="810.0" resizable="false" text="To-Do">
+                           <columns>
+                              <TableColumn fx:id="taskId" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
+                              <TableColumn fx:id="taskDescription" maxWidth="240.0" minWidth="240.0" prefWidth="240.0" style="-fx-text-alignment: center;" text="Description" />
+                              <TableColumn fx:id="taskPriority" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="Pr" />
+                              <TableColumn fx:id="taskStart" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="Start" />
+                              <TableColumn fx:id="taskEnd" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="End" />
+                              <TableColumn fx:id="taskDue" maxWidth="150.0" minWidth="90.0" prefWidth="140.0" text="Date" />
+                              <TableColumn fx:id="taskTags" maxWidth="210.0" minWidth="150.0" prefWidth="160.0" style="-fx-text-alignment: center;" text="Tags" />
+                           </columns>
+                        </TableColumn>
+                    </columns>
+                  </TableView>
+                  <Label layoutX="100.0" layoutY="-77.0" style="-fx-font-weight: bold; -fx-font-size: 44;" text="Tasks" textFill="WHITE">
+                     <font>
+                        <Font size="44.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="archiveTable" layoutX="809.0" layoutY="-1.0" prefHeight="370.0" prefWidth="250.0">
+                    <columns>
+                      <TableColumn maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" text="Archive">
+                           <columns>
+                              <TableColumn fx:id="archiveId" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
+                              <TableColumn fx:id="archiveDescription" maxWidth="200.0" minWidth="187.0" prefWidth="196.0" text="Description" />
+                           </columns>
+                        </TableColumn>
+                    </columns>
+                  </TableView>
+               </children>
+            </Group>
             <Group fx:id="helpGroup">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
@@ -66,42 +102,16 @@
                         <Font size="25.0" />
                      </font>
                   </Text>
-               </children>
-            </Group>
-            <Group fx:id="taskGroup">
-               <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="150.0" layoutX="-27.0" layoutY="-91.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
-                  <TableView fx:id="taskTable" layoutX="-13.0" layoutY="-1.0" prefHeight="370.0" prefWidth="815.0">
-                    <columns>
-                      <TableColumn maxWidth="810.0" minWidth="810.0" prefWidth="810.0" resizable="false" text="To-Do">
-                           <columns>
-                              <TableColumn fx:id="taskId" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
-                              <TableColumn fx:id="taskDescription" maxWidth="240.0" minWidth="240.0" prefWidth="240.0" style="-fx-text-alignment: center;" text="Description" />
-                              <TableColumn fx:id="taskPriority" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="Pr" />
-                              <TableColumn fx:id="taskStart" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="Start" />
-                              <TableColumn fx:id="taskEnd" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="End" />
-                              <TableColumn fx:id="taskDue" maxWidth="150.0" minWidth="90.0" prefWidth="140.0" text="Date" />
-                              <TableColumn fx:id="taskTags" maxWidth="210.0" minWidth="150.0" prefWidth="160.0" style="-fx-text-alignment: center;" text="Tags" />
-                           </columns>
-                        </TableColumn>
-                    </columns>
-                  </TableView>
-                  <Label layoutX="100.0" layoutY="-77.0" style="-fx-font-weight: bold; -fx-font-size: 44;" text="Tasks" textFill="WHITE">
+                  <Text layoutX="17.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File exported to: ">
                      <font>
-                        <Font size="44.0" />
+                        <Font size="25.0" />
+                     </font>
+                  </Text>
+                  <Label fx:id="fileExportName" layoutX="218.0" layoutY="67.0" prefHeight="47.0" prefWidth="611.0" text="Label">
+                     <font>
+                        <Font size="25.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="archiveTable" layoutX="809.0" layoutY="-1.0" prefHeight="370.0" prefWidth="250.0">
-                    <columns>
-                      <TableColumn maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" text="Archive">
-                           <columns>
-                              <TableColumn fx:id="archiveId" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="#ID" />
-                              <TableColumn fx:id="archiveDescription" maxWidth="200.0" minWidth="187.0" prefWidth="196.0" text="Description" />
-                           </columns>
-                        </TableColumn>
-                    </columns>
-                  </TableView>
                </children>
             </Group>
          </children>

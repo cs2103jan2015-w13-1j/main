@@ -43,6 +43,8 @@ public class UIController implements Initializable {
 	private Label motivationalQuote;
 	@FXML
 	private Label fileDirectory;
+	@FXML
+	private Label fileExportName;
 	
 	@FXML
 	TableView<UITask> taskTable;
@@ -149,22 +151,6 @@ public class UIController implements Initializable {
 		addToTaskDisplay();
 	}
 	
-	/*public void chooseDirectory(ActionEvent event){
-		
-		String directoryPath;
-		
-		System.out.println("Directory button clicked");
-		DirectoryChooser directoryChooser = new DirectoryChooser();
-		File selectedDirectory = directoryChooser.showDialog(null);
-		if (selectedDirectory == null){
-			System.out.println("No directory selected");
-		}
-		else {
-			directoryPath = selectedDirectory.getAbsolutePath();
-			System.out.println(directoryPath);
-		}
-	}*/
-	
 	public void inputCommand(ActionEvent event){
 		
 		String input = commandField.getText();
@@ -187,13 +173,12 @@ public class UIController implements Initializable {
 			message = displayGotoMessage(splitCommand, message);
 		}
 		else if (firstCommand.equals("directory")){
-			String tempPath = splitCommand[1];
-			if (splitCommand.length > 2) {
-				for (int i = 2; i < splitCommand.length; i++) {
-					tempPath = tempPath.concat(" ").concat(splitCommand[i]);
-				}
-			}
-			fileDirectory.setText(storageController.getFileDirectory());
+			String[] splitMessage = message.split("at: ");
+			fileDirectory.setText(splitMessage[1]);
+		}
+		else if (firstCommand.equals("export")){
+			String[] splitMessage = message.split("to ");
+			fileExportName.setText(splitMessage[1]);
 		}
 		else if (firstCommand.equals("exit")){
 		    Stage stage = (Stage) commandField.getScene().getWindow();
