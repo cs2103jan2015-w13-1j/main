@@ -408,16 +408,18 @@ public class Task implements Comparable<Task>{
 	 */
 	public Task copyWithInterval(int id, long period) {
 		Task task;
+		ArrayList<String> tags = new ArrayList<String>();
+		tags.addAll(this.tags);
 		if (this.type.equals(STRING_MEETING)) {
 			Date startTime = new Date();
 			Date endTime = new Date();
 			startTime.setTime(this.startTime.getTime() + period);
 			endTime.setTime(this.endTime.getTime() + period);
-			task = new Task(id, this.description, startTime, endTime, this.priority, this.tags);
+			task = new Task(id, this.description, startTime, endTime, this.priority, tags);
 		} else { // the type is a deadline task
 			Date deadline = new Date();
 			deadline.setTime(this.getDeadline().getTime() + period);
-			task = new Task(id, this.description, deadline, this.priority, this.tags);
+			task = new Task(id, this.description, deadline, this.priority, tags);
 		}
 		System.out.println(task);
 		return task;

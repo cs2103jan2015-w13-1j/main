@@ -41,7 +41,7 @@ public class LogicController implements InterfaceForLogic{
 		activeTaskList = data.getActiveTaskList();
 		archivedTaskList = data.getArchivedTaskList();
 		toDoSortedList = new ToDoSortedList();
-		System.out.println(data.getSerialNumber());
+//		System.out.println(data.getSerialNumber());
 		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
 			toDoSortedList.addTask(e.getValue());
 		}
@@ -53,9 +53,16 @@ public class LogicController implements InterfaceForLogic{
 			data.setArchivedTaskList(archivedTaskList);
 			storageController.storeAllData(data);
 		}
+		for (Task t: toDoSortedList) {
+			System.out.println(t);
+		}
 		return toDoSortedList;
 	}
 	
+	/**
+	 * Update the todosortedlist and return it
+	 * @return
+	 */
 	private ToDoSortedList update_Save_ReturnTodo() {
 		toDoSortedList.updateTaskOrder(activeTaskList);
 		return storeAndReturnToDo();
