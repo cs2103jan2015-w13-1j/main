@@ -29,6 +29,45 @@
       </Label>
       <Group layoutX="74.0" layoutY="204.0">
          <children>
+            <Group fx:id="settingsGroup">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#3b5998" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#3b5998" height="150.0" layoutX="706.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
+                  <Label layoutX="805.0" layoutY="-80.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Settings" textFill="WHITE">
+                     <font>
+                        <Font size="44.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="fileDirectory" layoutX="218.0" layoutY="21.0" prefHeight="47.0" prefWidth="611.0" text="Label">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+                  <Text layoutX="17.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Storage location:">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Group>
+            <Group fx:id="helpGroup">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="150.0" layoutX="340.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
+                  <Label layoutX="407.0" layoutY="-76.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Commands" textFill="WHITE">
+                     <font>
+                        <Font size="44.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="commandTable" layoutX="5.0" layoutY="11.0" prefHeight="345.0" prefWidth="1038.0">
+                    <columns>
+                      <TableColumn fx:id="commandFunction" prefWidth="214.0" text="Function" />
+                      <TableColumn fx:id="commandCommand" minWidth="0.0" prefWidth="547.0" text="Command" />
+                        <TableColumn fx:id="commandShortcuts" prefWidth="275.0" text="Shortcuts" />
+                    </columns>
+                  </TableView>
+               </children>
+            </Group>
             <Group fx:id="taskGroup">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#97abdd" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
@@ -63,55 +102,6 @@
                         </TableColumn>
                     </columns>
                   </TableView>
-               </children>
-            </Group>
-            <Group fx:id="helpGroup">
-               <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#597fbf" height="150.0" layoutX="340.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
-                  <Label layoutX="407.0" layoutY="-76.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Commands" textFill="WHITE">
-                     <font>
-                        <Font size="44.0" />
-                     </font>
-                  </Label>
-                  <TableView fx:id="commandTable" layoutX="5.0" layoutY="11.0" prefHeight="345.0" prefWidth="1038.0">
-                    <columns>
-                      <TableColumn fx:id="commandFunction" prefWidth="214.0" text="Function" />
-                      <TableColumn fx:id="commandCommand" minWidth="0.0" prefWidth="547.0" text="Command" />
-                        <TableColumn fx:id="commandShortcuts" prefWidth="275.0" text="Shortcuts" />
-                    </columns>
-                  </TableView>
-               </children>
-            </Group>
-            <Group fx:id="settingsGroup">
-               <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#3b5998" height="400.0" layoutX="-27.0" layoutY="-15.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="1100.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#3b5998" height="150.0" layoutX="706.0" layoutY="-90.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="0.0" style="-fx-arc-height: 30; -fx-arc-width: 30;" width="367.0" />
-                  <Label layoutX="805.0" layoutY="-80.0" style="-fx-font-size: 44; -fx-font-weight: BOLD;" text="Settings" textFill="WHITE">
-                     <font>
-                        <Font size="44.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="fileDirectory" layoutX="218.0" layoutY="21.0" prefHeight="47.0" prefWidth="611.0" text="Label">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Label>
-                  <Text layoutX="17.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Storage location:">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Text>
-                  <Text layoutX="17.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File exported to: ">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Text>
-                  <Label fx:id="fileExportName" layoutX="218.0" layoutY="67.0" prefHeight="47.0" prefWidth="611.0" text="Label">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Label>
                </children>
             </Group>
          </children>

@@ -43,8 +43,6 @@ public class UIController implements Initializable {
 	private Label motivationalQuote;
 	@FXML
 	private Label fileDirectory;
-	@FXML
-	private Label fileExportName;
 	
 	@FXML
 	TableView<UITask> taskTable;
@@ -175,10 +173,6 @@ public class UIController implements Initializable {
 		else if (firstCommand.equals("directory")){
 			String[] splitMessage = message.split("at: ");
 			fileDirectory.setText(splitMessage[1]);
-		}
-		else if (firstCommand.equals("export")){
-			String[] splitMessage = message.split("to ");
-			fileExportName.setText(splitMessage[1]);
 		}
 		else if (firstCommand.equals("exit")){
 		    Stage stage = (Stage) commandField.getScene().getWindow();
