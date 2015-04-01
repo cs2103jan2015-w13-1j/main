@@ -210,13 +210,14 @@ public class StorageController implements InterfaceForStorage {
 		// Generic Type attributes
 		Gson gson = new Gson();
 		int id = gson.fromJson(String.valueOf(taskJSON.get(STRING_ID)) , int.class);
+		int recurrenceId = gson.fromJson(String.valueOf(taskJSON.get(STRING_RECURRENCE_ID)) , int.class);
 		String description = String.valueOf(taskJSON.get(STRING_DESCRIPTION));
 		String type = String.valueOf(taskJSON.get(STRING_TYPE));
 		ArrayList<String> tags = gson.fromJson(String.valueOf(taskJSON.get(STRING_TAGS)) , new TypeToken<ArrayList<String>>() {}.getType());
 		int priority = gson.fromJson(String.valueOf(taskJSON.get(STRING_PRIORITY)) , int.class);
 		boolean archived = gson.fromJson(String.valueOf(taskJSON.get(STRING_ARCHIVED)) , boolean.class);
 		
-		Task task = createTaskFromAttribute(taskJSON, id, description, type, tags, priority, archived);
+		Task task = createTaskFromAttribute(taskJSON, id, description, type, tags, priority, archived, recurrenceId);
 		return task;
 	}
 
@@ -230,8 +231,8 @@ public class StorageController implements InterfaceForStorage {
 	 * @param archived
 	 * @return task object
 	 */
-	private Task createTaskFromAttribute(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags,	int priority, boolean archived) {
-		Task task = createTask(taskJSON, id, description, type, tags, priority);
+	private Task createTaskFromAttribute(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags,	int priority, boolean archived, int recurrenceId) {
+		Task task = createTask(taskJSON, id, description, type, tags, priority, recurrenceId);
 		determineTaskIsArchived(taskJSON, archived, task);
 		return task;
 	}
@@ -245,7 +246,7 @@ public class StorageController implements InterfaceForStorage {
 	 * @param priority
 	 * @return task object
 	 */
-	private Task createTask(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags, int priority) {
+	private Task createTask(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags, int priority, int recurrenceId) {
 		Task task = null;
 		Gson gson = new Gson();
 		try {
@@ -254,7 +255,7 @@ public class StorageController implements InterfaceForStorage {
 				long string_date = gson.fromJson(String.valueOf(taskJSON.get(STRING_DEADLINE)) , long.class);
 				Date deadline = new Date();
 				deadline.setTime(string_date);
-				task = new Task(id, description, deadline, priority, tags);
+				task = new Task(id, description, deadline, priority, tags, recurrenceId);
 			} else if (type.equals(STRING_MEETING)) {
 				// Meeting Type
 				long long_start_date = gson.fromJson(String.valueOf(taskJSON.get(STRING_START_TIME)) , long.class);
@@ -265,10 +266,10 @@ public class StorageController implements InterfaceForStorage {
 				Date endDate = new Date();
 				endDate.setTime(long_end_date);
 				
-				task = new Task(id, description, startDate, endDate, priority, tags);
+				task = new Task(id, description, startDate, endDate, priority, tags, recurrenceId);
 			} else if (type.equals(STRING_GENERIC)) {
 				// Generic type
-				task = new Task(id, description, priority, tags);
+				task = new Task(id, description, priority, tags, recurrenceId);
 			} else {
 				logger.log(Level.WARNING, MESSAGE_ERROR_CREATE_TASK);
 			}

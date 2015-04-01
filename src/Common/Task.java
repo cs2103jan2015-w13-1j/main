@@ -20,7 +20,7 @@ public class Task implements Comparable<Task>{
 								+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s \nType : %6$s\n"
 								+ "Deadline : %7$s \nStartTime : %8$s \n"
 								+ "EndTime : %9$s \nfinishedTime : %10$s\n";
-	
+
 	private String type = "generic";
 	private int id;
 	private String description;
@@ -54,6 +54,42 @@ public class Task implements Comparable<Task>{
 	}
 	
 	/**
+	 * Constructor for a generic task.
+	 * @param id
+	 * @param description
+	 * @param priority
+	 * 			-1 if not specified
+	 * @param tags
+	 * 			null if not specified
+	 * @param recurrenceId
+	 */
+	public Task(int id, String description, int priority, ArrayList<String> tags, int recurrenceId) {
+		super();
+		this.id = id;
+		this.description = description;
+		this.priority = priority;
+		this.tags = tags;
+		this.recurrenceId = recurrenceId;
+	}
+	
+	/**
+	 * Constructor for a meeting task.
+	 * @param id
+	 * @param description
+	 * @param start
+	 * @param end
+	 * @param priority
+	 * @param tags
+	 * @param recurrenceId
+	 */
+	public Task(int id, String description, Date start, Date end, int priority, ArrayList<String> tags, int recurrenceId){
+		this(id, description, priority, tags, recurrenceId);
+		this.startTime = start;
+		this.endTime = end;
+		this.setType(STRING_MEETING);
+	}
+	
+	/**
 	 * Constructor for a meeting task.
 	 * @param id
 	 * @param description
@@ -67,6 +103,21 @@ public class Task implements Comparable<Task>{
 		this.startTime = start;
 		this.endTime = end;
 		this.setType(STRING_MEETING);
+	}
+	
+	/**
+	 * Constructor for a deadline task
+	 * @param id
+	 * @param description
+	 * @param deadline
+	 * @param priority
+	 * @param tags
+	 * @param recurrenceId
+	 */
+	public Task(int id, String description, Date deadline, int priority, ArrayList<String> tags, int recurrenceId){
+		this(id, description, priority, tags, recurrenceId);
+		this.deadline = deadline;
+		this.setType(STRING_DEADLINE);
 	}
 	
 	/**
