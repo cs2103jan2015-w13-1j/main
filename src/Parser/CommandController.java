@@ -255,13 +255,20 @@ public class CommandController implements InterfaceForParser {
 		String result = new String();
 		int taskID = 0;
 		String tagToRemove = new String();
+		int position = 0;
+		boolean isChangeAll = false;
+		ToDoSortedList retrievedSortedList = new ToDoSortedList();
+		if(splitInput[1].equals("all")){
+			position=1;
+			isChangeAll = true;
+		}
 		try{
-			taskID = Integer.parseInt(splitInput[1]);
+			taskID = Integer.parseInt(splitInput[position+1]);
 		}catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
 			return result = "Please specify ID of task to remove tag from";
 		}
 		try{
-			tagToRemove = splitInput[2];
+			tagToRemove = splitInput[position+2];
 		}catch(ArrayIndexOutOfBoundsException e){
 			return result = "Please specify the tag to remove";
 		}
@@ -271,27 +278,48 @@ public class CommandController implements InterfaceForParser {
 			return result = "Tag does not exist";
 		}else{
 			Task taskToChange = currentActiveTasks.get(taskID-1);
-			ToDoSortedList retrievedSortedList = logicController.removeTag(taskToChange, tagToRemove);
+			if(isChangeAll){
+				if(taskToChange.isRecurrence()){
+					retrievedSortedList = logicController.removeAlltag(taskToChange, tagToRemove);
+				}else{
+					return result ="Cannot change all, not recurring task";
+				}
+				currentActiveTasks.clear();
+				for(Task task : retrievedSortedList){
+					currentActiveTasks.add(task);
+				}
+			}else{
+			
+			retrievedSortedList = logicController.removeTag(taskToChange, tagToRemove);
+			
+			}
 			currentActiveTasks.clear();
 			for(Task task : retrievedSortedList){
 				currentActiveTasks.add(task);
 			}
-			return result = "Tag \"" +tagToRemove +"\" removed from task " + taskID;
 		}
+		return result = "Tag \"" +tagToRemove +"\" removed from task";
 
 	}
 
 	private String addtagCommand(String[] splitInput) {
 		String result = new String();
 		int taskID = 0;
+		int position = 0;
+		boolean isChangeAll = false;
+		ToDoSortedList retrievedSortedList = new ToDoSortedList();
+		if(splitInput[1].equals("all")){
+			position=1;
+			isChangeAll = true;
+		}
 		String tagToAdd = new String();
 		try{
-			taskID = Integer.parseInt(splitInput[1]);
+			taskID = Integer.parseInt(splitInput[position+1]);
 		}catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
 			return result = "Please specify ID of task to remove tag from";
 		}
 		try{
-			tagToAdd = splitInput[2];
+			tagToAdd = splitInput[position+2];
 		}catch(ArrayIndexOutOfBoundsException e){
 			return result = "Please specify the tag to remove";
 		}
@@ -301,13 +329,29 @@ public class CommandController implements InterfaceForParser {
 			return result = "Tag already exists";
 		}else{
 			Task taskToChange = currentActiveTasks.get(taskID-1);
-			ToDoSortedList retrievedSortedList = logicController.addTag(taskToChange, tagToAdd);
+			if(isChangeAll){
+				if(taskToChange.isRecurrence()){
+					retrievedSortedList = logicController.addAlltag(taskToChange, tagToAdd);
+				}else{
+					return result ="Cannot change all, not recurring task";
+				}
+				currentActiveTasks.clear();
+				for(Task task : retrievedSortedList){
+					currentActiveTasks.add(task);
+				}
+			}else{
+			
+			retrievedSortedList = logicController.addTag(taskToChange, tagToAdd);
+			
+			}
 			currentActiveTasks.clear();
 			for(Task task : retrievedSortedList){
 				currentActiveTasks.add(task);
 			}
-			return result = "Tag \"" +tagToAdd +"\" added to task " + taskID;
 		}
+		
+		return result = "Tag \"" +tagToAdd +"\" added to task";
+		
 	}
 
 	private String undoCommand() {
@@ -560,15 +604,32 @@ public class CommandController implements InterfaceForParser {
 	String archiveCommand(String[] splitInput) {
 		//syntax -archive [task ID]
 		String result = new String();
-		int taskIDFromUI = Integer.parseInt(splitInput[1]);
+		
+		int position = 0;
+		boolean isChangeAll = false;
+		ToDoSortedList retrievedActiveTaskList = new ToDoSortedList();
+		Date currentTime = new Date();
+		if(splitInput[1].equals("all")){
+			position = 1;
+			isChangeAll = true;
+		}
+		int taskIDFromUI = Integer.parseInt(splitInput[position+1]);
 
 
 		if(!currentActiveTasks.isEmpty()){
 			Task taskToArchive = currentActiveTasks.get(taskIDFromUI-1);
-
-			result = "Task moved to archive: " + taskToArchive.getDescription();
-			Date currentTime = new Date();
-			ToDoSortedList retrievedActiveTaskList = logicController.moveToArchive(taskToArchive, currentTime);
+			if(isChangeAll){
+				if(taskToArchive.isRecurrence()){
+					retrievedActiveTaskList = logicController.archiveAllTasks(taskToArchive, currentTime);
+					result = "Task moved to archive: " + taskToArchive.getDescription();
+				}else{
+					return result = "Cannot archive all selected, not recurrence task";
+				}
+			}else{
+				retrievedActiveTaskList = logicController.moveToArchive(taskToArchive, currentTime);
+				result = "Task moved to archive: " + taskToArchive.getDescription();
+				
+			}
 			currentActiveTasks.clear();
 			for(Task task : retrievedActiveTaskList){
 				currentActiveTasks.add(task);
@@ -584,20 +645,30 @@ public class CommandController implements InterfaceForParser {
 	String deleteCommand(String[] splitInput) {
 		//syntax : -delete <current/archive> [task ID]
 		String result = new String();
+		int position = 0;
+		boolean isChangeAll = false;
+		if(splitInput[1].equals("all")){
+			position = 1;
+			isChangeAll=true;
+		}
 		
-		if(splitInput[1].equalsIgnoreCase("current")){
-			int taskIDFromUI = Integer.parseInt(splitInput[2]);
+		if(splitInput[position+1].equalsIgnoreCase("current")){
+			int taskIDFromUI = Integer.parseInt(splitInput[position+2]);
 			if(!currentActiveTasks.isEmpty()){
 				Task taskToDelete = currentActiveTasks.get(taskIDFromUI-1);
 				ToDoSortedList retrievedListFromLogic = new ToDoSortedList();
 	
 				result = "Deleted task from current: " + taskToDelete.getDescription();
-				/*if(taskToDelete.isRecurrence()){
-					retrievedListFromLogic =  logicController.deleteAllRecurringTask(taskToDelete);
+				if(isChangeAll){
+					if(taskToDelete.isRecurrence()){
+						retrievedListFromLogic =  logicController.deleteAllRecurringTask(taskToDelete);
+					}else{
+						return result = "Cannot delete all, not recurring task";
+					}
 				}else{
 					retrievedListFromLogic = logicController.deleteTask(taskToDelete);
-				}*/
-				retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+				}
+				//retrievedListFromLogic = logicController.deleteTask(taskToDelete);
 				currentActiveTasks.clear();
 				for(Task task : retrievedListFromLogic){
 					currentActiveTasks.add(task);
@@ -605,12 +676,23 @@ public class CommandController implements InterfaceForParser {
 			}else{
 				result = "No tasks to delete";
 			}
-		}else if(splitInput[1].equalsIgnoreCase("archive")){
-			int taskIDFromUI = Integer.parseInt(splitInput[2]);
+		}else if(splitInput[position+1].equalsIgnoreCase("archive")){
+			int taskIDFromUI = Integer.parseInt(splitInput[position+2]);
 			if(!currentArchives.isEmpty()){
 				Task taskToDelete = currentArchives.get(taskIDFromUI-1);
+				ArchiveSortedList retrievedListFromLogic = new ArchiveSortedList();
+				if(isChangeAll){
+					if(taskToDelete.isRecurrence()){
+						retrievedListFromLogic = logicController.deleteAllRecurringInArchive(taskToDelete);
+					}else{
+						return result = "Cannot delete all, not recurring task";
+					}
+				}else{
+					
+					retrievedListFromLogic = logicController.deleteFromArchive(taskToDelete);
+					
+				}
 				result = "Deleted task from archive: " + taskToDelete.getDescription();
-				ArchiveSortedList retrievedListFromLogic = logicController.deleteFromArchive(taskToDelete);
 				currentArchives.clear();
 				for(Task task : retrievedListFromLogic){
 					currentArchives.add(task);
@@ -619,18 +701,22 @@ public class CommandController implements InterfaceForParser {
 				result = "No tasks to delete";
 			}
 		}else{
-			int taskIDFromUI = Integer.parseInt(splitInput[1]);
+			int taskIDFromUI = Integer.parseInt(splitInput[position+1]);
 			if(!currentActiveTasks.isEmpty()){
 				Task taskToDelete = currentActiveTasks.get(taskIDFromUI-1);
 				ToDoSortedList retrievedListFromLogic = new ToDoSortedList();
 	
 				result = "Deleted task from current: " + taskToDelete.getDescription();
-				/*if(taskToDelete.isRecurrence()){
-					retrievedListFromLogic =  logicController.deleteAllRecurringTask(taskToDelete);
+				if(isChangeAll){
+					if(taskToDelete.isRecurrence()){
+						retrievedListFromLogic =  logicController.deleteAllRecurringTask(taskToDelete);
+					}else{
+						return result ="Cannot delete all, not recurring task";
+					}
 				}else{
 					retrievedListFromLogic = logicController.deleteTask(taskToDelete);
-				}*/
-				retrievedListFromLogic = logicController.deleteTask(taskToDelete);
+				}
+				//retrievedListFromLogic = logicController.deleteTask(taskToDelete);
 				currentActiveTasks.clear();
 				for(Task task : retrievedListFromLogic){
 					currentActiveTasks.add(task);
