@@ -16,8 +16,8 @@ public class Date extends java.util.Date{
 	}
 	
 	public Date(long time) {
-		Date date = new Date();
-		date.setTime(time);
+		this();
+		this.setTime(time);
 	}
 	
 	public String getDateRepresentation() {
@@ -55,7 +55,10 @@ public class Date extends java.util.Date{
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.SECOND, second);
         cal.set(Calendar.MILLISECOND, milisecond);
-        return new Date(cal.getTime().getTime());
+        Date date = new Date(cal.getTime().getTime());
+        
+//        System.out.println(cal.getTime().getTime() + " "+date);
+        return date;
 	}
 	
 	/**
@@ -105,7 +108,9 @@ public class Date extends java.util.Date{
 		Date today = setTime(cal, 0, 0, 0, 0);
 		long deadlineTime = deadline.getTime();
 		long todayTime = today.getTime();
-		int numOfDays = (int) ((todayTime - deadlineTime)/getMiliseconds("oneDay"));
+//		System.out.println(today + " "+ deadline);
+		int numOfDays = (int) ((float)(todayTime - deadlineTime)/getMiliseconds("oneDay") + 1);
+//		System.out.println((float)(todayTime - deadlineTime)/getMiliseconds("oneDay") +" "+numOfDays);
 		return numOfDays;
 	}
 
