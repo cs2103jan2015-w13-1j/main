@@ -24,9 +24,9 @@ public class CommandControllerTest {
 		//add generic
 		assertEquals("New task added: generic task",test.executeCommand("add generic task"));
 		//add deadline
-		assertEquals("New task added with deadline: deadline task",test.executeCommand("add deadline task -date 22/11/2015"));
+		assertEquals("New task added with deadline: deadline task",test.executeCommand("add deadline task -by 22/11/2015"));
 		//add meeting
-		assertEquals("New task added for meeting: meeting task",test.executeCommand("add meeting task -date 11/11/2015 1100 1200"));
+		assertEquals("New task added for meeting: meeting task",test.executeCommand("add meeting task -on 11/11/2015 from 1100 to 1200"));
 	}
 	
 	@Test
