@@ -440,11 +440,16 @@ public class CommandController implements InterfaceForParser {
 			case("date"):{
 				//find task ID, get task
 				String taskType = taskToChange.getType();
+				String dateInput = new String();
+				for(int i=position+3; i<inputArray.size(); i++){
+					dateInput = dateInput.concat(inputArray.get(i) + " ");
+				}
 				//cases: generic task, deadline task, meeting task 
 				if(taskType.equalsIgnoreCase("generic")){
 					//i.e no date exists
 					//parse in the new deadline/startend time
-					if(splitInput.length>4){
+					
+					if(splitInput.length>5){
 						//if change to meeting task
 						//syntax: -change date <taskID> dd/MM/yyyy HHmm HHmm
 						SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
@@ -465,40 +470,60 @@ public class CommandController implements InterfaceForParser {
 					}else{
 						//if change to deadline task
 						//syntax: -change date dd/MM/yyyy
-						SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-						try {
-							java.util.Date tempDate = formatter.parse(inputArray.get(position+3));
-							Date newDeadline = new Date();
-							newDeadline.setTime(tempDate.getTime());
-							retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
-							result = "New deadline added";
-						} catch (ParseException e) {
-							return result = DEADLINE_FORMAT_ERROR;
+						ArrayList<String> dateFormats = new ArrayList<String>();
+						Collections.addAll(dateFormats,"dd/MM/yyyy HHmm", "dd/MM/yyyy");
+						for(String format : dateFormats){
+							SimpleDateFormat formatter = new SimpleDateFormat(format);
+							try {
+								java.util.Date tempDate = formatter.parse(dateInput);
+								Date newDeadline = new Date();
+								newDeadline.setTime(tempDate.getTime());
+								retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
+								currentActiveTasks.clear();
+								for(Task task : retrievedSortedList){
+									currentActiveTasks.add(task);
+								}
+								return result = "New deadline added";
+							} catch (ParseException e) {
+								
+							}
 						}
+						throw new IllegalArgumentException(DEADLINE_FORMAT_ERROR);
+						
 					}
 				}else if(taskType.equalsIgnoreCase("deadline")){
 					//date exists, change deadline
 					//syntax: -change date dd/MM/yyyy
-					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-					try {
-						java.util.Date tempDate = formatter.parse(inputArray.get(position+3));
-						Date newDeadline = new Date();
-						newDeadline.setTime(tempDate.getTime());
-						if(isChangeAll){
-							if(taskToChange.isRecurrence()){
-								retrievedSortedList = logicController.editAlldeadline(taskToChange, newDeadline);
+					ArrayList<String> dateFormats = new ArrayList<String>();
+					Collections.addAll(dateFormats,"dd/MM/yyyy HHmm", "dd/MM/yyyy");
+					for(String format:dateFormats){
+						SimpleDateFormat formatter = new SimpleDateFormat(format);
+						try {
+							java.util.Date tempDate = formatter.parse(dateInput);
+							Date newDeadline = new Date();
+							newDeadline.setTime(tempDate.getTime());
+							if(isChangeAll){
+								if(taskToChange.isRecurrence()){
+									retrievedSortedList = logicController.editAlldeadline(taskToChange, newDeadline);
+								}else{
+									return result = "Cannot change all, not recurring task";
+								}
 							}else{
-								return result = "Cannot change all, not recurring task";
+								retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
 							}
-						}else{
-							retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
-						}
-						
-						//retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
-						result = "Deadline changed";
-					} catch (ParseException e) {
-						return result = DEADLINE_FORMAT_ERROR;
+							
+							//retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
+							currentActiveTasks.clear();
+							for(Task task : retrievedSortedList){
+								currentActiveTasks.add(task);
+							}
+							return result = "Deadline changed";
+						} catch (ParseException e) {
+							
+						}	
 					}
+					throw new IllegalArgumentException(DEADLINE_FORMAT_ERROR);
+					
 				}else if(taskType.equalsIgnoreCase("meeting")){
 					//change start and end time
 					//syntax:-change date dd/MM/yyyy HHmm HHmm
