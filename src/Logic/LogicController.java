@@ -539,6 +539,18 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	@Override
+	public boolean redo() {
+		DATA data = historyController.redo();
+		if (data == null) {
+			return false;
+		}
+		this.data = data;
+		loadData();
+		storageController.storeAllData(data);
+		return true;
+	}
+	
+	@Override
 	public String exit(int serialNumber) {
 		data.setSerialNumber(serialNumber);
 		return storageController.storeAllData(data);

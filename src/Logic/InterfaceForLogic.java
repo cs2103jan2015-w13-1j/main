@@ -321,13 +321,19 @@ public interface InterfaceForLogic {
 	ToDoSortedList editAllDescription(Task task, String description);
 	
 /***********************************************
-					Undo
+				Undo & Redo
 ***********************************************/
 	/**
 	 * undo an action
 	 * @return a boolean indicating whether this is successful
 	 */
 	boolean undo();
+	
+	/**
+	 * redo an action
+	 * @return a boolean indicating whether this is successful
+	 */
+	boolean redo();
 	
 /***********************************************
 					Exit
