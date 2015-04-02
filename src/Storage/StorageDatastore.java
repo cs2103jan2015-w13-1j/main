@@ -63,7 +63,7 @@ public class StorageDatastore {
 	/**
 	 * Retrieve datastore settings if exists, otherwise, creates new utility file and set it with default settings
 	 */
-	private void initialise() {
+	public void initialise() {
 		if (isStorageExist(STRING_UTILITY_FILE_NAME) == false) {
 			initPhaseOne();
 		} else {
@@ -183,7 +183,7 @@ public class StorageDatastore {
 	 * Save settings to utility file
 	 */
 	@SuppressWarnings("unchecked")
-	private void saveSettingsToUtility() {
+	public void saveSettingsToUtility() {
 		JSONObject utilJSON = new JSONObject();
 		utilJSON.put(STRING_DIRECTORY, this._directory);
 		utilJSON.put(STRING_STORAGE_NAME, this._storageName);
