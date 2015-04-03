@@ -398,40 +398,46 @@ public class LogicController implements InterfaceForLogic{
 	}
 	
 	@Override
-	public ToDoSortedList editAlldeadline(Task task, Date deadline) {
+	public ToDoSortedList editAlldeadlineTime(Task task, int hour, int minute) {
 		assert(activeTaskList.containsValue(task));
 		assert(task.getType().equals("deadline"));
 		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
-			t.changeDeadline(deadline);
+			Date originalTime = t.getDeadline();
+			Date newTime = originalTime.changeTime(hour, minute);
+			t.changeDeadline(newTime);
 		}
 		return update_Save_ReturnTodo();
 	}
 
 	@Override
-	public ToDoSortedList editAllStartTime(Task task, Date newDate) {
+	public ToDoSortedList editAllStartTime(Task task, int hour, int minute) {
 		assert(activeTaskList.containsValue(task));
 		assert(task.getType().equals("meeting"));
 		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
-			t.changeStartTime(newDate);
+			Date originalTime = t.getStartTime();
+			Date newTime = originalTime.changeTime(hour, minute);
+			t.changeStartTime(newTime);
 		}
 		return update_Save_ReturnTodo();
 	}
 
 	@Override
-	public ToDoSortedList editAllEndTime(Task task, Date newDate) {
+	public ToDoSortedList editAllEndTime(Task task, int hour, int minute) {
 		assert(activeTaskList.containsValue(task));
 		assert(task.getType().equals("meeting"));
 		logToHistory();
 		
 		ArrayList<Task> tasks = getRecurringTasks(task);
 		for (Task t: tasks) {
-			t.changeEndTime(newDate);
+			Date originalTime = t.getEndTime();
+			Date newTime = originalTime.changeTime(hour, minute);
+			t.changeEndTime(newTime);
 		}
 		return update_Save_ReturnTodo();
 	}

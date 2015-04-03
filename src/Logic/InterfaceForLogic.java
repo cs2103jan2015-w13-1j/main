@@ -237,23 +237,29 @@ public interface InterfaceForLogic {
 	/**
 	 * This will modify all the linked recurrence tasks
 	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
 	 * @return the updated toDoSortedList
 	 */
-	ToDoSortedList editAlldeadline(Task task, Date newDate);
+	ToDoSortedList editAlldeadlineTime(Task task, int hour, int minute);
 	
 	/**
 	 * This will modify all the linked recurrence tasks
 	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
 	 * @return the updated toDoSortedList
 	 */
-	ToDoSortedList editAllStartTime(Task task, Date newDate);
+	ToDoSortedList editAllStartTime(Task task, int hour, int minute);
 	
 	/**
 	 * This will modify all the linked recurrence tasks
 	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
 	 * @return the updated toDoSortedList
 	 */
-	ToDoSortedList editAllEndTime(Task task, Date newDate);
+	ToDoSortedList editAllEndTime(Task task, int hour, int minute);
 	
 	
 /***********************************************
