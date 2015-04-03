@@ -56,9 +56,31 @@ public class Date extends java.util.Date{
         cal.set(Calendar.SECOND, second);
         cal.set(Calendar.MILLISECOND, milisecond);
         Date date = new Date(cal.getTime().getTime());
-        
-//        System.out.println(cal.getTime().getTime() + " "+date);
         return date;
+	}
+
+	
+	public static Date getDayTime(int year, int month, int day, int hour, int minute ) {
+		Calendar cal = new GregorianCalendar();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        return setTime(cal, hour, minute, 59, 0);
+	}
+	
+	public static Date getDayTime(int month, int day, int hour, int minute ) {
+		Calendar cal = new GregorianCalendar();
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        return setTime(cal, hour, minute, 59, 0);
+	}
+	
+	public static Date getDay2359(int year, int month, int day) {
+		return getDayTime(year, month, day, 23, 59);
+	}
+	
+	public static Date getDay2359(int month, int day) {
+		return getDayTime(month, day, 23, 59);
 	}
 	
 	/**
@@ -99,6 +121,12 @@ public class Date extends java.util.Date{
 		return setTime(cal, hour, minute, 0, 0);
 	}
 	
+	public Date changeTime(int hour, int minute) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(this);
+		Date changedDate = setTime(cal, hour, minute, 0, 0);
+		return changedDate;
+	}
 	/**
 	 * @param deadline the deadline or endtime of a task 
 	 * @return number of days overdue
@@ -108,20 +136,9 @@ public class Date extends java.util.Date{
 		Date today = setTime(cal, 0, 0, 0, 0);
 		long deadlineTime = deadline.getTime();
 		long todayTime = today.getTime();
-//		System.out.println(today + " "+ deadline);
 		int numOfDays = (int) ((float)(todayTime - deadlineTime)/getMiliseconds("oneDay") + 1);
-//		System.out.println((float)(todayTime - deadlineTime)/getMiliseconds("oneDay") +" "+numOfDays);
 		return numOfDays;
 	}
 
-//	/**
-//	 * @param day
-//	 * @param time
-//	 * @return the Date representation of the given day and time
-//	 */
-//	private static Date getTime(long day, long time) {
-//		long total = day + time;
-//		Date dateTime = new Date(total);
-//		return dateTime;
-//	}
+
 }
