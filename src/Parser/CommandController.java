@@ -156,10 +156,28 @@ public class CommandController implements InterfaceForParser {
 			}case(14):{
 				result = exportCommand(splitInput);
 				break;
+			}case(15):{
+				result = redoCommand();
+				break;
 			}
 		}
 		return result;
 	}
+	private String redoCommand() {
+		boolean isSuccessful = logicController.redo();
+		refreshCurrent();
+		refreshArchive();
+		String result = new String();
+		if(isSuccessful){
+			return result = "Redo successful";
+		} else{
+			return result = "Redo unsuccessful, nothing to undo";
+		}
+	}
+
+
+
+
 	private String exportCommand(String[] splitInput) {
 		String directoryToExport = new String();
 		if(splitInput[1].equals("to")){
@@ -505,7 +523,7 @@ public class CommandController implements InterfaceForParser {
 							newDeadline.setTime(tempDate.getTime());
 							if(isChangeAll){
 								if(taskToChange.isRecurrence()){
-									retrievedSortedList = logicController.editAlldeadline(taskToChange, newDeadline);
+									//retrievedSortedList = logicController.editAlldeadline(taskToChange, newDeadline);
 								}else{
 									return result = "Cannot change all, not recurring task";
 								}
@@ -541,8 +559,8 @@ public class CommandController implements InterfaceForParser {
 						//TODO check this later
 						if(isChangeAll){
 							if(taskToChange.isRecurrence()){
-								retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartTime);
-								retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndTime);
+								//retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartTime);
+								//retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndTime);
 							}else{
 								return result = "Cannot change all, not recurring task";
 							}
