@@ -104,6 +104,9 @@ public class UIController implements Initializable {
 		motivationalQuote.setText(motivator.getRandomQuotes());
 		
 		fileDirectory.setText(storageController.getFileDirectory());
+	
+		storageFileName.setText(storageController.getFileName());
+		
 	}
 
 	private void initialiseCommand() {
@@ -175,15 +178,18 @@ public class UIController implements Initializable {
 		else if (firstCommand.equals("directory")){
 			String[] splitMessage = message.split("at: ");
 			fileDirectory.setText(splitMessage[1]);
+			storageFileName.setText(storageController.getFileName());
+			
 		}
 		else if (firstCommand.equals("import")){
 			if (message.contains("from")) {
 				String[] splitMessage = message.split("from ");
-				storageFileName.setText(storageController.getFileName());
 				taskList = commandController.returnTasks();
 				addToTaskDisplay();
 				archiveList = commandController.returnArchive();
 				addToArchiveDisplay();
+				fileDirectory.setText(storageController.getFileDirectory());
+				storageFileName.setText(storageController.getFileName());
 			}
 		}
 		else if (firstCommand.equals("exit")){

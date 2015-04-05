@@ -264,7 +264,8 @@ public class StorageDatastore {
 	 * @return directory
 	 */
 	public String getDirectory() {
-		return _directory;
+		initPhaseTwo();
+		return this._directory;
 	}
 	/**
 	 * @param _directory the _directory to set
@@ -335,7 +336,8 @@ public class StorageDatastore {
 	 * @return the storageName
 	 */
 	public String getStorageName() {
-		return _storageName;
+		initPhaseTwo();
+		return this._storageName;
 	}
 	/**
 	 * @param storageName the storageName to set
