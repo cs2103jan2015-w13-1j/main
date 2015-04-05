@@ -512,4 +512,9 @@ public class StorageController implements InterfaceForStorage {
 		logger.log(Level.INFO, MESSAGE_DUMMY_DATA);
 		return MESSAGE_DUMMY_DATA;
 	}
+
+	@Override
+	public String getFileName() {
+		return _datastore.getStorageName();
+	}
 }

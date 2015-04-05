@@ -29,7 +29,10 @@ public interface InterfaceForStorage {
 	 * @return the current relative path of the directory
 	 */
 	String getFileDirectory();
-	
+	/**
+	 * @return the current relative path of the directory
+	 */
+	String getFileName();
 	/**
 	 * @param file
 	 * @return true if import is successful
