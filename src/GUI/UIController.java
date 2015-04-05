@@ -214,71 +214,101 @@ public class UIController implements Initializable {
 		for(int i = 0; i < taskList.size(); i++){
 			int id = i+1;
 			
-			String description = taskList.get(i).getDescription();
+			String description = getDescription(i);
 			
-			if (taskList.get(i).isRecurrence()){
-				description = description + "(R)";
-			}
+			String priority = getPriority(i);
 			
-			String priority = Integer.toString(taskList.get(i).getPriority());
-			if (priority.equals("-1")){
-				priority = "-";
-			}
-			String start;
-			String end;
-			String due;
-			
-			try{
-				start = tf.format(taskList.get(i).getStartTime());
-			}catch (NullPointerException e){
-				start = "-";
-			}
-			try{
-				if (taskList.get(i).getEndTime() == null){
-					end = tf.format(taskList.get(i).getDeadline());
-				}
-				else{
-					end = tf.format(taskList.get(i).getEndTime());
-				}
-			}catch (NullPointerException e){
-				end = "-";
-			}
-			try{
-				if (taskList.get(i).getDeadline() == null){
-					if (taskList.get(i).getOverdueDays() == -1){
-						due = df.format(taskList.get(i).getStartTime());
-					}
-					else {
-						due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
-					}
-				}
-				else {
-					if (taskList.get(i).getOverdueDays() == -1){
-						due = df.format(taskList.get(i).getDeadline());
-					}
-					else{
-						due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
-					}
-				}
-			}catch (NullPointerException e){
-				due = "-";
-			}
+			String start = getStart(tf, i);
+			String end = getEnd(tf, i);
+			String due = getDue(df, i);
 			
 			String tags = "";
 			
-			for(int j = 0; j < taskList.get(i).getTags().size(); j++){
-				if (j != 0) {
-					tags = tags + ", " + taskList.get(i).getTags().get(j);
-				}
-				else{
-					tags = taskList.get(i).getTags().get(j);
-				}
-			}
+			tags = getTags(i, tags);
 			
 			UITask entry = new UITask(id, description, priority, start, end, due, tags);
 			uiTaskList.add(entry);
 			System.out.println("added: " + id + " " + description + priority + start + end + due + tags);
 		}
+	}
+
+	private String getTags(int i, String tags) {
+		for(int j = 0; j < taskList.get(i).getTags().size(); j++){
+			if (j != 0) {
+				tags = tags + ", " + taskList.get(i).getTags().get(j);
+			}
+			else{
+				tags = taskList.get(i).getTags().get(j);
+			}
+		}
+		return tags;
+	}
+
+	private String getDue(SimpleDateFormat df, int i) {
+		String due;
+		try{
+			if (taskList.get(i).getDeadline() == null){
+				if (taskList.get(i).getOverdueDays() == -1){
+					due = df.format(taskList.get(i).getStartTime());
+				}
+				else {
+					due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
+				}
+			}
+			else {
+				if (taskList.get(i).getOverdueDays() == -1){
+					due = df.format(taskList.get(i).getDeadline());
+				}
+				else{
+					due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
+				}
+			}
+		}catch (NullPointerException e){
+			due = "-";
+		}
+		return due;
+	}
+
+	private String getEnd(SimpleDateFormat tf, int i) {
+		String end;
+		try{
+			if (taskList.get(i).getEndTime() == null){
+				end = tf.format(taskList.get(i).getDeadline());
+			}
+			else{
+				end = tf.format(taskList.get(i).getEndTime());
+			}
+		}catch (NullPointerException e){
+			end = "-";
+		}
+		return end;
+	}
+
+	private String getStart(SimpleDateFormat tf, int i) {
+		String start;
+		try{
+			start = tf.format(taskList.get(i).getStartTime());
+		}catch (NullPointerException e){
+			start = "-";
+		}
+		return start;
+	}
+
+	private String getDescription(int i) {
+		String description = taskList.get(i).getDescription();
+		
+		if (taskList.get(i).isRecurrence()){
+			description = description + "(R)";
+		}
+		return description;
+	}
+
+	private String getPriority(int i) {
+		String priority = Integer.toString(taskList.get(i).getPriority());
+		if (priority.equals("-1")){
+			priority = "-";
+		}
+		return priority;
 	}
 	
 	public void addToArchiveDisplay() {
@@ -293,26 +323,10 @@ public class UIController implements Initializable {
 			}
 			
 			String priority = Integer.toString(archiveList.get(i).getPriority());
-			String start;
-			String end;
-			String due;
-			
-			try{
-				start = archiveList.get(i).getStartTime().getDateRepresentation();
-			}catch (NullPointerException e){
-				start = "-";
-			}
-			try{
-				end = archiveList.get(i).getEndTime().getDateRepresentation();
-			}catch (NullPointerException e){
-				end = "-";
-			}
-			try{
-				due = archiveList.get(i).getDeadline().getDateRepresentation();
-			}catch (NullPointerException e){
-				due = "-";
-			}
-			String tags = "";
+			String start = null;
+			String end = null;
+			String due = null;
+			String tags = null;
 			UITask entry = new UITask(id, description, priority, start, end, due, tags);
 			uiArchiveList.add(entry);
 			System.out.println("Initialized: " + description + priority + start + end + due);
