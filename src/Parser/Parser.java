@@ -90,6 +90,9 @@ public class Parser {
 			}case("export"):{
 				commandNum = 14;
 				break;
+			}case("redo"):{
+				commandNum = 15;
+				break;
 			}
 			default:
 				System.out.println("Invalid command");

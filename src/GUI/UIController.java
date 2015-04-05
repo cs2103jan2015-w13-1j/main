@@ -174,6 +174,16 @@ public class UIController implements Initializable {
 			String[] splitMessage = message.split("at: ");
 			fileDirectory.setText(splitMessage[1]);
 		}
+		else if (firstCommand.equals("import")){
+			if (message.contains("from")) {
+				String[] splitMessage = message.split("from ");
+				fileDirectory.setText(splitMessage[1]);
+				taskList = commandController.returnTasks();
+				addToTaskDisplay();
+				archiveList = commandController.returnArchive();
+				addToArchiveDisplay();
+			}
+		}
 		else if (firstCommand.equals("exit")){
 		    Stage stage = (Stage) commandField.getScene().getWindow();
 		    stage.close();

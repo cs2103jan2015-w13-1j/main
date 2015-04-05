@@ -105,15 +105,27 @@ public class StorageController implements InterfaceForStorage {
 				// wrong format of data
 				return false;
 			} else {
-//				String importedFileFolderAbsolutePath = importedFile.getParentFile().toURI().getPath().replaceFirst("/", "");
+				String importedFileFolderAbsolutePath = importedFile.getParentFile().toURI().getPath().replaceFirst("/", "");
 //				System.out.println("folder: " + importedFileFolderAbsolutePath);
+				String importedFileName= importedFile.getName();
+//				System.out.println("file name: " + importedFileName);
 //				this.setFileDirectory(importedFileFolderAbsolutePath);
 				
-				if (_datastore.storeJsonIntoStorage(importedJsonData, _datastore.getStorageFilePath()) == true) {
+				_datastore.setDirectory(importedFileFolderAbsolutePath);
+				_datastore.setStorageName(importedFileName);
+				_datastore.saveSettingsToUtility();
+				_datastore.initialise();
+				
+				if (_datastore.getDirectory().equals(importedFileFolderAbsolutePath) && _datastore.getStorageName().equals(importedFileName)) {
 					logger.log(Level.INFO, "Successful import from " + importedFileAbsolutePath);
 				} else {
 					logger.log(Level.WARNING, "Unsuccessful import from " + importedFileAbsolutePath);
 				}
+//				if (_datastore.storeJsonIntoStorage(importedJsonData, _datastore.getStorageFilePath()) == true) {
+//					logger.log(Level.INFO, "Successful import from " + importedFileAbsolutePath);
+//				} else {
+//					logger.log(Level.WARNING, "Unsuccessful import from " + importedFileAbsolutePath);
+//				}
 				
 				return true;
 			}
