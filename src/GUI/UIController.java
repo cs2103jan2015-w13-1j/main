@@ -43,6 +43,8 @@ public class UIController implements Initializable {
 	private Label motivationalQuote;
 	@FXML
 	private Label fileDirectory;
+	@FXML
+	private Label storageFileName;
 	
 	@FXML
 	TableView<UITask> taskTable;
@@ -177,7 +179,7 @@ public class UIController implements Initializable {
 		else if (firstCommand.equals("import")){
 			if (message.contains("from")) {
 				String[] splitMessage = message.split("from ");
-				fileDirectory.setText(splitMessage[1]);
+				storageFileName.setText(storageController.getFileName());
 				taskList = commandController.returnTasks();
 				addToTaskDisplay();
 				archiveList = commandController.returnArchive();

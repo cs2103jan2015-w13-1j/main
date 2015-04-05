@@ -38,16 +38,26 @@
                         <Font size="44.0" />
                      </font>
                   </Label>
-                  <Label fx:id="fileDirectory" layoutX="218.0" layoutY="21.0" prefHeight="47.0" prefWidth="611.0" text="Label">
+                  <Label fx:id="fileDirectory" layoutX="218.0" layoutY="21.0" prefHeight="47.0" prefWidth="611.0" text="-" textFill="WHITE">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Label>
-                  <Text layoutX="17.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Storage location:">
+                  <Text fill="WHITE" layoutX="17.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Storage location:">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Text>
+                  <Text fill="WHITE" layoutX="17.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Storage file name: ">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Text>
+                  <Label fx:id="storageFileName" layoutX="230.0" layoutY="66.0" text="-" textFill="WHITE">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
                </children>
             </Group>
             <Group fx:id="helpGroup">
@@ -111,7 +121,7 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Label fx:id="motivationalQuote" layoutX="348.0" layoutY="10.0" prefHeight="99.0" prefWidth="779.0" style="-fx-font-style: italic; -fx-font-size: 20; -fx-font-weight: BOLD;" textFill="#597fbf" wrapText="true">
+      <Label fx:id="motivationalQuote" layoutX="348.0" layoutY="10.0" prefHeight="99.0" prefWidth="779.0" style="-fx-font-style: italic; -fx-font-size: 20; -fx-font-weight: BOLD;" wrapText="true">
          <font>
             <Font size="28.0" />
          </font>
