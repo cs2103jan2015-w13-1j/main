@@ -96,6 +96,7 @@ public class StorageController implements InterfaceForStorage {
 		// 		if not, return false
 		File importedFile = new File(fileName);
 		URI uri = importedFile.toURI();
+//		System.out.println(uri);
 		String importedFileAbsolutePath = uri.getPath().replaceFirst("/", "");
 //		System.out.println("import from: " + importedFileAbsolutePath);
 		if (_datastore.isStorageExist(importedFileAbsolutePath)) {
@@ -105,9 +106,10 @@ public class StorageController implements InterfaceForStorage {
 				// wrong format of data
 				return false;
 			} else {
-				String importedFileFolderAbsolutePath = importedFile.getParentFile().toURI().getPath().replaceFirst("/", "");
+				File file = new File(importedFileAbsolutePath);
+				String importedFileFolderAbsolutePath = file.getParentFile().toURI().getPath().replaceFirst("/", "");
 //				System.out.println("folder: " + importedFileFolderAbsolutePath);
-				String importedFileName= importedFile.getName();
+				String importedFileName= file.getName();
 //				System.out.println("file name: " + importedFileName);
 //				this.setFileDirectory(importedFileFolderAbsolutePath);
 				
