@@ -72,6 +72,9 @@ public class HistoryController implements InterfaceForHistory{
 			logger.log(Level.WARNING, MESSAGE_ERROR_REDO);
 			return null;
 		}
+		// retrieve DATA from storage and push into redoList
+		DATA currentData = _storageControl.getAllData();
+		this._logList.push(currentData);
 		// pop DATA from redoList and return DATA
 		DATA previousData = this._redoList.pop();
 		return previousData;
