@@ -171,7 +171,7 @@ public class CommandController implements InterfaceForParser {
 		if(isSuccessful){
 			return result = "Redo successful";
 		} else{
-			return result = "Redo unsuccessful, nothing to undo";
+			return result = "Redo unsuccessful, nothing to redo";
 		}
 	}
 
