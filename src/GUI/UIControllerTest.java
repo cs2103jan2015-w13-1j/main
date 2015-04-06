@@ -1,3 +1,7 @@
+/**
+ * @author Kangsoon
+ */
+
 package GUI;
 
 import static org.junit.Assert.*;

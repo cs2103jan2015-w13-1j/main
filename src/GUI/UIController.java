@@ -1,3 +1,6 @@
+/**
+ * @author Kangsoon
+ */
 package GUI;
 
 //import java.io.File;
@@ -26,7 +29,7 @@ import Parser.CommandController;
 import Storage.StorageController;
 
 public class UIController implements Initializable {
-	
+
 	@FXML
 	private Group taskGroup;
 	@FXML
@@ -45,7 +48,7 @@ public class UIController implements Initializable {
 	private Label fileDirectory;
 	@FXML
 	private Label storageFileName;
-	
+
 	@FXML
 	TableView<UITask> taskTable;
 	@FXML
@@ -62,7 +65,7 @@ public class UIController implements Initializable {
 	TableColumn<UITask, String> taskDue;
 	@FXML
 	TableColumn<UITask, String> taskTags;
-	
+
 	@FXML
 	TableView<UICommand> commandTable;
 	@FXML
@@ -78,35 +81,35 @@ public class UIController implements Initializable {
 	TableColumn<UITask, Integer> archiveId;
 	@FXML
 	TableColumn<UITask, String> archiveDescription;
-	
+
 	//private int taskNumber = 1;
 	//private int archiveNumber = 1;
-	
-	CommandController commandController = new CommandController();
-	StorageController storageController = new StorageController();
-	Motivator motivator = new Motivator();
+
+	private CommandController commandController = new CommandController();
+	private StorageController storageController = new StorageController();
+	private Motivator motivator = new Motivator();
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
-	
+
 	final ObservableList<UITask> uiTaskList = FXCollections.observableArrayList();
 	final ObservableList<UITask> uiArchiveList = FXCollections.observableArrayList();
 	final ObservableList<UICommand> uiCommandList = FXCollections.observableArrayList();
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources){
-	
+
 		initialiseTasks();
-		
+
 		initialiseArchive();
-		
+
 		initialiseCommand();
-		
+
 		motivationalQuote.setText(motivator.getRandomQuotes());
-		
+
 		fileDirectory.setText(storageController.getFileDirectory());
-	
+
 		storageFileName.setText(storageController.getFileName());
-		
+
 	}
 
 	private void initialiseCommand() {
@@ -130,7 +133,7 @@ public class UIController implements Initializable {
 		uiCommandList.add(new UICommand("Searching for tasks", "search [option: desc|date|priority|tag] <value> or search today|tmr", "-"));
 		uiCommandList.add(new UICommand("Sort list", "sort [either: date|priority|tag]", "-"));
 		uiCommandList.add(new UICommand("Undo last user input","undo", "-"));
-		
+
 	}
 
 	private void initialiseArchive() {
@@ -153,35 +156,32 @@ public class UIController implements Initializable {
 		taskList = commandController.initialiseTasks();
 		addToTaskDisplay();
 	}
-	
-	public void inputCommand(ActionEvent event){
-		
+
+	public void inputCommand(ActionEvent event) {
+
 		String input = commandField.getText();
 		commandField.clear();
-		
+
 		String[] splitCommand = input.split(" ");
 		String firstCommand = splitCommand[0];
-		
+
 		String message = commandController.executeCommand(input);
-		
+
 		message = commandFilter(splitCommand, firstCommand, message);
-		
+
 		outputMessageText.setText(message);
 	}
 
 	private String commandFilter(String[] splitCommand, String firstCommand,
 			String message) {
-		if (firstCommand.charAt(0) == 'g'){
+		if (firstCommand.charAt(0) == 'g') {
 			executeGoTo(splitCommand[1]);
 			message = displayGotoMessage(splitCommand, message);
-		}
-		else if (firstCommand.equals("directory")){
+		} else if (firstCommand.equals("directory")) {
 			String[] splitMessage = message.split("at: ");
 			fileDirectory.setText(splitMessage[1]);
 			storageFileName.setText(storageController.getFileName());
-			
-		}
-		else if (firstCommand.equals("import")){
+		} else if (firstCommand.equals("import")) {
 			if (message.contains("from")) {
 				String[] splitMessage = message.split("from ");
 				taskList = commandController.returnTasks();
@@ -191,17 +191,14 @@ public class UIController implements Initializable {
 				fileDirectory.setText(storageController.getFileDirectory());
 				storageFileName.setText(storageController.getFileName());
 			}
-		}
-		else if (firstCommand.equals("exit")){
-		    Stage stage = (Stage) commandField.getScene().getWindow();
-		    stage.close();
-		}
-		else if (firstCommand.equals("changemotto")){
+		} else if (firstCommand.equals("exit")) {
+			Stage stage = (Stage) commandField.getScene().getWindow();
+			stage.close();
+		} else if (firstCommand.equals("changemotto")) {
 			message = "New motto for the day!";
 			String quote = motivator.getRandomQuotes();
 			motivationalQuote.setText(quote);
-		}
-		else{
+		} else {
 			taskList = commandController.returnTasks();
 			addToTaskDisplay();
 			archiveList = commandController.returnArchive();
@@ -211,39 +208,37 @@ public class UIController implements Initializable {
 	}
 
 	private String displayGotoMessage(String[] splitCommand, String message) {
-		if (splitCommand[1].charAt(0) == 't'){
+		if (splitCommand[1].charAt(0) == 't') {
 			message = "You are at the task panel";
-		}
-		else if (splitCommand[1].charAt(0) == 'c'){
+		} else if (splitCommand[1].charAt(0) == 'c') {
 			message = "You are at the commands panel";
-		}
-		else if (splitCommand[1].charAt(0) == 's'){
+		} else if (splitCommand[1].charAt(0) == 's') {
 			message = "You are at the settings panel";
 		}
 		return message;
 	}
-	
+
 	public void addToTaskDisplay() {
 		uiTaskList.clear();
-		
+
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/YYYY");
 		SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
-		
-		for(int i = 0; i < taskList.size(); i++){
-			int id = i+1;
-			
+
+		for (int i = 0; i < taskList.size(); i++) {
+			int id = i + 1;
+
 			String description = getDescription(i);
-			
+
 			String priority = getPriority(i);
-			
+
 			String start = getStart(tf, i);
 			String end = getEnd(tf, i);
 			String due = getDue(df, i);
-			
+
 			String tags = "";
-			
+
 			tags = getTags(i, tags);
-			
+
 			UITask entry = new UITask(id, description, priority, start, end, due, tags);
 			uiTaskList.add(entry);
 			System.out.println("added: " + id + " " + description + priority + start + end + due + tags);
@@ -251,11 +246,10 @@ public class UIController implements Initializable {
 	}
 
 	private String getTags(int i, String tags) {
-		for(int j = 0; j < taskList.get(i).getTags().size(); j++){
+		for (int j = 0; j < taskList.get(i).getTags().size(); j++) {
 			if (j != 0) {
 				tags = tags + ", " + taskList.get(i).getTags().get(j);
-			}
-			else{
+			} else {
 				tags = taskList.get(i).getTags().get(j);
 			}
 		}
@@ -264,24 +258,21 @@ public class UIController implements Initializable {
 
 	private String getDue(SimpleDateFormat df, int i) {
 		String due;
-		try{
-			if (taskList.get(i).getDeadline() == null){
-				if (taskList.get(i).getOverdueDays() == -1){
+		try {
+			if (taskList.get(i).getDeadline() == null) {
+				if (taskList.get(i).getOverdueDays() == -1) {
 					due = df.format(taskList.get(i).getStartTime());
-				}
-				else {
+				} else {
 					due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
 				}
-			}
-			else {
-				if (taskList.get(i).getOverdueDays() == -1){
+			} else {
+				if (taskList.get(i).getOverdueDays() == -1) {
 					due = df.format(taskList.get(i).getDeadline());
-				}
-				else{
+				} else {
 					due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
 				}
 			}
-		}catch (NullPointerException e){
+		} catch (NullPointerException e) {
 			due = "-";
 		}
 		return due;
@@ -289,14 +280,13 @@ public class UIController implements Initializable {
 
 	private String getEnd(SimpleDateFormat tf, int i) {
 		String end;
-		try{
-			if (taskList.get(i).getEndTime() == null){
+		try {
+			if (taskList.get(i).getEndTime() == null) {
 				end = tf.format(taskList.get(i).getDeadline());
-			}
-			else{
+			} else {
 				end = tf.format(taskList.get(i).getEndTime());
 			}
-		}catch (NullPointerException e){
+		} catch (NullPointerException e) {
 			end = "-";
 		}
 		return end;
@@ -304,9 +294,9 @@ public class UIController implements Initializable {
 
 	private String getStart(SimpleDateFormat tf, int i) {
 		String start;
-		try{
+		try {
 			start = tf.format(taskList.get(i).getStartTime());
-		}catch (NullPointerException e){
+		} catch (NullPointerException e){
 			start = "-";
 		}
 		return start;
@@ -314,7 +304,7 @@ public class UIController implements Initializable {
 
 	private String getDescription(int i) {
 		String description = taskList.get(i).getDescription();
-		
+
 		/*if (taskList.get(i).isRecurrence()){
 			description = description + "(R)";
 		}*/
@@ -323,23 +313,23 @@ public class UIController implements Initializable {
 
 	private String getPriority(int i) {
 		String priority = Integer.toString(taskList.get(i).getPriority());
-		if (priority.equals("-1")){
+		if (priority.equals("-1")) {
 			priority = "-";
 		}
 		return priority;
 	}
-	
+
 	public void addToArchiveDisplay() {
 		uiArchiveList.clear();
-		for(int i = 0; i < archiveList.size(); i++){
-			int id = i+1;
-			
+		for (int i = 0; i < archiveList.size(); i++) {
+			int id = i + 1;
+
 			String description = archiveList.get(i).getDescription();
-			
-			if (archiveList.get(i).isRecurrence()){
+
+			if (archiveList.get(i).isRecurrence()) {
 				description = description + "(Reccur)";
 			}
-			
+
 			String priority = Integer.toString(archiveList.get(i).getPriority());
 			String start = null;
 			String end = null;
@@ -352,15 +342,13 @@ public class UIController implements Initializable {
 	}
 
 	private void executeGoTo(String input) {
-		if (input.charAt(0) == 't'){
+		if (input.charAt(0) == 't') {
 			taskGroup.toFront();
-		}
-		else if (input.charAt(0) == 'c'){
+		} else if (input.charAt(0) == 'c') {
 			helpGroup.toFront();
-		}
-		else if (input.charAt(0) == 's') {
+		} else if (input.charAt(0) == 's') {
 			settingsGroup.toFront();
 		}
 	}
-	
+
 }

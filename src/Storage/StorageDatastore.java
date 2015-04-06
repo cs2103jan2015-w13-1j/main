@@ -1,4 +1,11 @@
 /**
+ * This java class is the datastore for the Storage component in the software architecture.
+ * 
+ * Dependency files: 
+ * - jar/json-simpler-1.1.1.jar for JSON library
+ * 
+ * Test driver: StorageADT.java
+ * Interface:	InterfaceForStorage.java
  * @author Esmond
  */
 
@@ -142,7 +149,7 @@ public class StorageDatastore {
 				br.close();
 				fileRead.close();
 				return dataJSON;
-			}
+			} 
 			br.close();
 			fileRead.close();
 		} catch (IOException e1) {
