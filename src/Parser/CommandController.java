@@ -1091,7 +1091,7 @@ public class CommandController implements InterfaceForParser {
 					specifiedDay = Integer.parseInt(dateAsString.get(0));
 					specifiedMonth = getSpecifiedMonth(dateAsString,
 							specifiedMonth);
-					if(specifiedMonth ==0){
+					if(specifiedMonth ==12){
 						return "Wrong format for month";
 					}
 					if(timeGiven){
@@ -1299,8 +1299,42 @@ public class CommandController implements InterfaceForParser {
 			}case("dec"):{
 				specifiedMonth = 11;
 				break;
-			}default:{
+			}
+			case("january"):{
 				specifiedMonth = 0;
+				break;
+			}case("february"):{
+				specifiedMonth = 1;
+				break;
+			}case("march"):{
+				specifiedMonth = 2;
+				break;
+			}case("april"):{
+				specifiedMonth = 3;
+				break;
+			}case("june"):{
+				specifiedMonth = 5;
+				break;
+			}case("july"):{
+				specifiedMonth = 6;
+				break;
+			}case("august"):{
+				specifiedMonth = 7;
+				break;
+			}case("september"):{
+				specifiedMonth = 8;
+				break;
+			}case("october"):{
+				specifiedMonth = 9;
+				break;
+			}case("november"):{
+				specifiedMonth = 10;
+				break;
+			}case("december"):{
+				specifiedMonth = 11;
+				break;
+			}default:{
+				specifiedMonth = 12;
 			}
 		}
 		return specifiedMonth;
