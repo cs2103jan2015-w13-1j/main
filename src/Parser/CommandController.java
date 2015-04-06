@@ -1069,7 +1069,7 @@ public class CommandController implements InterfaceForParser {
 					//separate the fields
 					String[] slashInput = dateAsString.get(0).split("/");
 					specifiedDay = Integer.parseInt(slashInput[0]);
-					specifiedMonth = Integer.parseInt(slashInput[1]);
+					specifiedMonth = Integer.parseInt(slashInput[1])-1;
 					if(slashInput.length > 2){
 						//if year is specified
 						specifiedYear = Integer.parseInt(slashInput[2]);
@@ -1082,8 +1082,13 @@ public class CommandController implements InterfaceForParser {
 						specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
 						specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
 					}else{
-						specifiedHour = 23;
-						specifiedMinutes = 59;
+						if(dateAsString.size()>1){
+							//i.e time given, but no "at" dd/MM/yyyy HHmm -> syntax error, need "at"
+							return "Wrong syntax for entering date with time";
+						}else{
+							specifiedHour = 23;
+							specifiedMinutes = 59;
+						}
 					}
 				}else if(isNormalInputType){
 					//get the specified values
@@ -1109,11 +1114,12 @@ public class CommandController implements InterfaceForParser {
 						
 					}else{
 						if(dateAsString.size()<3){
-							//no year specified
+							//no year specified: dd MMM
 							Calendar today = Calendar.getInstance();
 							specifiedYear = today.get(Calendar.YEAR);
 							
 						}else{
+							//dd MM yyyy OR dd MM HHmm
 							specifiedYear = Integer.parseInt(dateAsString.get(2));
 						}
 						specifiedHour = 23;
