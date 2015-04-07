@@ -533,12 +533,12 @@ public class CommandController implements InterfaceForParser {
 							reflectChangeToCurrent(retrievedSortedList);
 							return "Start time changed";
 						}
-					}else if(dateAsString.contains("from") && dateAsString.contains("to")){
+					}else if(dateAsString.contains("start") && dateAsString.contains("end")){
 						//change start and end time
 						//syntax:-change date dd/MM/yyyy HHmm HHmm
-						String positionCheck = "from";
+						String positionCheck = "start";
 						Date newStartTime = determineMeetingTime(positionCheck, dateAsString);
-						positionCheck = "to";
+						positionCheck = "end";
 						Date newEndTime = determineMeetingTime(positionCheck, dateAsString);
 						if(newStartTime == null | newEndTime == null){
 							return MEETINGTIME_FORMAT_ERROR;
