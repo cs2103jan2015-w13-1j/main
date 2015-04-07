@@ -55,10 +55,7 @@ public class CommandController implements InterfaceForParser {
 		
 		try{
 			retrievedCurrent = logicController.viewActiveTasks();
-			currentActiveTasks.clear();
-			for(Task task : retrievedCurrent){
-				currentActiveTasks.add(task);
-		}
+			reflectChangeToCurrent(retrievedCurrent);
 		}catch(NullPointerException e){
 			currentActiveTasks.clear();
 			return currentActiveTasks;
@@ -233,10 +230,7 @@ public class CommandController implements InterfaceForParser {
 			sortType = splitInput[1];
 			if(splitInput[1].equalsIgnoreCase("time")|splitInput[1].equalsIgnoreCase("t")){
 				ToDoSortedList retrievedSortedList = logicController.sortByTime();
-				currentActiveTasks.clear();
-				for(Task task : retrievedSortedList){
-					currentActiveTasks.add(task);
-				}
+				reflectChangeToCurrent(retrievedSortedList);
 				result = "Tasks sorted by time";
 			}else if(splitInput[1].equalsIgnoreCase("priority")|splitInput[1].equalsIgnoreCase("p")){
 				PrioritySortedList retrievedSortedList = logicController.sortByPriority();
@@ -289,19 +283,13 @@ public class CommandController implements InterfaceForParser {
 				}else{
 					return result ="Cannot change all, not recurring task";
 				}
-				currentActiveTasks.clear();
-				for(Task task : retrievedSortedList){
-					currentActiveTasks.add(task);
-				}
+				reflectChangeToCurrent(retrievedSortedList);
 			}else{
 			
 			retrievedSortedList = logicController.removeTag(taskToChange, tagToRemove);
 			
 			}
-			currentActiveTasks.clear();
-			for(Task task : retrievedSortedList){
-				currentActiveTasks.add(task);
-			}
+			reflectChangeToCurrent(retrievedSortedList);
 		}
 		return result = "Tag \"" +tagToRemove +"\" removed from task";
 
@@ -340,19 +328,13 @@ public class CommandController implements InterfaceForParser {
 				}else{
 					return result ="Cannot change all, not recurring task";
 				}
-				currentActiveTasks.clear();
-				for(Task task : retrievedSortedList){
-					currentActiveTasks.add(task);
-				}
+				reflectChangeToCurrent(retrievedSortedList);
 			}else{
 			
 			retrievedSortedList = logicController.addTag(taskToChange, tagToAdd);
 			
 			}
-			currentActiveTasks.clear();
-			for(Task task : retrievedSortedList){
-				currentActiveTasks.add(task);
-			}
+			reflectChangeToCurrent(retrievedSortedList);
 		}
 		
 		return result = "Tag \"" +tagToAdd +"\" added to task";
@@ -446,125 +428,76 @@ public class CommandController implements InterfaceForParser {
 				//find task ID, get task
 				String taskType = taskToChange.getType();
 				String dateInput = new String();
+				ArrayList<String> dateAsString = new ArrayList<String>();
 				for(int i=position+3; i<inputArray.size(); i++){
 					dateInput = dateInput.concat(inputArray.get(i) + " ");
+					dateAsString.add(inputArray.get(i));
 				}
 				//cases: generic task, deadline task, meeting task 
 				if(taskType.equalsIgnoreCase("generic")){
 					//i.e no date exists
 					//parse in the new deadline/startend time
 					
-					if(splitInput.length>5){
+					if(dateAsString.contains("from")&&(dateAsString.contains("to"))){
 						//if change to meeting task
-						//syntax: -change date <taskID> dd/MM/yyyy HHmm HHmm
-						SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
-						String startTimeString = inputArray.get(position+3) + " " + inputArray.get(position+4);
-						String endTimeString = inputArray.get(position+3) + " " + inputArray.get(position+4);
-						try {
-							java.util.Date tempStart = formatter.parse(startTimeString);
-							Date newStartTime = new Date();
-							newStartTime.setTime(tempStart.getTime());
-							java.util.Date tempEnd = formatter.parse(endTimeString);
-							Date newEndTime = new Date();
-							newEndTime.setTime(tempEnd.getTime());
-							retrievedSortedList = logicController.addStartAndEndTime(taskToChange, newStartTime, newEndTime);
-							result = "New start and end time added";
-						} catch (ParseException e) {
-							return result = MEETINGTIME_FORMAT_ERROR;
-						}		
-					}else{
+						String positionCheck = "from";
+						Date newStartTime = determineMeetingTime(positionCheck, dateAsString);
+						positionCheck = "to";
+						Date newEndTime = determineMeetingTime(positionCheck, dateAsString);
+						if(newStartTime == null | newEndTime == null){
+							return MEETINGTIME_FORMAT_ERROR;
+						}else{
+							retrievedSortedList = logicController.addStartAndEndTime(taskToChange, newStartTime,newEndTime);
+							reflectChangeToCurrent(retrievedSortedList);
+						}
+								
+					}else if(dateAsString.contains("at")){
 						//if change to deadline task
 						//syntax: -change date dd/MM/yyyy
-						ArrayList<String> dateFormats = new ArrayList<String>();
-						Collections.addAll(dateFormats,"dd/MM/yyyy HHmm", "dd/MM/yyyy");
-						for(String format : dateFormats){
-							SimpleDateFormat formatter = new SimpleDateFormat(format);
-							try {
-								java.util.Date tempDate = formatter.parse(dateInput);
-								Date newDeadline = new Date();
-								newDeadline.setTime(tempDate.getTime());
-								retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
-								currentActiveTasks.clear();
-								for(Task task : retrievedSortedList){
-									currentActiveTasks.add(task);
-								}
-								return result = "New deadline added";
-							} catch (ParseException e) {
-								
-							}
+
+						Date newDeadline = determineDeadline(dateAsString);
+						if(newDeadline == null){
+							return DEADLINE_FORMAT_ERROR;
+						}else{
+							retrievedSortedList = logicController.addDeadLine(taskToChange, newDeadline);
+							reflectChangeToCurrent(retrievedSortedList);
 						}
-						throw new IllegalArgumentException(DEADLINE_FORMAT_ERROR);
+						return result = "Deadline changed";
 						
+					}else{
+						return DATE_FORMAT_ERROR;
 					}
 				}else if(taskType.equalsIgnoreCase("deadline")){
 					//date exists, change deadline
 					//syntax: -change date dd/MM/yyyy
-					ArrayList<String> dateFormats = new ArrayList<String>();
-					Collections.addAll(dateFormats,"dd/MM/yyyy HHmm", "dd/MM/yyyy");
-					for(String format:dateFormats){
-						SimpleDateFormat formatter = new SimpleDateFormat(format);
-						try {
-							java.util.Date tempDate = formatter.parse(dateInput);
-							Date newDeadline = new Date();
-							newDeadline.setTime(tempDate.getTime());
-							if(isChangeAll){
-								if(taskToChange.isRecurrence()){
-									int newHour = Integer.parseInt(inputArray.get(position+4).substring(0, 2));
-									int newMinute = Integer.parseInt(inputArray.get(position+4).substring(2, 4));
-									retrievedSortedList = logicController.editAlldeadlineTime(taskToChange, newHour,newMinute);
-								}else{
-									return result = "Cannot change all, not recurring task";
-								}
-							}else{
-								retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
-							}
-							
-							//retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
-							currentActiveTasks.clear();
-							for(Task task : retrievedSortedList){
-								currentActiveTasks.add(task);
-							}
-							return result = "Deadline changed";
-						} catch (ParseException e) {
-							
-						}	
+					Date newDeadline = determineDeadline(dateAsString);
+					if(newDeadline == null){
+						return DEADLINE_FORMAT_ERROR;
+					}else{
+						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
+						reflectChangeToCurrent(retrievedSortedList);
 					}
-					throw new IllegalArgumentException(DEADLINE_FORMAT_ERROR);
+					return result = "Deadline changed";
 					
 				}else if(taskType.equalsIgnoreCase("meeting")){
+					
+					//TODO split into change only start or change only end or change both
+					
 					//change start and end time
 					//syntax:-change date dd/MM/yyyy HHmm HHmm
-					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
-					String startTimeString = inputArray.get(position+3) + " " + inputArray.get(position+4);
-					String endTimeString = inputArray.get(position+3) + " " + inputArray.get(position+5);
-					try {
-						java.util.Date tempStart = formatter.parse(startTimeString);
-						Date newStartTime = new Date();
-						newStartTime.setTime(tempStart.getTime());
-						java.util.Date tempEnd = formatter.parse(endTimeString);
-						Date newEndTime = new Date();
-						newEndTime.setTime(tempEnd.getTime());
-						//TODO check this later
-						if(isChangeAll){
-							if(taskToChange.isRecurrence()){
-								//retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartTime);
-								//retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndTime);
-							}else{
-								return result = "Cannot change all, not recurring task";
-							}
-						}else{
-							retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
-							retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
-						}
-						/*
+					String positionCheck = "from";
+					Date newStartTime = determineMeetingTime(positionCheck, dateAsString);
+					positionCheck = "to";
+					Date newEndTime = determineMeetingTime(positionCheck, dateAsString);
+					if(newStartTime == null | newEndTime == null){
+						return MEETINGTIME_FORMAT_ERROR;
+					}else{
 						retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
 						retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
-						*/
-						result = "Meeting time changed";
-						
-					} catch (ParseException e) {
-						return result = MEETINGTIME_FORMAT_ERROR;
+						reflectChangeToCurrent(retrievedSortedList);
 					}
+					return result = "Meeting start and end time changed";
+					
 				}else{
 					return result = "Type mismatch error, can't change date";
 				}
@@ -614,14 +547,20 @@ public class CommandController implements InterfaceForParser {
 			}
 		}
 		
-		//update current tasks
+		reflectChangeToCurrent(retrievedSortedList);
+		
+		
+		return result;
+	}
+
+
+
+
+	private void reflectChangeToCurrent(ToDoSortedList retrievedSortedList) {
 		currentActiveTasks.clear();
 		for(Task task : retrievedSortedList){
 			currentActiveTasks.add(task);
 		}
-		
-		
-		return result;
 	}
 
 
@@ -663,10 +602,7 @@ public class CommandController implements InterfaceForParser {
 				result = "Task moved to archive: " + taskToArchive.getDescription();
 				
 			}
-			currentActiveTasks.clear();
-			for(Task task : retrievedActiveTaskList){
-				currentActiveTasks.add(task);
-			}
+			reflectChangeToCurrent(retrievedActiveTaskList);
 		}else{
 			result = "No tasks to archive";
 		}
@@ -701,11 +637,7 @@ public class CommandController implements InterfaceForParser {
 				}else{
 					retrievedListFromLogic = logicController.deleteTask(taskToDelete);
 				}
-				//retrievedListFromLogic = logicController.deleteTask(taskToDelete);
-				currentActiveTasks.clear();
-				for(Task task : retrievedListFromLogic){
-					currentActiveTasks.add(task);
-				}
+				reflectChangeToCurrent(retrievedListFromLogic);
 			}else{
 				result = "No tasks to delete";
 			}
@@ -749,11 +681,7 @@ public class CommandController implements InterfaceForParser {
 				}else{
 					retrievedListFromLogic = logicController.deleteTask(taskToDelete);
 				}
-				//retrievedListFromLogic = logicController.deleteTask(taskToDelete);
-				currentActiveTasks.clear();
-				for(Task task : retrievedListFromLogic){
-					currentActiveTasks.add(task);
-				}
+				reflectChangeToCurrent(retrievedListFromLogic);
 			}else{
 				result = "No tasks to delete";
 			}
@@ -1045,141 +973,22 @@ public class CommandController implements InterfaceForParser {
 			
 			//do deadline check first
 			//deadline syntax options (-by) : dd MMMM yyyy at HHmm OR dd/MM/yyyy at HHmm 
-			boolean isSlashInputType = false; //i.e dd/MM/yyyy
-			boolean isNormalInputType = false; //i.e dd MMMM yyyy
-			boolean timeGiven = false;
-			int specifiedDay = 0;
-			int specifiedMonth = 0;
-			int specifiedYear = 0;
-			int specifiedHour = 0;
-			int specifiedMinutes = 0;
-			if(dateAsString.get(0).contains("/")){
-				isSlashInputType = true;
-			}else{
-				isNormalInputType = true;
-			}
 			
 			if(isDeadlineTask){
-				if(dateAsString.contains("at")){
-					timeGiven = true;
-				}else{
-					timeGiven = false;
+				deadLine = determineDeadline(dateAsString);
+				if(deadLine == null){
+					return DEADLINE_FORMAT_ERROR;
 				}
-				if(isSlashInputType){
-					//separate the fields
-					String[] slashInput = dateAsString.get(0).split("/");
-					specifiedDay = Integer.parseInt(slashInput[0]);
-					specifiedMonth = Integer.parseInt(slashInput[1])-1;
-					if(slashInput.length > 2){
-						//if year is specified
-						specifiedYear = Integer.parseInt(slashInput[2]);
-					}else{
-						Calendar today = Calendar.getInstance();
-						specifiedYear = today.get(Calendar.YEAR);
-					}
-					if(timeGiven){
-						int position = dateAsString.indexOf("at");
-						specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-						specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
-					}else{
-						if(dateAsString.size()>1){
-							//i.e time given, but no "at" dd/MM/yyyy HHmm -> syntax error, need "at"
-							return "Wrong syntax for entering date with time";
-						}else{
-							specifiedHour = 23;
-							specifiedMinutes = 59;
-						}
-					}
-				}else if(isNormalInputType){
-					//get the specified values
-					//separate the time from the date
-					specifiedDay = Integer.parseInt(dateAsString.get(0));
-					specifiedMonth = getSpecifiedMonth(dateAsString,
-							specifiedMonth);
-					if(specifiedMonth ==12){
-						return "Wrong format for month";
-					}
-					if(timeGiven){
-						int position = dateAsString.indexOf("at");
-						if(position<3){
-							//no year specified
-							Calendar today = Calendar.getInstance();
-							specifiedYear = today.get(Calendar.YEAR);
-						}else{
-							//year specified
-							specifiedYear = Integer.parseInt(dateAsString.get(2));
-						}
-						specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-						specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
-						
-					}else{
-						if(dateAsString.size()<3){
-							//no year specified: dd MMM
-							Calendar today = Calendar.getInstance();
-							specifiedYear = today.get(Calendar.YEAR);
-							
-						}else{
-							//dd MM yyyy OR dd MM HHmm
-							specifiedYear = Integer.parseInt(dateAsString.get(2));
-						}
-						specifiedHour = 23;
-						specifiedMinutes =59;
-					}
-				}
-				deadLine = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
 				
 			}else if(isMeetingTask){
-				//meeting syntax (-on): dd MMM yyyy from HHmm to HHmm OR dd/MM/yyyy from HHmm to HHmm
-				if(isSlashInputType){
-					//separate the fields
-					String[] slashInput = dateAsString.get(0).split("/");
-					specifiedDay = Integer.parseInt(slashInput[0]);
-					specifiedMonth = Integer.parseInt(slashInput[1]);
-					if(slashInput.length > 2){
-						//if year is specified
-						specifiedYear = Integer.parseInt(slashInput[2]);
-					}else{
-						Calendar today = Calendar.getInstance();
-						specifiedYear = today.get(Calendar.YEAR);
-					}
-					
-					int position = dateAsString.indexOf("from");
-					specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-					specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
-					startTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
-					position = dateAsString.indexOf("to");
-					specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-					specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
-					endTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
-					
-				}else if(isNormalInputType){
-					specifiedDay = Integer.parseInt(dateAsString.get(0));
-					specifiedMonth = getSpecifiedMonth(dateAsString,
-							specifiedMonth);
-					if(specifiedMonth ==0){
-						return "Wrong format for month";
-					}
-					int position = dateAsString.indexOf("from");
-					if(position <3){
-						//i.e year unspecified
-						Calendar today = Calendar.getInstance();
-						specifiedYear = today.get(Calendar.YEAR);
-						System.out.println(specifiedYear);
-					}else{
-						specifiedYear = Integer.parseInt(dateAsString.get(2));
-					}
-					specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-					specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
-					startTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
-					position = dateAsString.indexOf("to");
-					specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-					specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
-					endTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
-					
-				}
-				
+				String positionCheck = "from";
+				startTime = determineMeetingTime(positionCheck, dateAsString);
+				positionCheck = "to";
+				endTime = determineMeetingTime(positionCheck, dateAsString);
+				if(startTime == null | endTime == null){
+					return MEETINGTIME_FORMAT_ERROR;
+				}	
 			}
-			
 			
 		}
 		
@@ -1250,13 +1059,7 @@ public class CommandController implements InterfaceForParser {
 		}else if(isMeetingTask){
 			result = "New task added for meeting: " + description;
 		}
-		//clear the locally stored tasklist to add the new results
-		currentActiveTasks.clear();
-
-		//convert ToDoSortedList from logicController into an ArrayList of String
-		for(Task task : retrievedList){
-			currentActiveTasks.add(task);
-		}
+		reflectChangeToCurrent(retrievedList);
 		
 		newMaxID+=recurrenceNum;
 		logicController.setSerialNumber(newMaxID);
@@ -1265,6 +1068,167 @@ public class CommandController implements InterfaceForParser {
 
 
 
+
+	private Date determineMeetingTime(String positionCheck,
+			ArrayList<String> dateAsString) {
+		//meeting syntax (-on): dd MMM yyyy from HHmm to HHmm OR dd/MM/yyyy from HHmm to HHmm
+		int specifiedDay = 0;
+		int specifiedMonth = 0;
+		int specifiedYear = 0;
+		int specifiedHour = 0;
+		int specifiedMinutes = 0;
+		boolean isSlashInputType = false; //i.e dd/MM/yyyy
+		boolean isNormalInputType = false; //i.e dd MMMM yyyy
+		Date meetingTime;
+		if(!dateAsString.contains("from") | !dateAsString.contains("to")){
+			return null;
+		}
+		if(dateAsString.get(0).contains("/")){
+			isSlashInputType = true;
+		}else{
+			isNormalInputType = true;
+		}
+		if(isSlashInputType){
+			//separate the fields
+			String[] slashInput = dateAsString.get(0).split("/");
+			specifiedDay = Integer.parseInt(slashInput[0]);
+			specifiedMonth = Integer.parseInt(slashInput[1]);
+			if(slashInput.length > 2){
+				//if year is specified
+				specifiedYear = Integer.parseInt(slashInput[2]);
+			}else{
+				Calendar today = Calendar.getInstance();
+				specifiedYear = today.get(Calendar.YEAR);
+			}
+			
+			int position = dateAsString.indexOf(positionCheck);
+			specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
+			specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+			
+			/*
+			position = dateAsString.indexOf("to");
+			specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
+			specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+			endTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
+			*/
+			
+		}else if(isNormalInputType){
+			specifiedDay = Integer.parseInt(dateAsString.get(0));
+			specifiedMonth = getSpecifiedMonth(dateAsString,
+					specifiedMonth);
+			if(specifiedMonth ==0){
+				return null;
+			}
+			int position = dateAsString.indexOf("from");
+			if(position <3){
+				//i.e year unspecified
+				Calendar today = Calendar.getInstance();
+				specifiedYear = today.get(Calendar.YEAR);
+				System.out.println(specifiedYear);
+			}else{
+				specifiedYear = Integer.parseInt(dateAsString.get(2));
+			}
+			position = dateAsString.indexOf(positionCheck);
+			specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
+			specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+			
+			/*
+			position = dateAsString.indexOf("to");
+			specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
+			specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+			endTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
+			*/
+			
+		}
+		meetingTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
+		return meetingTime;
+	}
+
+	private Date determineDeadline(ArrayList<String> dateAsString) {
+		int specifiedDay = 0;
+		int specifiedMonth = 0;
+		int specifiedYear = 0;
+		int specifiedHour = 0;
+		int specifiedMinutes = 0;
+		Date deadLine;
+		boolean timeGiven = false;
+		boolean isSlashInputType = false; //i.e dd/MM/yyyy
+		boolean isNormalInputType = false; //i.e dd MMMM yyyy
+		
+		if(dateAsString.get(0).contains("/")){
+			isSlashInputType = true;
+		}else{
+			isNormalInputType = true;
+		}
+		if(dateAsString.contains("at")){
+			timeGiven = true;
+		}else{
+			timeGiven = false;
+		}
+		if(isSlashInputType){
+			//separate the fields
+			String[] slashInput = dateAsString.get(0).split("/");
+			specifiedDay = Integer.parseInt(slashInput[0]);
+			specifiedMonth = Integer.parseInt(slashInput[1])-1;
+			if(slashInput.length > 2){
+				//if year is specified
+				specifiedYear = Integer.parseInt(slashInput[2]);
+			}else{
+				Calendar today = Calendar.getInstance();
+				specifiedYear = today.get(Calendar.YEAR);
+			}
+			if(timeGiven){
+				int position = dateAsString.indexOf("at");
+				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
+				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+			}else{
+				if(dateAsString.size()>1){
+					//i.e time given, but no "at" dd/MM/yyyy HHmm -> syntax error, need "at"
+					return null;
+				}else{
+					specifiedHour = 23;
+					specifiedMinutes = 59;
+				}
+			}
+		}else if(isNormalInputType){
+			//get the specified values
+			//separate the time from the date
+			specifiedDay = Integer.parseInt(dateAsString.get(0));
+			specifiedMonth = getSpecifiedMonth(dateAsString,
+					specifiedMonth);
+			if(specifiedMonth ==12){
+				return null;
+			}
+			if(timeGiven){
+				int position = dateAsString.indexOf("at");
+				if(position<3){
+					//no year specified
+					Calendar today = Calendar.getInstance();
+					specifiedYear = today.get(Calendar.YEAR);
+				}else{
+					//year specified
+					specifiedYear = Integer.parseInt(dateAsString.get(2));
+				}
+				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
+				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+				
+			}else{
+				if(dateAsString.size()<3){
+					//no year specified: dd MMM
+					Calendar today = Calendar.getInstance();
+					specifiedYear = today.get(Calendar.YEAR);
+					
+				}else{
+					//dd MM yyyy OR dd MM HHmm
+					specifiedYear = Integer.parseInt(dateAsString.get(2));
+				}
+				specifiedHour = 23;
+				specifiedMinutes =59;
+			}
+		}
+		deadLine = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
+		return deadLine;
+	}
 
 	private int getSpecifiedMonth(ArrayList<String> dateAsString,
 			int specifiedMonth) {
