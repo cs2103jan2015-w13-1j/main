@@ -120,7 +120,12 @@ public class UIController implements Initializable {
 		uiCommandList.add(new UICommand("Add a new task", "add <task description> [option: -date|-priority|-tag|-recurring] <value>", "add <task description> -d|p|t|r <value>"));
 		uiCommandList.add(new UICommand("Add tags to task","addtag <taskID> <value>", "-"));
 		uiCommandList.add(new UICommand("Archive a task", "archive <taskID>", "-"));
-		uiCommandList.add(new UICommand("Change an entry", "change <taskID> [option: desc|date|priority] <new value>", "-"));
+		uiCommandList.add(new UICommand("Change an entry", "change <taskID> [option: desc|priority] <new value>", "-"));
+		uiCommandList.add(new UICommand("Change a deadline", "change <taskID> date <new date> at <new time>", "-"));
+		uiCommandList.add(new UICommand("Change a meeting", "change <taskID> date <new date> start <new start> end <new end>", "-"));
+		uiCommandList.add(new UICommand("Change a recurring entry", "change all <taskID> [option: desc|priority] <new value>", "-"));
+		uiCommandList.add(new UICommand("Change a recurring deadline", "change all <taskID> date <new time>", "-"));
+		uiCommandList.add(new UICommand("Change a recurring meeting", "change all <taskID> date start <new start> end <new end>", "-"));
 		uiCommandList.add(new UICommand("Change directory", "directory <folder>|<absolute path of the folder>", "-"));
 		uiCommandList.add(new UICommand("Change motto of the day", "changemotto", "-"));
 		uiCommandList.add(new UICommand("Default tables view", "refresh", "-"));
