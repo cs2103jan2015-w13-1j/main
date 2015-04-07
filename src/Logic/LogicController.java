@@ -41,20 +41,20 @@ public class LogicController implements InterfaceForLogic{
 		activeTaskList = data.getActiveTaskList();
 		archivedTaskList = data.getArchivedTaskList();
 		toDoSortedList = new ToDoSortedList();
-//		System.out.println(data.getSerialNumber());
 		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
 			toDoSortedList.addTask(e.getValue());
 		}
 	}
 	
+	/**
+	 * Store the current data and return the todoSortedList
+	 * @return the toDoSortedList
+	 */
 	private ToDoSortedList storeAndReturnToDo() {
 		if (!isTesting) {
 			data.setActiveTaskList(activeTaskList);
 			data.setArchivedTaskList(archivedTaskList);
 			storageController.storeAllData(data);
-		}
-		for (Task t: toDoSortedList) {
-			System.out.println(t);
 		}
 		return toDoSortedList;
 	}
@@ -198,6 +198,7 @@ public class LogicController implements InterfaceForLogic{
 	public ToDoSortedList unArchive(Task task) {
 		assert (archivedTaskList.containsValue(task));
 		logToHistory();
+		
 		task.removeFromArchive();
 		int id = task.getId();
 		archivedTaskList.removeTaskbyId(id);
@@ -210,22 +211,8 @@ public class LogicController implements InterfaceForLogic{
 	public ArrayList<Task> searchByDate(String date) {
 		ArrayList<Task> taskOnDate = new ArrayList<Task>();
 		for (Task task: toDoSortedList) {
-			Date dateOfTask = task.getTime();
-			if (dateOfTask != null) {
-				if (dateOfTask.getDateRepresentation().equals(date)) {
-					taskOnDate.add(task);
-				}
-				else {
-					if (task.getEndTime() != null) {
-						if (task.getEndTime().getDateRepresentation().equals(date)) {
-							taskOnDate.add(task);
-						}
-						if (task.getStartTime().getDateRepresentation().compareTo(date)<0 &&
-							task.getEndTime().getDateRepresentation().compareTo(date)>0) {
-							taskOnDate.add(task);
-						}
-					}
-				}
+			if (task.isOnDate(date)) {
+				taskOnDate.add(task);
 			}
 		}
 		return taskOnDate;
@@ -335,6 +322,7 @@ public class LogicController implements InterfaceForLogic{
 		storageController.storeAllData(data);
 		return viewArchiveTasks();
 	}
+	
 
 	@Override
 	public ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum) {
@@ -342,18 +330,50 @@ public class LogicController implements InterfaceForLogic{
 		assert(period > 0);
 		logToHistory();
 		int id = task.getId();
+		activeTaskList.addTask(id, task);
+		return generateRecurringTasks(task, period, recurrenceNum, id);
+	}
+
+	@Override
+	public ToDoSortedList repeatExistingTask(Task task, long period, int recurrenceNum) {
+		assert(!task.getType().equals("generic"));
+		assert(period > 0);
+		logToHistory();
+		int id = getSerialNumber();
+		return generateRecurringTasks(task, period, recurrenceNum, id);
+	}
+
+	
+	/**
+	 * @param task
+	 * @param period
+	 * @param recurrenceNum
+	 * @param id
+	 * @return
+	 */
+	private ToDoSortedList generateRecurringTasks(Task task, long period, int recurrenceNum, int id) {
 		int recurrenceId = data.getRecurrenceId();
 		task.setRecurrenceId(recurrenceId);
-		activeTaskList.addTask(task.getId(), task);
 		for (int i = 1; i < recurrenceNum ; i++) {
-			Task newTask = task.copyWithInterval(id + i, i * period);
-			newTask.setRecurrenceId(recurrenceId);
-			activeTaskList.addTask(id + i, newTask);
+			createAndAddRecurringTask(task, period, id, recurrenceId, i);
 		}
 		data.increamentRecurrenceId();
 		return update_Save_ReturnTodo();
 	}
-
+	
+	/**
+	 * @param task
+	 * @param period
+	 * @param id
+	 * @param recurrenceId
+	 * @param i
+	 */
+	private void createAndAddRecurringTask(Task task, long period, int id, int recurrenceId, int i) {
+		Task newTask = task.copyWithInterval(id + i, i * period);
+		newTask.setRecurrenceId(recurrenceId);
+		activeTaskList.addTask(id + i, newTask);
+	}
+	
 	/**
 	 * @param task a recurrence task
 	 * @return an array list of task objects with the same recurring id
@@ -495,23 +515,6 @@ public class LogicController implements InterfaceForLogic{
 	}
 
 	@Override
-	public ToDoSortedList repeatExistingTask(Task task, long period, int recurrenceNum) {
-		assert(!task.getType().equals("generic"));
-		assert(period > 0);
-		logToHistory();
-		int recurrenceId = data.getRecurrenceId();
-		task.setRecurrenceId(recurrenceId);
-		for (int i = 1; i < recurrenceNum ; i++) {
-			Task newTask = task.copyWithInterval(getSerialNumber() + i, i * period);
-			newTask.setRecurrenceId(recurrenceId);
-			activeTaskList.addTask(getSerialNumber() + i, newTask);
-		}
-		data.setRecurrenceId(getSerialNumber() + recurrenceNum);
-		data.increamentRecurrenceId();
-		return update_Save_ReturnTodo();
-	}
-
-	@Override
 	public ArchiveSortedList deleteAllRecurringInArchive(Task task) {
 		assert(archivedTaskList.containsValue(task));
 		logToHistory();
@@ -535,18 +538,20 @@ public class LogicController implements InterfaceForLogic{
 	@Override
 	public boolean undo() {
 		DATA data = historyController.undo();
-		if (data == null) {
-			return false;
-		}
-		this.data = data;
-		loadData();
-		storageController.storeAllData(data);
-		return true;
+		return reloadData(data);
 	}
 	
 	@Override
 	public boolean redo() {
 		DATA data = historyController.redo();
+		return reloadData(data);
+	}
+
+	/**
+	 * @param data
+	 * @return true if data is not null
+	 */
+	private boolean reloadData(DATA data) {
 		if (data == null) {
 			return false;
 		}

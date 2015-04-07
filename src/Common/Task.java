@@ -493,9 +493,27 @@ public class Task implements Comparable<Task>{
 		}
 		return -1;
 	}
-//	
-//	@Override
-//	public int hashCode() {
-//		return this.getId();
-//	}
+
+	public boolean isOnDate(String date) {
+		Date dateOfTask = this.getTime();
+		if (dateOfTask != null) {
+			if (dateOfTask.getDateRepresentation().equals(date)) {
+				return true;
+			} else {
+				// if this is a meeting task
+				if (this.getEndTime() != null) {
+					// if the start date is the date given, return true
+					if (this.getEndTime().getDateRepresentation().equals(date)) {
+						return true;
+					}
+					// if the date given is between the start and end, return true
+					if (this.getStartTime().getDateRepresentation().compareTo(date)<0 &&
+						this.getEndTime().getDateRepresentation().compareTo(date)>0) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 }
