@@ -429,8 +429,7 @@ public class CommandController implements InterfaceForParser {
 				String taskType = taskToChange.getType();
 				String dateInput = new String();
 				ArrayList<String> dateAsString = new ArrayList<String>();
-				for(int i=position+3; i<inputArray.size(); i++){
-					dateInput = dateInput.concat(inputArray.get(i) + " ");
+				for(int i=inputArray.indexOf("date")+1; i<inputArray.size(); i++){
 					dateAsString.add(inputArray.get(i));
 				}
 				//cases: generic task, deadline task, meeting task 
@@ -470,33 +469,106 @@ public class CommandController implements InterfaceForParser {
 				}else if(taskType.equalsIgnoreCase("deadline")){
 					//date exists, change deadline
 					//syntax: -change date dd/MM/yyyy
-					Date newDeadline = determineDeadline(dateAsString);
-					if(newDeadline == null){
-						return DEADLINE_FORMAT_ERROR;
+					if(isChangeAll){
+						try{
+							int positionOfTime = dateAsString.indexOf("date") +1;
+							String timeAsString = dateAsString.get(positionOfTime);
+							String hourAsString = timeAsString.substring(0, 2);
+							String minutesAsString = timeAsString.substring(2, 4);
+							int newHour = Integer.parseInt(hourAsString);
+							int newMinutes = Integer.parseInt(minutesAsString);
+							retrievedSortedList = logicController.editAlldeadlineTime(taskToChange, newHour, newMinutes);
+							reflectChangeToCurrent(retrievedSortedList);
+						}catch(NumberFormatException e){
+							return "Wrong format for time";
+						}
 					}else{
-						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
-						reflectChangeToCurrent(retrievedSortedList);
+						Date newDeadline = determineDeadline(dateAsString);
+						if(newDeadline == null){
+							return DEADLINE_FORMAT_ERROR;
+						}else{
+							retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
+							reflectChangeToCurrent(retrievedSortedList);
+						}
 					}
 					return result = "Deadline changed";
 					
 				}else if(taskType.equalsIgnoreCase("meeting")){
-					
-					//TODO split into change only start or change only end or change both
-					
-					//change start and end time
-					//syntax:-change date dd/MM/yyyy HHmm HHmm
-					String positionCheck = "from";
-					Date newStartTime = determineMeetingTime(positionCheck, dateAsString);
-					positionCheck = "to";
-					Date newEndTime = determineMeetingTime(positionCheck, dateAsString);
-					if(newStartTime == null | newEndTime == null){
-						return MEETINGTIME_FORMAT_ERROR;
-					}else{
-						retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
-						retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
-						reflectChangeToCurrent(retrievedSortedList);
-					}
-					return result = "Meeting start and end time changed";
+					if(isChangeAll){
+						if(dateAsString.contains("start") && dateAsString.contains("end")){
+							int positionOfTime = dateAsString.indexOf("start") +1;
+							String timeAsString = dateAsString.get(positionOfTime);
+							String hourAsString = timeAsString.substring(0, 2);
+							String minutesAsString = timeAsString.substring(2, 4);
+							int newStartHour = Integer.parseInt(hourAsString);
+							int newStartMinutes = Integer.parseInt(minutesAsString);
+							positionOfTime = dateAsString.indexOf("end")+1;
+							timeAsString = dateAsString.get(positionOfTime);
+							hourAsString = timeAsString.substring(0, 2);
+							minutesAsString = timeAsString.substring(2, 4);
+							int newEndHour = Integer.parseInt(hourAsString);
+							int newEndMinutes = Integer.parseInt(minutesAsString);
+							retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartHour, newStartMinutes);
+							retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndHour, newEndMinutes);
+							reflectChangeToCurrent(retrievedSortedList);
+							return "Start and end time changed";
+						}else if(dateAsString.contains("end")){
+							int positionOfTime = dateAsString.indexOf("end") +1;
+							String timeAsString = dateAsString.get(positionOfTime);
+							String hourAsString = timeAsString.substring(0, 2);
+							String minutesAsString = timeAsString.substring(2, 4);
+							int newHour = Integer.parseInt(hourAsString);
+							int newMinutes = Integer.parseInt(minutesAsString);
+							retrievedSortedList = logicController.editAllEndTime(taskToChange, newHour, newMinutes);
+							reflectChangeToCurrent(retrievedSortedList);
+							return "End time changed";
+						}else if(dateAsString.contains("start")){
+							int positionOfTime = dateAsString.indexOf("start") +1;
+							String timeAsString = dateAsString.get(positionOfTime);
+							String hourAsString = timeAsString.substring(0, 2);
+							String minutesAsString = timeAsString.substring(2, 4);
+							int newHour = Integer.parseInt(hourAsString);
+							int newMinutes = Integer.parseInt(minutesAsString);
+							retrievedSortedList = logicController.editAllStartTime(taskToChange, newHour, newMinutes);
+							reflectChangeToCurrent(retrievedSortedList);
+							return "Start time changed";
+						}
+					}else if(dateAsString.contains("from") && dateAsString.contains("to")){
+						//change start and end time
+						//syntax:-change date dd/MM/yyyy HHmm HHmm
+						String positionCheck = "from";
+						Date newStartTime = determineMeetingTime(positionCheck, dateAsString);
+						positionCheck = "to";
+						Date newEndTime = determineMeetingTime(positionCheck, dateAsString);
+						if(newStartTime == null | newEndTime == null){
+							return MEETINGTIME_FORMAT_ERROR;
+						}else{
+							retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
+							retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
+							reflectChangeToCurrent(retrievedSortedList);
+						}
+						return result = "Meeting start and end time changed";
+					}else if(dateAsString.contains("start")){
+						String positionCheck = "start";
+						Date newStartTime = determineMeetingTime(positionCheck, dateAsString);
+						if(newStartTime == null){
+							return DATE_FORMAT_ERROR;
+						}else{
+							retrievedSortedList = logicController.editStartTime(taskToChange, newStartTime);
+							reflectChangeToCurrent(retrievedSortedList);
+							return result = "Meeting start time changed";
+						}
+					}else if(dateAsString.contains("end")){
+						String positionCheck = "end";
+						Date newEndTime = determineMeetingTime(positionCheck, dateAsString);
+						if(newEndTime == null){
+							return DATE_FORMAT_ERROR;
+						}else{
+							retrievedSortedList = logicController.editEndTime(taskToChange, newEndTime);
+							reflectChangeToCurrent(retrievedSortedList);
+							return result = "Meeting end time changed";
+						}
+					}					
 					
 				}else{
 					return result = "Type mismatch error, can't change date";
@@ -1080,9 +1152,9 @@ public class CommandController implements InterfaceForParser {
 		boolean isSlashInputType = false; //i.e dd/MM/yyyy
 		boolean isNormalInputType = false; //i.e dd MMMM yyyy
 		Date meetingTime;
-		if(!dateAsString.contains("from") | !dateAsString.contains("to")){
+		/*if(!dateAsString.contains("from") | !dateAsString.contains("to")){
 			return null;
-		}
+		}*/
 		if(dateAsString.get(0).contains("/")){
 			isSlashInputType = true;
 		}else{
