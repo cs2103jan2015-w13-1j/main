@@ -157,10 +157,31 @@ public class CommandController implements InterfaceForParser {
 			}case(14):{
 				result = exportCommand(splitInput);
 				break;
+			}case(15):{
+				result = redoCommand();
+				break;
+			}default:{
+				result = "Invalid Command";
 			}
 		}
 		return result;
 	}
+	private String redoCommand() {
+		boolean isSuccessful = logicController.redo();
+		refreshCurrent();
+		refreshArchive();
+		String result = new String();
+		if(isSuccessful){
+			return result = "Redo successful";
+		} else{
+			return result = "Redo unsuccessful";
+		}
+		
+	}
+
+
+
+
 	private String exportCommand(String[] splitInput) {
 		String directoryToExport = new String();
 		if(splitInput[1].equals("to")){
@@ -450,7 +471,7 @@ public class CommandController implements InterfaceForParser {
 							reflectChangeToCurrent(retrievedSortedList);
 						}
 								
-					}else if(dateAsString.contains("at")){
+					}else{
 						//if change to deadline task
 						//syntax: -change date dd/MM/yyyy
 
@@ -462,9 +483,6 @@ public class CommandController implements InterfaceForParser {
 							reflectChangeToCurrent(retrievedSortedList);
 						}
 						return result = "Deadline changed";
-						
-					}else{
-						return DATE_FORMAT_ERROR;
 					}
 				}else if(taskType.equalsIgnoreCase("deadline")){
 					//date exists, change deadline
