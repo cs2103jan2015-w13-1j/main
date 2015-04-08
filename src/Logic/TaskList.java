@@ -3,8 +3,10 @@
  * Used for creating task lists for both todo list and archived list
  */
 
-package Common;
+package Logic;
 import java.util.*;
+
+import Common.Task;
 
 @SuppressWarnings("serial")
 public class TaskList extends HashMap<Integer, Task>{

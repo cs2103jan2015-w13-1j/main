@@ -28,7 +28,7 @@ import org.json.simple.parser.ParseException;
 import Common.DATA;
 import Common.Date;
 import Common.Task;
-import Common.TaskList;
+import Logic.TaskList;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

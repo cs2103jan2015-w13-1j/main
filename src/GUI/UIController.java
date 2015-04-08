@@ -23,8 +23,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Label;
 //import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import Common.Motivator;
 import Common.Task;
+import Motivator.Motivator;
 import Parser.CommandController;
 import Storage.StorageController;
 
