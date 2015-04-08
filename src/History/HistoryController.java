@@ -1,7 +1,7 @@
+// @author Esmond
+
 /**
  * This java class is the controller for the History component in the software architecture.
- * 
- * @author Esmond
  */
 
 package History;
@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import Storage.StorageController;
 import Common.DATA;
 
-public class HistoryController implements InterfaceForHistory{
+public class HistoryController implements InterfaceForHistory {
 
 	private static final String MESSAGE_ERROR_REDO = "Redo not successful. No previous command entry found.";
 	private static final String MESSAGE_ERROR_UNDO = "Undo not successful. No previous command entry found.";

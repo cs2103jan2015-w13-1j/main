@@ -1,7 +1,7 @@
+// @author Esmond
+
 /**
  * This class is an interface for history. It contains the methods for logic controller.
- * 
- * @author Esmond
  */
 
 package History;
