@@ -9,7 +9,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			primaryStage.setTitle("HeyBuddy! [v0.3]");
+			primaryStage.setTitle("HeyBuddy! [v0.4]");
 			Parent root = FXMLLoader.load(getClass().getResource("MyView.fxml"));
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

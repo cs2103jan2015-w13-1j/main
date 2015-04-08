@@ -30,6 +30,35 @@ import Storage.StorageController;
 
 public class UIController implements Initializable {
 
+	private static final int INT_MINUS_ONE = -1;
+	private static final char CHAR_S = 's';
+	private static final char CHAR_C = 'c';
+	private static final char CHAR_T = 't';
+	private static final char CHAR_G = 'g';
+	private static final String STRING_DASH = "-";
+	private static final String STRING_YOU_ARE_AT_THE_SETTINGS_PANEL = "You are at the settings panel";
+	private static final String STRING_YOU_ARE_AT_THE_COMMANDS_PANEL = "You are at the commands panel";
+	private static final String STRING_YOU_ARE_AT_THE_TASK_PANEL = "You are at the task panel";
+	private static final String STRING_NEW_MOTTO_FOR_THE_DAY = "New motto for the day!";
+	private static final String STRING_CHANGEMOTTO = "changemotto";
+	private static final String STRING_EXIT = "exit";
+	private static final String STRING_FROM = "from ";
+	private static final String STRING_IMPORT = "import";
+	private static final String STRING_AT = "at: ";
+	private static final String STRING_DIRECTORY = "directory";
+	private static final String STRING_SHORTCUTS = "shortcuts";
+	private static final String STRING_COMMAND = "command";
+	private static final String STRING_FUNCTION = "function";
+	private static final String STRING_TAGS = "tags";
+	private static final String STRING_DUE = "due";
+	private static final String STRING_END = "end";
+	private static final String STRING_START = "start";
+	private static final String STRING_PRIORITY = "priority";
+	private static final String STRING_DESCRIPTION = "description";
+	private static final String STRING_ID = "id";
+	private static final String STRING_HH_MM = "HH:mm";
+	private static final String STRING_DD_MM_YYYY = "dd/MM/YYYY";
+	private static final String STRING_DAYS_OVERDUE = " days overdue";
 	@FXML
 	private Group taskGroup;
 	@FXML
@@ -82,9 +111,6 @@ public class UIController implements Initializable {
 	@FXML
 	TableColumn<UITask, String> archiveDescription;
 
-	//private int taskNumber = 1;
-	//private int archiveNumber = 1;
-
 	private CommandController commandController = new CommandController();
 	private StorageController storageController = new StorageController();
 	private Motivator motivator = new Motivator();
@@ -113,50 +139,50 @@ public class UIController implements Initializable {
 	}
 
 	private void initialiseCommand() {
-		commandFunction.setCellValueFactory(new PropertyValueFactory<UICommand, String>("function"));
-		commandCommand.setCellValueFactory(new PropertyValueFactory<UICommand, String>("command"));
-		commandShortcuts.setCellValueFactory(new PropertyValueFactory<UICommand, String>("shortcuts"));
+		commandFunction.setCellValueFactory(new PropertyValueFactory<UICommand, String>(STRING_FUNCTION));
+		commandCommand.setCellValueFactory(new PropertyValueFactory<UICommand, String>(STRING_COMMAND));
+		commandShortcuts.setCellValueFactory(new PropertyValueFactory<UICommand, String>(STRING_SHORTCUTS));
 		commandTable.setItems(uiCommandList);
 		uiCommandList.add(new UICommand("Add a new task", "add <task description> [option: -date|-priority|-tag|-recurring] <value>", "add <task description> -d|p|t|r <value>"));
-		uiCommandList.add(new UICommand("Add tags to task","addtag <taskID> <value>", "-"));
-		uiCommandList.add(new UICommand("Archive a task", "archive <taskID>", "-"));
-		uiCommandList.add(new UICommand("Change an entry", "change <taskID> [option: desc|priority] <new value>", "-"));
-		uiCommandList.add(new UICommand("Change a deadline", "change <taskID> date <new date> at <new time>", "-"));
-		uiCommandList.add(new UICommand("Change a meeting", "change <taskID> date <new date> start <new start> end <new end>", "-"));
-		uiCommandList.add(new UICommand("Change a recurring entry", "change all <taskID> [option: desc|priority] <new value>", "-"));
-		uiCommandList.add(new UICommand("Change a recurring deadline", "change all <taskID> date <new time>", "-"));
-		uiCommandList.add(new UICommand("Change a recurring meeting", "change all <taskID> date start <new start> end <new end>", "-"));
-		uiCommandList.add(new UICommand("Change directory", "directory <folder>|<absolute path of the folder>", "-"));
-		uiCommandList.add(new UICommand("Change motto of the day", "changemotto", "-"));
-		uiCommandList.add(new UICommand("Default tables view", "refresh", "-"));
+		uiCommandList.add(new UICommand("Add tags to task","addtag <taskID> <value>", STRING_DASH));
+		uiCommandList.add(new UICommand("Archive a task", "archive <taskID>", STRING_DASH));
+		uiCommandList.add(new UICommand("Change an entry", "change <taskID> [option: desc|priority] <new value>", STRING_DASH));
+		uiCommandList.add(new UICommand("Change a deadline", "change <taskID> date <new date> at <new time>", STRING_DASH));
+		uiCommandList.add(new UICommand("Change a meeting", "change <taskID> date <new date> start <new start> end <new end>", STRING_DASH));
+		uiCommandList.add(new UICommand("Change a recurring entry", "change all <taskID> [option: desc|priority] <new value>", STRING_DASH));
+		uiCommandList.add(new UICommand("Change a recurring deadline", "change all <taskID> date <new time>", STRING_DASH));
+		uiCommandList.add(new UICommand("Change a recurring meeting", "change all <taskID> date start <new start> end <new end>", STRING_DASH));
+		uiCommandList.add(new UICommand("Change directory", "directory <folder>|<absolute path of the folder>", STRING_DASH));
+		uiCommandList.add(new UICommand("Change motto of the day", STRING_CHANGEMOTTO, STRING_DASH));
+		uiCommandList.add(new UICommand("Default tables view", "refresh", STRING_DASH));
 		uiCommandList.add(new UICommand("Delete an entry", "delete current|archive <taskID>", "delete <taskID>, delete archive <taskID>"));
-		uiCommandList.add(new UICommand("Exit program", "exit", "-"));
-		uiCommandList.add(new UICommand("Export existing storage file", "export to <absolute path of the file>", "-"));
+		uiCommandList.add(new UICommand("Exit program", STRING_EXIT, STRING_DASH));
+		uiCommandList.add(new UICommand("Export existing storage file", "export to <absolute path of the file>", STRING_DASH));
 		uiCommandList.add(new UICommand("Go to a panel", "goto <panel name>", "g t/c/s"));
-		uiCommandList.add(new UICommand("Import from existing storage file", "import from <absolute path of the file>", "-"));
-		uiCommandList.add(new UICommand("Removing tags from a task", "removetag <taskID> <value>", "-"));
-		uiCommandList.add(new UICommand("Searching for tasks", "search [option: desc|date|priority|tag] <value> or search today|tmr", "-"));
-		uiCommandList.add(new UICommand("Sort list", "sort [either: date|priority|tag]", "-"));
-		uiCommandList.add(new UICommand("Undo last user input","undo", "-"));
+		uiCommandList.add(new UICommand("Import from existing storage file", "import from <absolute path of the file>", STRING_DASH));
+		uiCommandList.add(new UICommand("Removing tags from a task", "removetag <taskID> <value>", STRING_DASH));
+		uiCommandList.add(new UICommand("Searching for tasks", "search [option: desc|date|priority|tag] <value> or search today|tmr", STRING_DASH));
+		uiCommandList.add(new UICommand("Sort list", "sort [either: date|priority|tag]", STRING_DASH));
+		uiCommandList.add(new UICommand("Undo last user input","undo", STRING_DASH));
 
 	}
 
 	private void initialiseArchive() {
-		archiveId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
-		archiveDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
+		archiveId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>(STRING_ID));
+		archiveDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>(STRING_DESCRIPTION));
 		archiveTable.setItems(uiArchiveList);
 		archiveList = commandController.initialiseArchives();
 		addToArchiveDisplay();
 	}
 
 	private void initialiseTasks() {
-		taskId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>("id"));
-		taskDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>("description"));
-		taskPriority.setCellValueFactory(new PropertyValueFactory<UITask, String>("priority"));
-		taskStart.setCellValueFactory(new PropertyValueFactory<UITask, String>("start"));
-		taskEnd.setCellValueFactory(new PropertyValueFactory<UITask, String>("end"));
-		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>("due"));
-		taskTags.setCellValueFactory(new PropertyValueFactory<UITask, String>("tags"));
+		taskId.setCellValueFactory(new PropertyValueFactory<UITask, Integer>(STRING_ID));
+		taskDescription.setCellValueFactory(new PropertyValueFactory<UITask, String>(STRING_DESCRIPTION));
+		taskPriority.setCellValueFactory(new PropertyValueFactory<UITask, String>(STRING_PRIORITY));
+		taskStart.setCellValueFactory(new PropertyValueFactory<UITask, String>(STRING_START));
+		taskEnd.setCellValueFactory(new PropertyValueFactory<UITask, String>(STRING_END));
+		taskDue.setCellValueFactory(new PropertyValueFactory<UITask, String>(STRING_DUE));
+		taskTags.setCellValueFactory(new PropertyValueFactory<UITask, String>(STRING_TAGS));
 		taskTable.setItems(uiTaskList);
 		taskList = commandController.initialiseTasks();
 		addToTaskDisplay();
@@ -179,16 +205,16 @@ public class UIController implements Initializable {
 
 	private String commandFilter(String[] splitCommand, String firstCommand,
 			String message) {
-		if (firstCommand.charAt(0) == 'g') {
+		if (firstCommand.charAt(0) == CHAR_G) {
 			executeGoTo(splitCommand[1]);
 			message = displayGotoMessage(splitCommand, message);
-		} else if (firstCommand.equals("directory")) {
-			String[] splitMessage = message.split("at: ");
+		} else if (firstCommand.equals(STRING_DIRECTORY)) {
+			String[] splitMessage = message.split(STRING_AT);
 			fileDirectory.setText(splitMessage[1]);
 			storageFileName.setText(storageController.getFileName());
-		} else if (firstCommand.equals("import")) {
-			if (message.contains("from")) {
-				String[] splitMessage = message.split("from ");
+		} else if (firstCommand.equals(STRING_IMPORT)) {
+			if (message.contains(STRING_FROM)) {
+				String[] splitMessage = message.split(STRING_FROM);
 				taskList = commandController.returnTasks();
 				addToTaskDisplay();
 				archiveList = commandController.returnArchive();
@@ -196,11 +222,11 @@ public class UIController implements Initializable {
 				fileDirectory.setText(storageController.getFileDirectory());
 				storageFileName.setText(storageController.getFileName());
 			}
-		} else if (firstCommand.equals("exit")) {
+		} else if (firstCommand.equals(STRING_EXIT)) {
 			Stage stage = (Stage) commandField.getScene().getWindow();
 			stage.close();
-		} else if (firstCommand.equals("changemotto")) {
-			message = "New motto for the day!";
+		} else if (firstCommand.equals(STRING_CHANGEMOTTO)) {
+			message = STRING_NEW_MOTTO_FOR_THE_DAY;
 			String quote = motivator.getRandomQuotes();
 			motivationalQuote.setText(quote);
 		} else {
@@ -213,12 +239,12 @@ public class UIController implements Initializable {
 	}
 
 	private String displayGotoMessage(String[] splitCommand, String message) {
-		if (splitCommand[1].charAt(0) == 't') {
-			message = "You are at the task panel";
-		} else if (splitCommand[1].charAt(0) == 'c') {
-			message = "You are at the commands panel";
-		} else if (splitCommand[1].charAt(0) == 's') {
-			message = "You are at the settings panel";
+		if (splitCommand[1].charAt(0) == CHAR_T) {
+			message = STRING_YOU_ARE_AT_THE_TASK_PANEL;
+		} else if (splitCommand[1].charAt(0) == CHAR_C) {
+			message = STRING_YOU_ARE_AT_THE_COMMANDS_PANEL;
+		} else if (splitCommand[1].charAt(0) == CHAR_S) {
+			message = STRING_YOU_ARE_AT_THE_SETTINGS_PANEL;
 		}
 		return message;
 	}
@@ -226,8 +252,8 @@ public class UIController implements Initializable {
 	public void addToTaskDisplay() {
 		uiTaskList.clear();
 
-		SimpleDateFormat df = new SimpleDateFormat("dd/MM/YYYY");
-		SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat df = new SimpleDateFormat(STRING_DD_MM_YYYY);
+		SimpleDateFormat tf = new SimpleDateFormat(STRING_HH_MM);
 
 		for (int i = 0; i < taskList.size(); i++) {
 			int id = i + 1;
@@ -246,7 +272,6 @@ public class UIController implements Initializable {
 
 			UITask entry = new UITask(id, description, priority, start, end, due, tags);
 			uiTaskList.add(entry);
-			System.out.println("added: " + id + " " + description + priority + start + end + due + tags);
 		}
 	}
 
@@ -265,20 +290,20 @@ public class UIController implements Initializable {
 		String due;
 		try {
 			if (taskList.get(i).getDeadline() == null) {
-				if (taskList.get(i).getOverdueDays() == -1) {
+				if (taskList.get(i).getOverdueDays() == INT_MINUS_ONE) {
 					due = df.format(taskList.get(i).getStartTime());
 				} else {
-					due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
+					due = Integer.toString(taskList.get(i).getOverdueDays()) + STRING_DAYS_OVERDUE;
 				}
 			} else {
-				if (taskList.get(i).getOverdueDays() == -1) {
+				if (taskList.get(i).getOverdueDays() == INT_MINUS_ONE) {
 					due = df.format(taskList.get(i).getDeadline());
 				} else {
-					due = Integer.toString(taskList.get(i).getOverdueDays()) + " days overdue";
+					due = Integer.toString(taskList.get(i).getOverdueDays()) + STRING_DAYS_OVERDUE;
 				}
 			}
 		} catch (NullPointerException e) {
-			due = "-";
+			due = STRING_DASH;
 		}
 		return due;
 	}
@@ -292,7 +317,7 @@ public class UIController implements Initializable {
 				end = tf.format(taskList.get(i).getEndTime());
 			}
 		} catch (NullPointerException e) {
-			end = "-";
+			end = STRING_DASH;
 		}
 		return end;
 	}
@@ -302,24 +327,21 @@ public class UIController implements Initializable {
 		try {
 			start = tf.format(taskList.get(i).getStartTime());
 		} catch (NullPointerException e){
-			start = "-";
+			start = STRING_DASH;
 		}
 		return start;
 	}
 
 	private String getDescription(int i) {
 		String description = taskList.get(i).getDescription();
-
-		/*if (taskList.get(i).isRecurrence()){
-			description = description + "(R)";
-		}*/
+		
 		return description;
 	}
 
 	private String getPriority(int i) {
 		String priority = Integer.toString(taskList.get(i).getPriority());
 		if (priority.equals("-1")) {
-			priority = "-";
+			priority = STRING_DASH;
 		}
 		return priority;
 	}
@@ -331,10 +353,6 @@ public class UIController implements Initializable {
 
 			String description = archiveList.get(i).getDescription();
 
-			if (archiveList.get(i).isRecurrence()) {
-				description = description + "(Reccur)";
-			}
-
 			String priority = Integer.toString(archiveList.get(i).getPriority());
 			String start = null;
 			String end = null;
@@ -342,16 +360,15 @@ public class UIController implements Initializable {
 			String tags = null;
 			UITask entry = new UITask(id, description, priority, start, end, due, tags);
 			uiArchiveList.add(entry);
-			System.out.println("Initialized: " + description + priority + start + end + due);
 		}
 	}
 
 	private void executeGoTo(String input) {
-		if (input.charAt(0) == 't') {
+		if (input.charAt(0) == CHAR_T) {
 			taskGroup.toFront();
-		} else if (input.charAt(0) == 'c') {
+		} else if (input.charAt(0) == CHAR_C) {
 			helpGroup.toFront();
-		} else if (input.charAt(0) == 's') {
+		} else if (input.charAt(0) == CHAR_S) {
 			settingsGroup.toFront();
 		}
 	}
