@@ -1,10 +1,9 @@
+// @author A0113598X
 package Common;
-
 
 /**
  * Used to store the tasks in sorted order when the program is running for the archive list.
  * Support add, delete, update, and extract top_n tasks.
- * @author Yichen
  */
 @SuppressWarnings("serial")
 public class ArchiveSortedList extends GeneralSortedList{

@@ -1,7 +1,4 @@
-/**
- * @author Yichen
- *
- */
+// @author A0113598X
 
 package Common;
 import java.text.SimpleDateFormat;

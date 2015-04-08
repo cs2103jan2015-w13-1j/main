@@ -1,6 +1,6 @@
+// @author A0113598X
 /**
  * Used for creating task lists for both todo list and archived list
- * @author Yichen
  */
 
 package Common;

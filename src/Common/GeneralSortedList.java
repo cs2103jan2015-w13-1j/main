@@ -1,9 +1,9 @@
+// @author A0113598X
+
 /**
  * General sorted list used to store the tasks in sorted order when the program is running
  * Support add, delete, update, and extract top_n tasks.
- * @author Yichen
  */
-
 package Common;
 import java.security.InvalidKeyException;
 import java.util.*;

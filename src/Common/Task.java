@@ -1,8 +1,8 @@
+// @author A0113598X
+
 /**
  * Use to represent one single Task
- * @author Yichen
  */
-
 package Common;
 import java.util.*;
 

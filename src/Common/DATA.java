@@ -1,10 +1,9 @@
+// @author A0113598X
 package Common;
 
 /**
  * To store all the data
  * Used during initialisation and closing of the program
- *
- * @author Yichen
  */
 public class DATA {
 	
