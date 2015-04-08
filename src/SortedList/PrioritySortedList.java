@@ -3,7 +3,9 @@
  * Used to store the tasks in sorted order when the program is running for the priority-sorted list.
  * Support add, delete, update, and extract top_n tasks.
  */
-package Common;
+package SortedList;
+
+import Common.Task;
 
 @SuppressWarnings("serial")
 public class PrioritySortedList extends GeneralSortedList{
