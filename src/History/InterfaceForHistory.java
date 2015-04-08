@@ -1,4 +1,4 @@
-// @author Esmond
+// @author A0111866E
 
 /**
  * This class is an interface for history. It contains the methods for logic controller.

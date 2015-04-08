@@ -1,4 +1,4 @@
-// @author Esmond
+// @author A0111866E
 
 /**
  * This java class is the controller for the History component in the software architecture.

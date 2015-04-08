@@ -1,4 +1,4 @@
-// @author Esmond
+// @author A0111866E
 
 /**
  * This java class will be the automated driver test for Storage Controller
@@ -15,6 +15,7 @@ import org.junit.Test;
 public class StorageADT {
 	
 	private StorageController program;
+	private StorageDirectory directory;
 	
 	/**
 	 * Initialise storage utility file with its default settings and initialise new DATA object
@@ -22,6 +23,7 @@ public class StorageADT {
 	@Before
 	public void initialise() {
 		program = new StorageController();
+		directory = new StorageDirectory();
 		program.initialiseNewDataObject();
 	}
 	
@@ -56,6 +58,6 @@ public class StorageADT {
 	
 	@After
 	public void cleanUp() {
-		program.changeFileDirectory("tables");
+		directory.changeFileDirectory("tables");
 	}
 }

@@ -1,4 +1,4 @@
-// @author Esmond
+// @author A0111866E
 
 /**
  * This class reads from quotes.txt and stores the content into an array list.

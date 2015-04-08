@@ -1,4 +1,4 @@
-// @author Esmond
+// @author A0111866E
 
 /**
  * This java class will be the automated driver test for History Controller

@@ -1,4 +1,4 @@
-// @author Esmond
+// @author A0111866E
 
 /**
  * This java class is the datastore for the Storage component in the software architecture.
@@ -79,6 +79,9 @@ public class StorageDatastore {
 		}
 	}
 
+	/**
+	 * initialise phase two: get JSON object from file
+	 */
 	private void initPhaseTwo() {
 		JSONObject utilJSON = new JSONObject();
 		try {
@@ -95,6 +98,7 @@ public class StorageDatastore {
 	}
 
 	/**
+	 * initialise phase three: read JSON attribute
 	 * @param utilJSON
 	 */
 	private void initPhaseThree(JSONObject utilJSON) {
@@ -107,6 +111,9 @@ public class StorageDatastore {
 		}
 	}
 
+	/**
+	 * initialise phase one: check on utility.json 
+	 */
 	private void initPhaseOne() {
 		logger.log(Level.WARNING, MESSAGE_INIT_ERROR_STORAGE_NOT_FOUND);
 		createStorage(STRING_UTILITY_FILE_NAME);
@@ -256,7 +263,7 @@ public class StorageDatastore {
 	}
 	
 	/**
-	 * @param File Relative Path
+	 * @param filePath
 	 */
 	private void createStorage(String filePath) {
 		logger.log(Level.INFO, String.format(MESSAGE_CREATE_STORAGE_FILE, filePath));
@@ -291,22 +298,50 @@ public class StorageDatastore {
 		initialise();
 		JSONObject dataJSON = new JSONObject();
 		String previousDirectory = getStorageFilePath();
-		if (isStorageExist(getStorageFilePath()) == true) {
-			dataJSON = retrieveDataFromStorage(getStorageFilePath());
-			deleteFile(getStorageFilePath());	// remove old storage file if it exists
-		}
-		URI uri = fileToUri(directory);
-		String absolutePath = uriToString(uri);
-		this._directory = new String();
-		this._directory = absolutePath;
-		saveSettingsToUtility();
+		
+		dataJSON = changeDirectoryPhaseOne(dataJSON);
+		changeDirectoryPhaseTwo(directory);
+		changeDirectoryPhaseThree(dataJSON, previousDirectory);
+		logger.log(Level.INFO, String.format(MESSAGE_NEW_FILE_DIRECTORY, this.getDirectory()));
+	}
+
+	/**
+	 * change directory phase three: store existing storage data, if any, into new directory 
+	 * @param dataJSON
+	 * @param previousDirectory
+	 */
+	private void changeDirectoryPhaseThree(JSONObject dataJSON,	String previousDirectory) {
 		if ((dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
 				|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) == false) {
 			processStorage(getStorageFilePath());
 			storeJsonIntoStorage(dataJSON, getStorageFilePath());
 		}
 		deleteFile(previousDirectory);	// remove old storage file if it exists
-		logger.log(Level.INFO, String.format(MESSAGE_NEW_FILE_DIRECTORY, this.getDirectory()));
+	}
+
+	/**
+	 * change directory phase two: save new directory to utility.json
+	 * @param directory
+	 */
+	private void changeDirectoryPhaseTwo(String directory) {
+		URI uri = fileToUri(directory);
+		String absolutePath = uriToString(uri);
+		this._directory = new String();
+		this._directory = absolutePath;
+		saveSettingsToUtility();
+	}
+
+	/**
+	 * change directory phase one: retrieve and delete existing storage file if any
+	 * @param dataJSON
+	 * @return dataJSON
+	 */
+	private JSONObject changeDirectoryPhaseOne(JSONObject dataJSON) {
+		if (isStorageExist(getStorageFilePath()) == true) {
+			dataJSON = retrieveDataFromStorage(getStorageFilePath());
+			deleteFile(getStorageFilePath());	// remove old storage file if it exists
+		}
+		return dataJSON;
 	}
 
 	/**

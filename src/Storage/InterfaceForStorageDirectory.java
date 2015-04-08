@@ -1,24 +1,12 @@
-// @author Esmond
+// @author A0111866E
 
 /**
- * This class is an interface for storage
+ * This class is an interface for storage directory
  */
 
 package Storage;
 
-import Common.DATA;
-
-public interface InterfaceForStorage {
-	
-	/**
-	 * @return a DATA object that is stored in the storage
-	 */
-	DATA getAllData();
-	/**
-	 * @param a DATA object
-	 * @return a message that indicates the storage status
-	 */
-	String storeAllData(DATA data); 
+public interface InterfaceForStorageDirectory {
 	/**
 	 * @param path of the directory
 	 * @return the given path of the directory
