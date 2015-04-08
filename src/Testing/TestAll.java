@@ -1,3 +1,9 @@
+// @author A0111866E
+
+/**
+ * This class runs all the test cases of the program.
+ */
+
 package Testing;
 
 import org.junit.runner.RunWith;

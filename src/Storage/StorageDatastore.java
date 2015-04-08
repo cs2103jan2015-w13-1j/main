@@ -1,3 +1,5 @@
+// @author Esmond
+
 /**
  * This java class is the datastore for the Storage component in the software architecture.
  * 
@@ -6,7 +8,6 @@
  * 
  * Test driver: StorageADT.java
  * Interface:	InterfaceForStorage.java
- * @author Esmond
  */
 
 package Storage;
@@ -93,6 +94,9 @@ public class StorageDatastore {
 		}
 	}
 
+	/**
+	 * @param utilJSON
+	 */
 	private void initPhaseThree(JSONObject utilJSON) {
 		if (utilJSON.containsKey(STRING_DIRECTORY) == false) {
 			logger.log(Level.WARNING, MESSAGE_INIT_ERROR_INVALID_CONTENT);

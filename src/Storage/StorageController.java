@@ -1,3 +1,5 @@
+// @author Esmond
+
 /**
  * This java class is the controller for the Storage component in the software architecture.
  * 
@@ -7,8 +9,6 @@
  * 
  * Test driver: StorageADT.java
  * Interface:	InterfaceForStorage.java
- * 
- * @author Esmond
  */
 
 package Storage;
@@ -50,6 +50,8 @@ public class StorageController implements InterfaceForStorage {
 	private static final String STRING_SERIAL_NUMBER = "serialNumber";
 	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
 	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
+	private static final String MESSAGE_SUCCESS_EXPORT = "Successful export to %1$s";
+	private static final String MESSAGE_ERROR_EXPORT = "Unsuccessful export.";
 	private static final String MESSAGE_ERROR_CREATE_TASK = "Unable to create task due to invalid task type";
 	private static final String MESSAGE_ERROR_CONVERT_DATA = "Unable to get DATA from storage.";
 	private static final String MESSAGE_DUMMY_DATA = "9 Dummy data created.";
@@ -78,64 +80,82 @@ public class StorageController implements InterfaceForStorage {
 		File exportFile = new File(fileName);
 		URI uri = exportFile.toURI();
 		String importedFileAbsolutePath = uri.getPath().replaceFirst("/", "");
-		System.out.println("export to: " + importedFileAbsolutePath);
 		_datastore.processStorage(importedFileAbsolutePath);
+		return logExportResult(importedFileAbsolutePath);
+	}
+
+	/**
+	 * @param importedFileAbsolutePath
+	 * @return result
+	 */
+	private boolean logExportResult(String importedFileAbsolutePath) {
 		if (_datastore.storeJsonIntoStorage(_datastore.getData(), importedFileAbsolutePath) == true) {
-			logger.log(Level.INFO, "Successful export to " + importedFileAbsolutePath);
+			logger.log(Level.INFO, String.format(MESSAGE_SUCCESS_EXPORT, importedFileAbsolutePath));
 			return true;
 		} else {
-			logger.log(Level.WARNING, "Unsuccessful export.");
+			logger.log(Level.WARNING, MESSAGE_ERROR_EXPORT);
 			return false;
 		}
 	}
 	
 	@Override
 	public boolean importFromDirectory(String fileName) {
-		// check if file is valid, 
-		//		if yes, store parent folder into utility
-		// 		if not, return false
 		File importedFile = new File(fileName);
 		URI uri = importedFile.toURI();
-//		System.out.println(uri);
 		String importedFileAbsolutePath = uri.getPath().replaceFirst("/", "");
-//		System.out.println("import from: " + importedFileAbsolutePath);
 		if (_datastore.isStorageExist(importedFileAbsolutePath)) {
-			JSONObject importedJsonData = _datastore.retrieveDataFromStorage(importedFileAbsolutePath);
-			if (importedJsonData.containsKey(STRING_SERIAL_NUMBER) == false || importedJsonData.containsKey(STRING_ACTIVE_TASK_LIST) == false
-					|| importedJsonData.containsKey(STRING_RECURRENCE_ID) == false || importedJsonData.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
-				// wrong format of data
-				return false;
-			} else {
-				File file = new File(importedFileAbsolutePath);
-				String importedFileFolderAbsolutePath = file.getParentFile().toURI().getPath().replaceFirst("/", "");
-//				System.out.println("folder: " + importedFileFolderAbsolutePath);
-				String importedFileName= file.getName();
-//				System.out.println("file name: " + importedFileName);
-//				this.setFileDirectory(importedFileFolderAbsolutePath);
-				
-				_datastore.setDirectory(importedFileFolderAbsolutePath);
-				_datastore.setStorageName(importedFileName);
-				_datastore.saveSettingsToUtility();
-				_datastore.initialise();
-				
-				if (_datastore.getDirectory().equals(importedFileFolderAbsolutePath) && _datastore.getStorageName().equals(importedFileName)) {
-					logger.log(Level.INFO, "Successful import from " + importedFileAbsolutePath);
-				} else {
-					logger.log(Level.WARNING, "Unsuccessful import from " + importedFileAbsolutePath);
-				}
-//				if (_datastore.storeJsonIntoStorage(importedJsonData, _datastore.getStorageFilePath()) == true) {
-//					logger.log(Level.INFO, "Successful import from " + importedFileAbsolutePath);
-//				} else {
-//					logger.log(Level.WARNING, "Unsuccessful import from " + importedFileAbsolutePath);
-//				}
-				
-				return true;
-			}
+			return importPhaseOne(importedFileAbsolutePath);
 		} else {
 			// file not found
 			return false;
 		}
 		
+	}
+
+	/**
+	 * @param importedFileAbsolutePath
+	 * @return result
+	 */
+	private boolean importPhaseOne(String importedFileAbsolutePath) {
+		JSONObject importedJsonData = _datastore.retrieveDataFromStorage(importedFileAbsolutePath);
+		if (importedJsonData.containsKey(STRING_SERIAL_NUMBER) == false || importedJsonData.containsKey(STRING_ACTIVE_TASK_LIST) == false
+				|| importedJsonData.containsKey(STRING_RECURRENCE_ID) == false || importedJsonData.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
+			// wrong format of data
+			return false;
+		} else {
+			File file = new File(importedFileAbsolutePath);
+			String importedFileFolderAbsolutePath = file.getParentFile().toURI().getPath().replaceFirst("/", "");
+			String importedFileName= file.getName();
+			importPhaseTwo(importedFileFolderAbsolutePath, importedFileName);
+			importPhaseThree(importedFileAbsolutePath, importedFileFolderAbsolutePath, importedFileName);
+			return true;
+		}
+	}
+
+	/**
+	 * @param importedFileAbsolutePath
+	 * @param importedFileFolderAbsolutePath
+	 * @param importedFileName
+	 */
+	private void importPhaseThree(String importedFileAbsolutePath,
+			String importedFileFolderAbsolutePath, String importedFileName) {
+		if (_datastore.getDirectory().equals(importedFileFolderAbsolutePath) && _datastore.getStorageName().equals(importedFileName)) {
+			logger.log(Level.INFO, "Successful import from " + importedFileAbsolutePath);
+		} else {
+			logger.log(Level.WARNING, "Unsuccessful import from " + importedFileAbsolutePath);
+		}
+	}
+
+	/**
+	 * @param importedFileFolderAbsolutePath
+	 * @param importedFileName
+	 */
+	private void importPhaseTwo(String importedFileFolderAbsolutePath,
+			String importedFileName) {
+		_datastore.setDirectory(importedFileFolderAbsolutePath);
+		_datastore.setStorageName(importedFileName);
+		_datastore.saveSettingsToUtility();
+		_datastore.initialise();
 	}
 	
 	/**

@@ -1,13 +1,12 @@
+// @author Esmond
+
 /**
- * This class is an interface for storage. It contains the methods for logic controller and parser
- * 
- * @author Esmond
+ * This class is an interface for storage
  */
 
 package Storage;
 
 import Common.DATA;
-
 
 public interface InterfaceForStorage {
 	

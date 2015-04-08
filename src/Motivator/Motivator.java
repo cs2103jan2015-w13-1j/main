@@ -1,6 +1,8 @@
+// @author Esmond
+
 /**
- * @author Esmond
- *
+ * This class reads from quotes.txt and stores the content into an array list.
+ * It provides a function which returns a random quote from the array list.
  */
 
 package Motivator;
@@ -15,6 +17,7 @@ import java.util.Random;
 public class Motivator {
 	
 	private ArrayList<String> _quotes;
+	
 	public static void main(String[] args) {
 		Motivator motivator = new Motivator();
 		motivator.initialise();
