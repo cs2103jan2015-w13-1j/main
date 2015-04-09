@@ -35,12 +35,13 @@ public class HistoryController implements InterfaceForHistory {
 
 	@Override
 	public boolean log() {
-		if (this._logList.size() == SIZE) {
-			this._logList.removeLast();
-		}
+		manageLogListEntryLimit();
 		// clear redoList
 		this._redoList.clear();
-		
+		return executeLog();
+	}
+
+	private boolean executeLog() {
 		DATA previousData = _storageControl.getAllData();
 		this._logList.push(previousData);
 		if (this._logList.contains(previousData) == true) {
@@ -52,12 +53,22 @@ public class HistoryController implements InterfaceForHistory {
 		}
 	}
 
+	private void manageLogListEntryLimit() {
+		if (this._logList.size() == SIZE) {
+			this._logList.removeLast();
+		}
+	}
+
 	@Override
 	public DATA undo() {
 		if (this._logList.isEmpty() == true) {
 			logger.log(Level.WARNING, MESSAGE_ERROR_UNDO);
 			return null;
 		}
+		return executeUndo();
+	}
+
+	private DATA executeUndo() {
 		// retrieve DATA from storage and push into redoList
 		DATA currentData = _storageControl.getAllData();
 		this._redoList.push(currentData);
@@ -72,6 +83,10 @@ public class HistoryController implements InterfaceForHistory {
 			logger.log(Level.WARNING, MESSAGE_ERROR_REDO);
 			return null;
 		}
+		return executeRedo();
+	}
+
+	private DATA executeRedo() {
 		// retrieve DATA from storage and push into redoList
 		DATA currentData = _storageControl.getAllData();
 		this._logList.push(currentData);
