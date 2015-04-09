@@ -36,13 +36,17 @@ public class HistoryController implements InterfaceForHistory {
 	@Override
 	public boolean log() {
 		manageLogListEntryLimit();
-		// clear redoList
-		this._redoList.clear();
-		return executeLog();
+		clearRedoList();
+		DATA previousData = _storageControl.getAllData();
+		return executeLog(previousData);
 	}
 
-	private boolean executeLog() {
-		DATA previousData = _storageControl.getAllData();
+	private void clearRedoList() {
+		// clear redoList
+		this._redoList.clear();
+	}
+
+	private boolean executeLog(DATA previousData) {
 		this._logList.push(previousData);
 		if (this._logList.contains(previousData) == true) {
 			logger.log(Level.INFO, MESSAGE_SUCCESS_LOG);
@@ -65,12 +69,12 @@ public class HistoryController implements InterfaceForHistory {
 			logger.log(Level.WARNING, MESSAGE_ERROR_UNDO);
 			return null;
 		}
-		return executeUndo();
-	}
-
-	private DATA executeUndo() {
 		// retrieve DATA from storage and push into redoList
 		DATA currentData = _storageControl.getAllData();
+		return executeUndo(currentData);
+	}
+
+	private DATA executeUndo(DATA currentData) {
 		this._redoList.push(currentData);
 		// pop DATA from logList and return DATA
 		DATA previousData = this._logList.pop();
@@ -83,12 +87,12 @@ public class HistoryController implements InterfaceForHistory {
 			logger.log(Level.WARNING, MESSAGE_ERROR_REDO);
 			return null;
 		}
-		return executeRedo();
-	}
-
-	private DATA executeRedo() {
 		// retrieve DATA from storage and push into redoList
 		DATA currentData = _storageControl.getAllData();
+		return executeRedo(currentData);
+	}
+
+	private DATA executeRedo(DATA currentData) {
 		this._logList.push(currentData);
 		// pop DATA from redoList and return DATA
 		DATA previousData = this._redoList.pop();
