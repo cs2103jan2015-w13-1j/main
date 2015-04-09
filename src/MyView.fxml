@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="696.0" prefWidth="1200.0" style="-fx-background-color: #f7f7f7;" styleClass="test" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.UIController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="706.0" prefWidth="1210.0" style="-fx-background-color: #f7f7f7; -fx-border-color: #597fbf; -fx-border-width: 5px;" styleClass="test" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.UIController">
    <children>
-      <Label alignment="BOTTOM_LEFT" layoutX="1.0" layoutY="-4.0" style="-fx-font-weight: BOLD; -fx-font-size: 59;" text="HeyBuddy!" textFill="#3b5998">
+      <Label alignment="BOTTOM_LEFT" layoutX="14.0" style="-fx-font-weight: BOLD; -fx-font-size: 59;" text="HeyBuddy!" textFill="#3b5998">
          <font>
             <Font size="59.0" />
          </font>
@@ -21,13 +21,13 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
       </Label>
-      <TextField fx:id="commandField" layoutX="174.0" layoutY="639.0" onAction="#inputCommand" prefHeight="31.0" prefWidth="969.0" />
-      <Label layoutX="47.0" layoutY="637.0" style="-fx-font-weight: BOLD; -fx-font-size: 24;" text="Command:">
+      <TextField fx:id="commandField" layoutX="187.0" layoutY="643.0" onAction="#inputCommand" prefHeight="31.0" prefWidth="969.0" />
+      <Label layoutX="60.0" layoutY="641.0" style="-fx-font-weight: BOLD; -fx-font-size: 24;" text="Command:">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Group layoutX="74.0" layoutY="204.0">
+      <Group layoutX="87.0" layoutY="208.0">
          <children>
             <Group fx:id="settingsGroup">
                <children>
@@ -116,12 +116,12 @@
             </Group>
          </children>
       </Group>
-      <Label fx:id="outputMessageText" layoutX="174.0" layoutY="600.0" prefHeight="35.0" prefWidth="969.0">
+      <Label fx:id="outputMessageText" layoutX="187.0" layoutY="604.0" prefHeight="35.0" prefWidth="969.0">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Label fx:id="motivationalQuote" layoutX="348.0" layoutY="10.0" prefHeight="99.0" prefWidth="779.0" style="-fx-font-style: italic; -fx-font-size: 20; -fx-font-weight: BOLD;" wrapText="true">
+      <Label fx:id="motivationalQuote" layoutX="361.0" layoutY="14.0" prefHeight="99.0" prefWidth="779.0" style="-fx-font-style: italic; -fx-font-size: 20; -fx-font-weight: BOLD;" wrapText="true">
          <font>
             <Font size="28.0" />
          </font>
