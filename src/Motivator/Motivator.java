@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Motivator {
+public class Motivator implements InterfaceForMotivator {
 	
 	private ArrayList<String> _quotes;
 	
@@ -30,15 +30,29 @@ public class Motivator {
 	public Motivator() {
 		initialise();
 	}
-	
-	/**
-	 * @return a random quote
-	 */
+
+	@Override
 	public String getRandomQuotes() {
+		int randomInt = generateRandomInteger();
+		return getQuoteFromIndex(randomInt);
+	}
+
+	/**
+	 * @param randomInt
+	 * @return quote from index
+	 */
+	private String getQuoteFromIndex(int randomInt) {
+		return _quotes.get(randomInt);
+	}
+
+	/**
+	 * @return a random integer
+	 */
+	private int generateRandomInteger() {
 		//note a single Random object is reused here
 	    Random randomGenerator = new Random();
 	    int randomInt = randomGenerator.nextInt(this._quotes.size() - 1);
-		return _quotes.get(randomInt);
+		return randomInt;
 	}
 	
 	/**
