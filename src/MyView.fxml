@@ -72,8 +72,8 @@
                   <TableView fx:id="commandTable" layoutX="5.0" layoutY="11.0" prefHeight="345.0" prefWidth="1038.0">
                     <columns>
                       <TableColumn fx:id="commandFunction" prefWidth="214.0" text="Function" />
-                      <TableColumn fx:id="commandCommand" minWidth="0.0" prefWidth="547.0" text="Command" />
-                        <TableColumn fx:id="commandShortcuts" prefWidth="275.0" text="Shortcuts" />
+                      <TableColumn fx:id="commandCommand" minWidth="0.0" prefWidth="488.0" text="Command" />
+                        <TableColumn fx:id="commandShortcuts" prefWidth="334.0" text="Shortcuts" />
                     </columns>
                   </TableView>
                </children>
