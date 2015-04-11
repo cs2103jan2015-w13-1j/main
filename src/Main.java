@@ -10,7 +10,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			primaryStage.setTitle("HeyBuddy! [v0.4]");
+			primaryStage.setTitle("HeyBuddy! [v0.5]");
 			Parent root = FXMLLoader.load(getClass().getResource("MyView.fxml"));
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -18,7 +18,6 @@ public class Main extends Application {
 			primaryStage.initStyle(StageStyle.UNDECORATED);
 			primaryStage.show();
 
-			//primaryStage.close();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
