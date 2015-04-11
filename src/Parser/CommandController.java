@@ -1,3 +1,6 @@
+/**
+ * @author A0110571W
+ */
 package Parser;
 
 import java.text.ParseException;
@@ -10,12 +13,14 @@ import Logic.LogicController;
 import SortedList.ArchiveSortedList;
 import SortedList.PrioritySortedList;
 import SortedList.ToDoSortedList;
-import Storage.StorageController;
+import Storage.StorageDirectory;
+import Motivator.Motivator;
 
 public class CommandController implements InterfaceForParser {
 
 	private static LogicController logicController = new LogicController();
-	private static StorageController storageController = new StorageController();
+	private static StorageDirectory storageDirectory = new StorageDirectory();
+	private static Motivator motivator = new Motivator();
 	private static Parser parser = new Parser();
 	private int newMaxID = 0;
 	private ArrayList<Task> currentActiveTasks = new ArrayList<Task>();
@@ -106,6 +111,17 @@ public class CommandController implements InterfaceForParser {
 		
 
 	}
+	public String getRandomQuotes(){
+		return motivator.getRandomQuotes();
+	}
+	
+	public String getFileDirectory(){
+		return storageDirectory.getFileDirectory();
+	}
+	
+	public String getFileName(){
+		return storageDirectory.getFileName();
+	}
 	
 	public String executeCommand(String inputCommand){
 		int commandNum = parser.parseIn(inputCommand);
@@ -193,7 +209,7 @@ public class CommandController implements InterfaceForParser {
 						directoryToExport = directoryToExport.concat(" ").concat(splitInput[i]);
 					}
 				}
-				if (storageController.exportToDirectory(directoryToExport) == true) {
+				if (storageDirectory.exportToDirectory(directoryToExport) == true) {
 					return "Current data exported to " + directoryToExport ;
 				} else {
 					return "Fail to export to " + directoryToExport;
@@ -221,8 +237,8 @@ public class CommandController implements InterfaceForParser {
 						directoryToImport = directoryToImport.concat(" ").concat(splitInput[i]);
 					}
 				}
-				if (storageController.importFromDirectory(directoryToImport) == true) {
-					String relativeDirectory = storageController.getFileDirectory();
+				if (storageDirectory.importFromDirectory(directoryToImport) == true) {
+					String relativeDirectory = storageDirectory.getFileDirectory();
 					initialiseTasks();
 					initialiseArchives();
 					System.out.println("success");
@@ -410,8 +426,8 @@ public class CommandController implements InterfaceForParser {
 			}
 		}
 		String specifiedFileDirectory = tempPath;
-		String acknowledgeCheck = storageController.changeFileDirectory(specifiedFileDirectory);
-		result = "File stored at: " + storageController.getFileDirectory();
+		String acknowledgeCheck = storageDirectory.changeFileDirectory(specifiedFileDirectory);
+		result = "File stored at: " + storageDirectory.getFileDirectory();
 		return result;
 	}
 
