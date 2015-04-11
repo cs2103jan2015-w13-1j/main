@@ -332,16 +332,6 @@ public class LogicController implements InterfaceForLogic{
 		activeTaskList.addTask(id, task);
 		return generateRecurringTasks(task, period, recurrenceNum, id);
 	}
-
-	@Override
-	public ToDoSortedList repeatExistingTask(Task task, long period, int recurrenceNum) {
-		assert(!task.getType().equals("generic"));
-		assert(period > 0);
-		logToHistory();
-		int id = getSerialNumber();
-		return generateRecurringTasks(task, period, recurrenceNum, id);
-	}
-
 	
 	/**
 	 * @param task

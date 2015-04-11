@@ -856,6 +856,8 @@ public class CommandController implements InterfaceForParser {
 		
 		//break the commands
 		newMaxID = logicController.getSerialNumber() +1;
+		System.out.println("Before add recurrenceNum : " + newMaxID);
+		logicController.setSerialNumber(newMaxID);
 		String result = new String();
 		String description = new String();
 		int inputLength = input.length;
@@ -1135,6 +1137,10 @@ public class CommandController implements InterfaceForParser {
 			}
 		}
 		
+		
+		logicController.setSerialNumber(newMaxID+recurrenceNum);
+		
+		
 		//format for tasks: integer ID, String description, int priority, ArrayList<String> tags,archived
 		if(isGenericTask){
 		//floating task
@@ -1167,8 +1173,11 @@ public class CommandController implements InterfaceForParser {
 		}
 		reflectChangeToCurrent(retrievedList);
 		
-		newMaxID+=recurrenceNum;
+		/*newMaxID+=recurrenceNum;
+		System.out.println("After add recurrenceNum : " + newMaxID);
 		logicController.setSerialNumber(newMaxID);
+		System.out.println("Logic controller get serial number: " + logicController.getSerialNumber());
+		*/
 		return result;
 	}
 
