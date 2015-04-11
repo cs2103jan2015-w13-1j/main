@@ -48,15 +48,6 @@ public interface InterfaceForLogic {
 	 */
 	ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum);
 	
-	/**
-	 * @param task a single existing task object which is the first task to be repeated.
-	 * 		The task must have a specific start and/or end time.
-	 * 		The task must not be a recurrence task at the start
-	 * @param period the interval between each two recurrence tasks
-	 * @param recurrenceNum the number of recurrence tasks, should be at least 2
-	 * @return the updated toDoSortedList
-	 */
-	ToDoSortedList repeatExistingTask(Task task, long period, int recurrenceNum);
 	
 /***********************************************
 				Read -> Search
