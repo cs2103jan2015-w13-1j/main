@@ -6,7 +6,7 @@
 package Common;
 import java.util.*;
 
-public class Task implements Comparable<Task>{
+public class Task implements Comparable<Task>, InterfaceForTask{
 	
 	private static final int MILISECONDS_IN_HOUR = 3600000;
 	private static final int MILISECONDS_IN_MINUTE = 60000;
@@ -134,43 +134,66 @@ public class Task implements Comparable<Task>{
 		this.setType(STRING_DEADLINE);
 	}
 
-	/**
-	 * @return the type
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getType()
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
 
-	/**
-	 * @param type the type to set
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#setType(java.lang.String)
 	 */
+	@Override
 	public void setType(String type) {
 		this.type = type;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getId()
+	 */
+	@Override
 	public int getId(){
 		return this.id;
 	}
 
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDescription()
+	 */
+	@Override
 	public String getDescription(){
 		return this.description;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getPriority()
+	 */
+	@Override
 	public int getPriority(){
 		return this.priority;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getTags()
+	 */
+	@Override
 	public ArrayList<String> getTags(){
 		return this.tags;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#isArchived()
+	 */
+	@Override
 	public boolean isArchived(){
 		return this.archived;
 	}
 	
-	/**
-	 * @return the 'time' of the task
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getTime()
 	 */
+	@Override
 	public Date getTime() {
 		if (this.getType() == STRING_MEETING) {
 			return this.getStartTime();
@@ -181,38 +204,42 @@ public class Task implements Comparable<Task>{
 		}
 	}
 	
-	/**
-	 * Change the original description to the new description provided
-	 * @param newDescription
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changeDescription(java.lang.String)
 	 */
+	@Override
 	public void changeDescription(String newDescription){
 		this.description = newDescription;
 	}
 	
-	/**
-	 * Change the priority to the new priority provided
-	 * @param newPriority
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changePriority(int)
 	 */
+	@Override
 	public void changePriority(int newPriority){
 		this.priority = newPriority;
 	}
 	
-	/**
-	 * Add the new tag provided to the task
-	 * @param newTag
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#addTag(java.lang.String)
 	 */
+	@Override
 	public void addTag(String newTag){
 		this.tags.add(newTag);
 	}
 	
-	/**
-	 * Remove a tag specified from the tags
-	 * @param toBeRemovedTag
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#removeTag(java.lang.String)
 	 */
+	@Override
 	public void removeTag(String toBeRemovedTag){
 		this.tags.remove(toBeRemovedTag);
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#hasTagExact(java.lang.String)
+	 */
+	@Override
 	public boolean hasTagExact(String searchTag) {
 		for (String tag : getTags()) {
 			if (tag.equals(searchTag)){
@@ -222,6 +249,10 @@ public class Task implements Comparable<Task>{
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#containsTag(java.lang.String)
+	 */
+	@Override
 	public boolean containsTag(String searchTag) {
 		for (String tag : getTags()) {
 			if (tag.toLowerCase().contains(searchTag.toLowerCase())){
@@ -231,107 +262,133 @@ public class Task implements Comparable<Task>{
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getStartTime()
+	 */
+	@Override
 	public Date getStartTime(){
 		return this.startTime;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getEndTime()
+	 */
+	@Override
 	public Date getEndTime(){
 		return this.endTime;
 	}
 	
-	/**
-	 * @return the duration of the Task in terms of milliseconds.
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDuration()
 	 */
+	@Override
 	public long getDuration() {
 		return this.endTime.getTime() - this.startTime.getTime();
 	}
 	
-	/**
-	 * @return the duration of the Task in terms of minutes
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDurationInMinutes()
 	 */
+	@Override
 	public int getDurationInMinutes() {
 		return (int)(this.getDuration() / MILISECONDS_IN_MINUTE);
 	}
 	
-	/**
-	 * @return the duration of the Task in terms of hours
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDurationInHours()
 	 */
+	@Override
 	public int getDurationInHours() {
 		return (int)(this.getDuration() / MILISECONDS_IN_HOUR);
 	}
 	
-	/**
-	 * Change the start time to the new start time provided
-	 * @param newDate
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changeStartTime(Common.Date)
 	 */	
+	@Override
 	public void changeStartTime(Date newStartTime){
 		this.startTime = newStartTime;
 	}
 	
-	/**
-	 * Change the start time to the new start time provided
-	 * @param newDate
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changeEndTime(Common.Date)
 	 */	
+	@Override
 	public void changeEndTime(Date newEndTime){
 		this.endTime = newEndTime;
 	}
 	
-	/**
-	 * Add start and end time
-	 * @param start
-	 * @param end
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#addStartAndEndTime(Common.Date, Common.Date)
 	 */
+	@Override
 	public void addStartAndEndTime(Date start, Date end) {
 		this.startTime = start;
 		this.endTime = end;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDeadline()
+	 */
+	@Override
 	public Date getDeadline(){
 		return this.deadline;
 	}
 
-	/**
-	 * Change the deadline to the new deadline provided
-	 * @param newDate
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changeDeadline(Common.Date)
 	 */	
+	@Override
 	public void changeDeadline(Date newDeadline){
 		this.deadline = newDeadline;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#addDeadline(Common.Date)
+	 */
+	@Override
 	public void addDeadline(Date deadline) {
 		this.deadline = deadline;
 	}
 	
-	/**
-	 * @return the finishedTime
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getFinishedTime()
 	 */
+	@Override
 	public Date getFinishedTime() {
 		return finishedTime;
 	}
 
-	/**
-	 * @param finishedTime the finishedTime to set
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#setFinishedTime(Common.Date)
 	 */
+	@Override
 	public void setFinishedTime(Date finishedTime) {
 		this.finishedTime = finishedTime;
 	}
 	
-	/**
-	 * Archive the task
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#moveToArchive(Common.Date)
 	 */
+	@Override
 	public void moveToArchive(Date finishedTime){
 		this.archived = true;
 		this.finishedTime = finishedTime;
 	}
 	
-	/**
-	 * Remove the task from archive, basically means mark this task as unfinished
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#removeFromArchive()
 	 */
+	@Override
 	public void removeFromArchive(){
 		this.archived = false;
 		this.finishedTime = null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#toString()
+	 */
+	@Override
 	public String toString() {
 		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(),
 								getPriority(), getTags(), isArchived(), getType(),
@@ -426,37 +483,42 @@ public class Task implements Comparable<Task>{
 		}
 	};
 
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#compareTo(Common.Task)
+	 */
 	@Override
 	public int compareTo(Task other) {
 		return this.getId() - other.getId();
 	}
 
-	/**
-	 * @return the recurrenceId
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getRecurrenceId()
 	 */
+	@Override
 	public int getRecurrenceId() {
 		return recurrenceId;
 	}
 	
-	/**
-	 * @return whether the task is recurrent
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#isRecurrence()
 	 */
+	@Override
 	public boolean isRecurrence() {
 		return recurrenceId>-1;
 	}
 
-	/**
-	 * @param recurrenceId the recurrenceId to set
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#setRecurrenceId(int)
 	 */
+	@Override
 	public void setRecurrenceId(int recurrenceId) {
 		this.recurrenceId = recurrenceId;
 	}
 
-	/**
-	 * Copy a current task to a certain date with the interval period given
-	 * @param period the interval between this task to the copied task
-	 * @return a new Task object representing the copied task
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#copyWithInterval(int, long)
 	 */
+	@Override
 	public Task copyWithInterval(int id, long period) {
 		Task task;
 		ArrayList<String> tags = new ArrayList<String>();
@@ -476,11 +538,18 @@ public class Task implements Comparable<Task>{
 		return task;
 	}
 	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object other) {	
 		return this.toString().equals(other.toString());
 	}
 
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getOverdueDays()
+	 */
+	@Override
 	public int getOverdueDays() {
 		if (this.getFinishedTime()==null) {
 			Date now = new Date();
@@ -494,6 +563,10 @@ public class Task implements Comparable<Task>{
 		return -1;
 	}
 
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#isOnDate(java.lang.String)
+	 */
+	@Override
 	public boolean isOnDate(String date) {
 		Date dateOfTask = this.getTime();
 		if (dateOfTask != null) {
