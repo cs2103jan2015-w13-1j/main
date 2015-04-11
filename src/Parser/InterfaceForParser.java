@@ -10,5 +10,7 @@ public interface InterfaceForParser {
 	public String executeCommand(String command);
 	public ArrayList<Task> returnTasks();
 	public ArrayList<Task> returnArchive();
-	
+	public String getRandomQuotes();
+	public String getFileDirectory();
+	public String getFileName();
 }

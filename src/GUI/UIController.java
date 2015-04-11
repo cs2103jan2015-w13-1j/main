@@ -112,8 +112,8 @@ public class UIController implements Initializable {
 	TableColumn<UITask, String> archiveDescription;
 
 	private CommandController commandController = new CommandController();
-	private StorageController storageController = new StorageController();
-	private Motivator motivator = new Motivator();
+	//private StorageController storageController = new StorageController();
+	//private Motivator motivator = new Motivator();
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 
@@ -130,11 +130,11 @@ public class UIController implements Initializable {
 
 		initialiseCommand();
 
-		motivationalQuote.setText(motivator.getRandomQuotes());
+		motivationalQuote.setText(commandController.getRandomQuotes());
 
-		fileDirectory.setText(storageController.getFileDirectory());
+		fileDirectory.setText(commandController.getFileDirectory());
 
-		storageFileName.setText(storageController.getFileName());
+		storageFileName.setText(commandController.getFileName());
 
 	}
 
@@ -211,7 +211,7 @@ public class UIController implements Initializable {
 		} else if (firstCommand.equals(STRING_DIRECTORY)) {
 			String[] splitMessage = message.split(STRING_AT);
 			fileDirectory.setText(splitMessage[1]);
-			storageFileName.setText(storageController.getFileName());
+			storageFileName.setText(commandController.getFileName());
 		} else if (firstCommand.equals(STRING_IMPORT)) {
 			if (message.contains(STRING_FROM)) {
 				String[] splitMessage = message.split(STRING_FROM);
@@ -219,15 +219,15 @@ public class UIController implements Initializable {
 				addToTaskDisplay();
 				archiveList = commandController.returnArchive();
 				addToArchiveDisplay();
-				fileDirectory.setText(storageController.getFileDirectory());
-				storageFileName.setText(storageController.getFileName());
+				fileDirectory.setText(commandController.getFileDirectory());
+				storageFileName.setText(commandController.getFileName());
 			}
 		} else if (firstCommand.equals(STRING_EXIT)) {
 			Stage stage = (Stage) commandField.getScene().getWindow();
 			stage.close();
 		} else if (firstCommand.equals(STRING_CHANGEMOTTO)) {
 			message = STRING_NEW_MOTTO_FOR_THE_DAY;
-			String quote = motivator.getRandomQuotes();
+			String quote = commandController.getRandomQuotes();
 			motivationalQuote.setText(quote);
 		} else {
 			taskList = commandController.returnTasks();
