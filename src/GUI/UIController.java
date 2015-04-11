@@ -109,7 +109,7 @@ public class UIController implements Initializable {
 	TableColumn<UITask, String> archiveDescription;
 
 	private CommandController commandController = new CommandController();
-	public static ArrayList<Task> taskList = new ArrayList<Task>();
+	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 
 	final ObservableList<UITask> uiTaskList = FXCollections.observableArrayList();
@@ -131,6 +131,21 @@ public class UIController implements Initializable {
 
 		storageFileName.setText(commandController.getFileName());
 
+	}
+	
+	public void inputCommand(ActionEvent event) {
+
+		String input = commandField.getText();
+		commandField.clear();
+
+		String[] splitCommand = input.split(" ");
+		String firstCommand = splitCommand[0];
+
+		String message = commandController.executeCommand(input);
+
+		message = commandFilter(splitCommand, firstCommand, message);
+
+		outputMessageText.setText(message);
 	}
 
 	private void initialiseCommand() {
@@ -183,47 +198,19 @@ public class UIController implements Initializable {
 		addToTaskDisplay();
 	}
 
-	public void inputCommand(ActionEvent event) {
-
-		String input = commandField.getText();
-		commandField.clear();
-
-		String[] splitCommand = input.split(" ");
-		String firstCommand = splitCommand[0];
-
-		String message = commandController.executeCommand(input);
-
-		message = commandFilter(splitCommand, firstCommand, message);
-
-		outputMessageText.setText(message);
-	}
-
 	private String commandFilter(String[] splitCommand, String firstCommand,
 			String message) {
 		if (firstCommand.charAt(0) == CHAR_G) {
 			executeGoTo(splitCommand[1]);
 			message = displayGotoMessage(splitCommand, message);
 		} else if (firstCommand.equals(STRING_DIRECTORY)) {
-			String[] splitMessage = message.split(STRING_AT);
-			fileDirectory.setText(splitMessage[1]);
-			storageFileName.setText(commandController.getFileName());
+			displayDirectory(message);
 		} else if (firstCommand.equals(STRING_IMPORT)) {
-			if (message.contains(STRING_FROM)) {
-				String[] splitMessage = message.split(STRING_FROM);
-				taskList = commandController.returnTasks();
-				addToTaskDisplay();
-				archiveList = commandController.returnArchive();
-				addToArchiveDisplay();
-				fileDirectory.setText(commandController.getFileDirectory());
-				storageFileName.setText(commandController.getFileName());
-			}
+			displayImport(message);
 		} else if (firstCommand.equals(STRING_EXIT)) {
-			Stage stage = (Stage) commandField.getScene().getWindow();
-			stage.close();
+			executeExit();
 		} else if (firstCommand.equals(STRING_CHANGEMOTTO)) {
-			message = MESSAGE_NEW_MOTTO;
-			String quote = commandController.getRandomQuotes();
-			motivationalQuote.setText(quote);
+			message = displayMotivationalQuote();
 		} else {
 			taskList = commandController.returnTasks();
 			addToTaskDisplay();
@@ -231,6 +218,32 @@ public class UIController implements Initializable {
 			addToArchiveDisplay();
 		}
 		return message;
+	}
+
+	private String displayMotivationalQuote() {
+		String message;
+		message = MESSAGE_NEW_MOTTO;
+		String quote = commandController.getRandomQuotes();
+		motivationalQuote.setText(quote);
+		return message;
+	}
+
+	private void displayDirectory(String message) {
+		String[] splitMessage = message.split(STRING_AT);
+		fileDirectory.setText(splitMessage[1]);
+		storageFileName.setText(commandController.getFileName());
+	}
+
+	private void displayImport(String message) {
+		if (message.contains(STRING_FROM)) {
+			String[] splitMessage = message.split(STRING_FROM);
+			taskList = commandController.returnTasks();
+			addToTaskDisplay();
+			archiveList = commandController.returnArchive();
+			addToArchiveDisplay();
+			fileDirectory.setText(commandController.getFileDirectory());
+			storageFileName.setText(commandController.getFileName());
+		}
 	}
 
 	private String displayGotoMessage(String[] splitCommand, String message) {
@@ -243,8 +256,23 @@ public class UIController implements Initializable {
 		}
 		return message;
 	}
+	
+	private void executeExit() {
+		Stage stage = (Stage) commandField.getScene().getWindow();
+		stage.close();
+	}
+	
+	private void executeGoTo(String input) {
+		if (input.charAt(0) == CHAR_T) {
+			taskGroup.toFront();
+		} else if (input.charAt(0) == CHAR_C) {
+			helpGroup.toFront();
+		} else if (input.charAt(0) == CHAR_S) {
+			settingsGroup.toFront();
+		}
+	}
 
-	public void addToTaskDisplay() {
+	private void addToTaskDisplay() {
 		uiTaskList.clear();
 
 		SimpleDateFormat df = new SimpleDateFormat(STRING_DD_MM_YYYY);
@@ -267,6 +295,23 @@ public class UIController implements Initializable {
 
 			UITask entry = new UITask(id, description, priority, start, end, due, tags);
 			uiTaskList.add(entry);
+		}
+	}
+	
+	private void addToArchiveDisplay() {
+		uiArchiveList.clear();
+		for (int i = 0; i < archiveList.size(); i++) {
+			int id = i + 1;
+
+			String description = archiveList.get(i).getDescription();
+
+			String priority = Integer.toString(archiveList.get(i).getPriority());
+			String start = null;
+			String end = null;
+			String due = null;
+			String tags = null;
+			UITask entry = new UITask(id, description, priority, start, end, due, tags);
+			uiArchiveList.add(entry);
 		}
 	}
 
@@ -341,33 +386,6 @@ public class UIController implements Initializable {
 			priority = NOT_APPLICABLE;
 		}
 		return priority;
-	}
-
-	public void addToArchiveDisplay() {
-		uiArchiveList.clear();
-		for (int i = 0; i < archiveList.size(); i++) {
-			int id = i + 1;
-
-			String description = archiveList.get(i).getDescription();
-
-			String priority = Integer.toString(archiveList.get(i).getPriority());
-			String start = null;
-			String end = null;
-			String due = null;
-			String tags = null;
-			UITask entry = new UITask(id, description, priority, start, end, due, tags);
-			uiArchiveList.add(entry);
-		}
-	}
-
-	private void executeGoTo(String input) {
-		if (input.charAt(0) == CHAR_T) {
-			taskGroup.toFront();
-		} else if (input.charAt(0) == CHAR_C) {
-			helpGroup.toFront();
-		} else if (input.charAt(0) == CHAR_S) {
-			settingsGroup.toFront();
-		}
 	}
 
 }
