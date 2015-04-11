@@ -329,7 +329,9 @@ public class UIController implements Initializable {
 
 	private String getDescription(int i) {
 		String description = taskList.get(i).getDescription();
-		
+		if (taskList.get(i).isRecurrence() == true){
+			description = description + " [R]";
+		}
 		return description;
 	}
 
