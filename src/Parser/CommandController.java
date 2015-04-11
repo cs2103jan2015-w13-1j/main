@@ -915,8 +915,8 @@ public class CommandController implements InterfaceForParser {
 				return result = "Error in priority given. Should be a number.";
 			}
 		}
-		if(userInput.contains("-tags")){
-			int point = userInput.indexOf("-tags");
+		if(userInput.contains("-tag")){
+			int point = userInput.indexOf("-tag");
 			try{
 				for(int j = point+1;j<userInput.size();j++){
 					if(userInput.get(j).charAt(0)!='-'){
@@ -1175,8 +1175,7 @@ public class CommandController implements InterfaceForParser {
 
 
 
-	private Date determineMeetingTime(String positionCheck,
-			ArrayList<String> dateAsString) {
+	private Date determineMeetingTime(String positionCheck, ArrayList<String> dateAsString) {
 		//meeting syntax (-on): dd MMM yyyy from HHmm to HHmm OR dd/MM/yyyy from HHmm to HHmm
 		int specifiedDay = 0;
 		int specifiedMonth = 0;
@@ -1208,8 +1207,13 @@ public class CommandController implements InterfaceForParser {
 			}
 			
 			int position = dateAsString.indexOf(positionCheck);
-			specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-			specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+			if(dateAsString.get(position+1).contains(":")){
+				int minutePosition = dateAsString.get(position+1).indexOf(":");
+				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, minutePosition));
+				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(minutePosition+1,minutePosition+3));
+			}else{
+				return null;
+			}
 			
 			/*
 			position = dateAsString.indexOf("to");
@@ -1235,8 +1239,13 @@ public class CommandController implements InterfaceForParser {
 				specifiedYear = Integer.parseInt(dateAsString.get(2));
 			}
 			position = dateAsString.indexOf(positionCheck);
-			specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-			specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+			if(dateAsString.get(position+1).contains(":")){
+				int minutePosition = dateAsString.get(position+1).indexOf(":");
+				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, minutePosition));
+				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(minutePosition+1,minutePosition+3));
+			}else{
+				return null;
+			}
 			
 			/*
 			position = dateAsString.indexOf("to");
@@ -1266,11 +1275,13 @@ public class CommandController implements InterfaceForParser {
 		}else{
 			isNormalInputType = true;
 		}
+		
 		if(dateAsString.contains("at")){
 			timeGiven = true;
 		}else{
 			timeGiven = false;
 		}
+		
 		if(isSlashInputType){
 			//separate the fields
 			String[] slashInput = dateAsString.get(0).split("/");
@@ -1285,8 +1296,9 @@ public class CommandController implements InterfaceForParser {
 			}
 			if(timeGiven){
 				int position = dateAsString.indexOf("at");
-				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+				int minutePosition = dateAsString.get(position+1).indexOf(":");
+				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, minutePosition));
+				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(minutePosition+1,minutePosition+3));
 			}else{
 				if(dateAsString.size()>1){
 					//i.e time given, but no "at" dd/MM/yyyy HHmm -> syntax error, need "at"
@@ -1312,11 +1324,16 @@ public class CommandController implements InterfaceForParser {
 					Calendar today = Calendar.getInstance();
 					specifiedYear = today.get(Calendar.YEAR);
 				}else{
-					//year specified
 					specifiedYear = Integer.parseInt(dateAsString.get(2));
 				}
-				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
+				if(dateAsString.get(position+1).contains(":")){
+					int minutePosition = dateAsString.get(position+1).indexOf(":");
+					specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, minutePosition));
+					specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(minutePosition+1,minutePosition+3));
+				}else{
+					return null;
+				}
+				
 				
 			}else{
 				if(dateAsString.size()<3){
@@ -1326,7 +1343,11 @@ public class CommandController implements InterfaceForParser {
 					
 				}else{
 					//dd MM yyyy OR dd MM HHmm
-					specifiedYear = Integer.parseInt(dateAsString.get(2));
+					if(dateAsString.get(2).contains(":")){
+						return null;
+					}else{
+						specifiedYear = Integer.parseInt(dateAsString.get(2));
+					}
 				}
 				specifiedHour = 23;
 				specifiedMinutes =59;
