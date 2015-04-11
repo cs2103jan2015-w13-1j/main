@@ -3,7 +3,6 @@ package Logic;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import Common.DATA;
 import Common.Date;
 import Common.Task;
 import History.HistoryController;

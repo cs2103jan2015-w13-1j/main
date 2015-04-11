@@ -6,7 +6,7 @@
 
 package History;
 
-import Common.DATA;
+import Logic.DATA;
 
 public interface InterfaceForHistory {
 	

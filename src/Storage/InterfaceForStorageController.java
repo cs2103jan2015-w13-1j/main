@@ -6,7 +6,7 @@
 
 package Storage;
 
-import Common.DATA;
+import Logic.DATA;
 
 public interface InterfaceForStorageController {
 	

@@ -10,8 +10,8 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import Logic.DATA;
 import Storage.StorageController;
-import Common.DATA;
 
 public class HistoryController implements InterfaceForHistory {
 

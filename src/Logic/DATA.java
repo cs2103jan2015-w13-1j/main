@@ -1,7 +1,6 @@
 // @author A0113598X
-package Common;
+package Logic;
 
-import Logic.TaskList;
 
 /**
  * To store all the data
