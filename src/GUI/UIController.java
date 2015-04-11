@@ -3,7 +3,6 @@
  */
 package GUI;
 
-//import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,22 +23,20 @@ import javafx.scene.control.Label;
 //import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import Common.Task;
-import Motivator.Motivator;
 import Parser.CommandController;
-import Storage.StorageController;
 
 public class UIController implements Initializable {
 
-	private static final int INT_MINUS_ONE = -1;
+	private static final int NOT_FOUND = -1;
 	private static final char CHAR_S = 's';
 	private static final char CHAR_C = 'c';
 	private static final char CHAR_T = 't';
 	private static final char CHAR_G = 'g';
-	private static final String STRING_DASH = "-";
-	private static final String STRING_YOU_ARE_AT_THE_SETTINGS_PANEL = "You are at the settings panel";
-	private static final String STRING_YOU_ARE_AT_THE_COMMANDS_PANEL = "You are at the commands panel";
-	private static final String STRING_YOU_ARE_AT_THE_TASK_PANEL = "You are at the task panel";
-	private static final String STRING_NEW_MOTTO_FOR_THE_DAY = "New motto for the day!";
+	private static final String NOT_APPLICABLE = "-";
+	private static final String MESSAGE_SETTINGS_PANEL = "You are at the settings panel";
+	private static final String MESSAGE_COMMANDS_PANEL = "You are at the commands panel";
+	private static final String MESSAGE_TASK_PANEL = "You are at the task panel";
+	private static final String MESSAGE_NEW_MOTTO = "New motto for the day!";
 	private static final String STRING_CHANGEMOTTO = "changemotto";
 	private static final String STRING_EXIT = "exit";
 	private static final String STRING_FROM = "from ";
@@ -112,8 +109,6 @@ public class UIController implements Initializable {
 	TableColumn<UITask, String> archiveDescription;
 
 	private CommandController commandController = new CommandController();
-	//private StorageController storageController = new StorageController();
-	//private Motivator motivator = new Motivator();
 	public static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 
@@ -144,26 +139,26 @@ public class UIController implements Initializable {
 		commandShortcuts.setCellValueFactory(new PropertyValueFactory<UICommand, String>(STRING_SHORTCUTS));
 		commandTable.setItems(uiCommandList);
 		uiCommandList.add(new UICommand("Add a new task", "add <task description> [option: -date|-priority|-tag|-recurring] <value>", "add <task description> -d|p|t|r <value>"));
-		uiCommandList.add(new UICommand("Add tags to task","addtag <taskID> <value>", STRING_DASH));
-		uiCommandList.add(new UICommand("Archive a task", "archive <taskID>", STRING_DASH));
-		uiCommandList.add(new UICommand("Change an entry", "change <taskID> [option: desc|priority] <new value>", STRING_DASH));
-		uiCommandList.add(new UICommand("Change a deadline", "change <taskID> date <new date> at <new time>", STRING_DASH));
-		uiCommandList.add(new UICommand("Change a meeting", "change <taskID> date <new date> start <new start> end <new end>", STRING_DASH));
-		uiCommandList.add(new UICommand("Change a recurring entry", "change all <taskID> [option: desc|priority] <new value>", STRING_DASH));
-		uiCommandList.add(new UICommand("Change a recurring deadline", "change all <taskID> date <new time>", STRING_DASH));
-		uiCommandList.add(new UICommand("Change a recurring meeting", "change all <taskID> date start <new start> end <new end>", STRING_DASH));
-		uiCommandList.add(new UICommand("Change directory", "directory <folder>|<absolute path of the folder>", STRING_DASH));
-		uiCommandList.add(new UICommand("Change motto of the day", STRING_CHANGEMOTTO, STRING_DASH));
-		uiCommandList.add(new UICommand("Default tables view", "refresh", STRING_DASH));
+		uiCommandList.add(new UICommand("Add tags to task","addtag <taskID> <value>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Archive a task", "archive <taskID>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change an entry", "change <taskID> [option: desc|priority] <new value>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change a deadline", "change <taskID> date <new date> at <new time>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change a meeting", "change <taskID> date <new date> start <new start> end <new end>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change a recurring entry", "change all <taskID> [option: desc|priority] <new value>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change a recurring deadline", "change all <taskID> date <new time>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change a recurring meeting", "change all <taskID> date start <new start> end <new end>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change directory", "directory <folder>|<absolute path of the folder>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change motto of the day", STRING_CHANGEMOTTO, NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Default tables view", "refresh", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Delete an entry", "delete current|archive <taskID>", "delete <taskID>, delete archive <taskID>"));
-		uiCommandList.add(new UICommand("Exit program", STRING_EXIT, STRING_DASH));
-		uiCommandList.add(new UICommand("Export existing storage file", "export to <absolute path of the file>", STRING_DASH));
+		uiCommandList.add(new UICommand("Exit program", STRING_EXIT, NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Export existing storage file", "export to <absolute path of the file>", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Go to a panel", "goto <panel name>", "g t/c/s"));
-		uiCommandList.add(new UICommand("Import from existing storage file", "import from <absolute path of the file>", STRING_DASH));
-		uiCommandList.add(new UICommand("Removing tags from a task", "removetag <taskID> <value>", STRING_DASH));
-		uiCommandList.add(new UICommand("Searching for tasks", "search [option: desc|date|priority|tag] <value> or search today|tmr", STRING_DASH));
-		uiCommandList.add(new UICommand("Sort list", "sort [either: date|priority|tag]", STRING_DASH));
-		uiCommandList.add(new UICommand("Undo last user input","undo", STRING_DASH));
+		uiCommandList.add(new UICommand("Import from existing storage file", "import from <absolute path of the file>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Removing tags from a task", "removetag <taskID> <value>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Searching for tasks", "search [option: desc|date|priority|tag] <value> or search today|tmr", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Sort list", "sort [either: date|priority|tag]", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Undo last user input","undo", NOT_APPLICABLE));
 
 	}
 
@@ -226,7 +221,7 @@ public class UIController implements Initializable {
 			Stage stage = (Stage) commandField.getScene().getWindow();
 			stage.close();
 		} else if (firstCommand.equals(STRING_CHANGEMOTTO)) {
-			message = STRING_NEW_MOTTO_FOR_THE_DAY;
+			message = MESSAGE_NEW_MOTTO;
 			String quote = commandController.getRandomQuotes();
 			motivationalQuote.setText(quote);
 		} else {
@@ -240,11 +235,11 @@ public class UIController implements Initializable {
 
 	private String displayGotoMessage(String[] splitCommand, String message) {
 		if (splitCommand[1].charAt(0) == CHAR_T) {
-			message = STRING_YOU_ARE_AT_THE_TASK_PANEL;
+			message = MESSAGE_TASK_PANEL;
 		} else if (splitCommand[1].charAt(0) == CHAR_C) {
-			message = STRING_YOU_ARE_AT_THE_COMMANDS_PANEL;
+			message = MESSAGE_COMMANDS_PANEL;
 		} else if (splitCommand[1].charAt(0) == CHAR_S) {
-			message = STRING_YOU_ARE_AT_THE_SETTINGS_PANEL;
+			message = MESSAGE_SETTINGS_PANEL;
 		}
 		return message;
 	}
@@ -290,20 +285,20 @@ public class UIController implements Initializable {
 		String due;
 		try {
 			if (taskList.get(i).getDeadline() == null) {
-				if (taskList.get(i).getOverdueDays() == INT_MINUS_ONE) {
+				if (taskList.get(i).getOverdueDays() == NOT_FOUND) {
 					due = df.format(taskList.get(i).getStartTime());
 				} else {
 					due = Integer.toString(taskList.get(i).getOverdueDays()) + STRING_DAYS_OVERDUE;
 				}
 			} else {
-				if (taskList.get(i).getOverdueDays() == INT_MINUS_ONE) {
+				if (taskList.get(i).getOverdueDays() == NOT_FOUND) {
 					due = df.format(taskList.get(i).getDeadline());
 				} else {
 					due = Integer.toString(taskList.get(i).getOverdueDays()) + STRING_DAYS_OVERDUE;
 				}
 			}
 		} catch (NullPointerException e) {
-			due = STRING_DASH;
+			due = NOT_APPLICABLE;
 		}
 		return due;
 	}
@@ -317,7 +312,7 @@ public class UIController implements Initializable {
 				end = tf.format(taskList.get(i).getEndTime());
 			}
 		} catch (NullPointerException e) {
-			end = STRING_DASH;
+			end = NOT_APPLICABLE;
 		}
 		return end;
 	}
@@ -327,7 +322,7 @@ public class UIController implements Initializable {
 		try {
 			start = tf.format(taskList.get(i).getStartTime());
 		} catch (NullPointerException e){
-			start = STRING_DASH;
+			start = NOT_APPLICABLE;
 		}
 		return start;
 	}
@@ -341,7 +336,7 @@ public class UIController implements Initializable {
 	private String getPriority(int i) {
 		String priority = Integer.toString(taskList.get(i).getPriority());
 		if (priority.equals("-1")) {
-			priority = STRING_DASH;
+			priority = NOT_APPLICABLE;
 		}
 		return priority;
 	}
