@@ -1,6 +1,5 @@
-/**
- * @author Kangsoon
- */
+//@author A0110837L
+
 package GUI;
 
 import java.net.URL;

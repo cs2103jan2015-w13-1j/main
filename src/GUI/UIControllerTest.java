@@ -1,6 +1,4 @@
-/**
- * @author Kangsoon
- */
+//@author Kangsoon
 
 package GUI;
 
