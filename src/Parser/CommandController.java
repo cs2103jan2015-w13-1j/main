@@ -1,6 +1,4 @@
-/**
- * @author A0110571W
- */
+// @author A0110571W
 package Parser;
 
 import java.text.ParseException;
@@ -1255,13 +1253,6 @@ public class CommandController implements InterfaceForParser {
 			}else{
 				return null;
 			}
-			
-			/*
-			position = dateAsString.indexOf("to");
-			specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, 2));
-			specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(2,4));
-			endTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
-			*/
 			
 		}
 		meetingTime = Date.getDayTime(specifiedYear, specifiedMonth, specifiedDay, specifiedHour, specifiedMinutes);
