@@ -95,9 +95,10 @@ public class Parser {
 			}case("redo"):{
 				commandNum = 15;
 				break;
+			}case("unarchive"):{
+				commandNum = 16;
+				break;
 			}
-			default:
-				System.out.println("Invalid command");
 		}
 		
 		return commandNum;

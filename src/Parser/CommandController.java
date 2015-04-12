@@ -174,12 +174,35 @@ public class CommandController implements InterfaceForParser {
 			}case(15):{
 				result = redoCommand();
 				break;
+			}case(16):{
+				result = unarchiveCommand(splitInput);
+				break;
 			}default:{
 				result = "Invalid Command";
 			}
 		}
 		return result;
 	}
+	private String unarchiveCommand(String[] splitInput) {
+		//syntax unarchive <taskID>
+		String result = new String();
+		int position = 0;
+		ToDoSortedList retrievedActiveTaskList = new ToDoSortedList();
+		int taskIDFromUI = Integer.parseInt(splitInput[position+1]);
+		try{
+			Task taskToUnArchive = currentArchives.get(taskIDFromUI-1);
+			retrievedActiveTaskList = logicController.unArchive(taskToUnArchive);
+			result = "Task moved back from archive: " + taskToUnArchive.getDescription();
+		}catch(Exception e){
+			result = "Cannot unarchive task";
+		}
+		reflectChangeToCurrent(retrievedActiveTaskList);
+		return result;
+	}
+
+
+
+
 	private String redoCommand() {
 		boolean isSuccessful = logicController.redo();
 		refreshCurrent();
@@ -239,7 +262,6 @@ public class CommandController implements InterfaceForParser {
 					String relativeDirectory = storageDirectory.getFileDirectory();
 					initialiseTasks();
 					initialiseArchives();
-					System.out.println("success");
 					return "Imported from " + relativeDirectory ;
 				} else {
 					return "Fail to import file. File invalid.";
@@ -402,7 +424,7 @@ public class CommandController implements InterfaceForParser {
 			currentActiveTasks.add(task);
 		}
 	}
-	String refreshCommand() {
+	private String refreshCommand() {
 		String result = "Display refreshed to current tasks";
 		
 		try{
@@ -415,7 +437,7 @@ public class CommandController implements InterfaceForParser {
 	}
 
 
-	String fileDirectoryCommand(String[] splitInput) {
+	private String fileDirectoryCommand(String[] splitInput) {
 		String result = new String();
 		String tempPath = splitInput[1];
 		if (splitInput.length > 2) {
@@ -430,7 +452,7 @@ public class CommandController implements InterfaceForParser {
 	}
 
 
-	String modifyCommand(String[] splitInput) {
+	private String modifyCommand(String[] splitInput) {
 		//for recurring changes, change all <taskID> <..parameters>
 		String result = new String();
 		String modifyParameter = new String();
@@ -458,10 +480,82 @@ public class CommandController implements InterfaceForParser {
 		}
 		
 		Task taskToChange = currentActiveTasks.get(taskID);
+		String taskType = taskToChange.getType();
 		switch(modifyParameter){
-			case("date"):{
+			case("time"):{
+				ArrayList<String> dateAsString = new ArrayList<String>();
+				for(int i=inputArray.indexOf("time")+1; i<inputArray.size(); i++){
+					dateAsString.add(inputArray.get(i));
+				}
+				if(isChangeAll){
+					if(taskType.equals("generic")){
+						return "Error, no time to change";
+					}else if(taskType.equals("deadline")){
+						try{
+							int positionOfTime = dateAsString.indexOf("date") +1;
+							String timeAsString = dateAsString.get(positionOfTime);
+							int positionOfMinuteMark = dateAsString.get(positionOfTime).indexOf(":");
+							String hourAsString = timeAsString.substring(0, positionOfMinuteMark);
+							String minutesAsString = timeAsString.substring(positionOfMinuteMark+1, positionOfMinuteMark+3);
+							int newHour = Integer.parseInt(hourAsString);
+							int newMinutes = Integer.parseInt(minutesAsString);
+							retrievedSortedList = logicController.editAlldeadlineTime(taskToChange, newHour, newMinutes);
+							reflectChangeToCurrent(retrievedSortedList);
+							return "Time changed";
+						}catch(NumberFormatException e){
+							return "Wrong format for time";
+						}
+					}else if(taskType.equals("meeting")){
+						if(dateAsString.contains("start") && dateAsString.contains("end")){
+							int positionOfTime = dateAsString.indexOf("start") +1;
+							int positionOfMinuteMark = dateAsString.get(positionOfTime).indexOf(":");
+							String timeAsString = dateAsString.get(positionOfTime);
+							String hourAsString = timeAsString.substring(0, positionOfMinuteMark);
+							String minutesAsString = timeAsString.substring(positionOfMinuteMark+1, positionOfMinuteMark+3);
+							int newStartHour = Integer.parseInt(hourAsString);
+							int newStartMinutes = Integer.parseInt(minutesAsString);
+							positionOfTime = dateAsString.indexOf("end")+1;
+							positionOfMinuteMark = dateAsString.get(positionOfTime).indexOf(":");
+							timeAsString = dateAsString.get(positionOfTime);
+							hourAsString = timeAsString.substring(0, positionOfMinuteMark);
+							minutesAsString = timeAsString.substring(positionOfMinuteMark+1, positionOfMinuteMark+3);
+							int newEndHour = Integer.parseInt(hourAsString);
+							int newEndMinutes = Integer.parseInt(minutesAsString);
+							retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartHour, newStartMinutes);
+							retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndHour, newEndMinutes);
+							reflectChangeToCurrent(retrievedSortedList);
+							return "Start and end time changed";
+						}else if(dateAsString.contains("end")){
+							int positionOfTime = dateAsString.indexOf("end") +1;
+							int positionOfMinuteMark = dateAsString.get(positionOfTime).indexOf(":");
+							String timeAsString = dateAsString.get(positionOfTime);
+							String hourAsString = timeAsString.substring(0, positionOfMinuteMark);
+							String minutesAsString = timeAsString.substring(positionOfMinuteMark+1, positionOfMinuteMark+3);
+							int newHour = Integer.parseInt(hourAsString);
+							int newMinutes = Integer.parseInt(minutesAsString);
+							retrievedSortedList = logicController.editAllEndTime(taskToChange, newHour, newMinutes);
+							reflectChangeToCurrent(retrievedSortedList);
+							return "End time changed";
+						}else if(dateAsString.contains("start")){
+							int positionOfTime = dateAsString.indexOf("start") +1;
+							int positionOfMinuteMark = dateAsString.get(positionOfTime).indexOf(":");
+							String timeAsString = dateAsString.get(positionOfTime);
+							String hourAsString = timeAsString.substring(0, positionOfMinuteMark);
+							String minutesAsString = timeAsString.substring(positionOfMinuteMark+1, positionOfMinuteMark+3);
+							int newHour = Integer.parseInt(hourAsString);
+							int newMinutes = Integer.parseInt(minutesAsString);
+							retrievedSortedList = logicController.editAllStartTime(taskToChange, newHour, newMinutes);
+							reflectChangeToCurrent(retrievedSortedList);
+							return "Start time changed";
+						}
+					}
+				}else{
+					return "Error, only for recurring tasks";
+				}
+				
+				break;
+			}case("date"):{
 				//find task ID, get task
-				String taskType = taskToChange.getType();
 				String dateInput = new String();
 				ArrayList<String> dateAsString = new ArrayList<String>();
 				for(int i=inputArray.indexOf("date")+1; i<inputArray.size(); i++){
@@ -501,71 +595,19 @@ public class CommandController implements InterfaceForParser {
 				}else if(taskType.equalsIgnoreCase("deadline")){
 					//date exists, change deadline
 					//syntax: -change date dd/MM/yyyy
-					if(isChangeAll){
-						try{
-							int positionOfTime = dateAsString.indexOf("date") +1;
-							String timeAsString = dateAsString.get(positionOfTime);
-							String hourAsString = timeAsString.substring(0, 2);
-							String minutesAsString = timeAsString.substring(2, 4);
-							int newHour = Integer.parseInt(hourAsString);
-							int newMinutes = Integer.parseInt(minutesAsString);
-							retrievedSortedList = logicController.editAlldeadlineTime(taskToChange, newHour, newMinutes);
-							reflectChangeToCurrent(retrievedSortedList);
-						}catch(NumberFormatException e){
-							return "Wrong format for time";
-						}
+					Date newDeadline = determineDeadline(dateAsString);
+					if(newDeadline == null){
+						return DEADLINE_FORMAT_ERROR;
 					}else{
-						Date newDeadline = determineDeadline(dateAsString);
-						if(newDeadline == null){
-							return DEADLINE_FORMAT_ERROR;
-						}else{
-							retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
-							reflectChangeToCurrent(retrievedSortedList);
-						}
+						retrievedSortedList = logicController.editDeadline(taskToChange, newDeadline);
+						reflectChangeToCurrent(retrievedSortedList);
 					}
+					
 					return result = "Deadline changed";
 					
 				}else if(taskType.equalsIgnoreCase("meeting")){
-					if(isChangeAll){
-						if(dateAsString.contains("start") && dateAsString.contains("end")){
-							int positionOfTime = dateAsString.indexOf("start") +1;
-							String timeAsString = dateAsString.get(positionOfTime);
-							String hourAsString = timeAsString.substring(0, 2);
-							String minutesAsString = timeAsString.substring(2, 4);
-							int newStartHour = Integer.parseInt(hourAsString);
-							int newStartMinutes = Integer.parseInt(minutesAsString);
-							positionOfTime = dateAsString.indexOf("end")+1;
-							timeAsString = dateAsString.get(positionOfTime);
-							hourAsString = timeAsString.substring(0, 2);
-							minutesAsString = timeAsString.substring(2, 4);
-							int newEndHour = Integer.parseInt(hourAsString);
-							int newEndMinutes = Integer.parseInt(minutesAsString);
-							retrievedSortedList = logicController.editAllStartTime(taskToChange, newStartHour, newStartMinutes);
-							retrievedSortedList = logicController.editAllEndTime(taskToChange, newEndHour, newEndMinutes);
-							reflectChangeToCurrent(retrievedSortedList);
-							return "Start and end time changed";
-						}else if(dateAsString.contains("end")){
-							int positionOfTime = dateAsString.indexOf("end") +1;
-							String timeAsString = dateAsString.get(positionOfTime);
-							String hourAsString = timeAsString.substring(0, 2);
-							String minutesAsString = timeAsString.substring(2, 4);
-							int newHour = Integer.parseInt(hourAsString);
-							int newMinutes = Integer.parseInt(minutesAsString);
-							retrievedSortedList = logicController.editAllEndTime(taskToChange, newHour, newMinutes);
-							reflectChangeToCurrent(retrievedSortedList);
-							return "End time changed";
-						}else if(dateAsString.contains("start")){
-							int positionOfTime = dateAsString.indexOf("start") +1;
-							String timeAsString = dateAsString.get(positionOfTime);
-							String hourAsString = timeAsString.substring(0, 2);
-							String minutesAsString = timeAsString.substring(2, 4);
-							int newHour = Integer.parseInt(hourAsString);
-							int newMinutes = Integer.parseInt(minutesAsString);
-							retrievedSortedList = logicController.editAllStartTime(taskToChange, newHour, newMinutes);
-							reflectChangeToCurrent(retrievedSortedList);
-							return "Start time changed";
-						}
-					}else if(dateAsString.contains("start") && dateAsString.contains("end")){
+					
+					if(dateAsString.contains("start") && dateAsString.contains("end")){
 						//change start and end time
 						//syntax:-change date dd/MM/yyyy HHmm HHmm
 						String positionCheck = "start";
@@ -668,7 +710,7 @@ public class CommandController implements InterfaceForParser {
 	}
 
 
-	String exitCommand() {
+	private String exitCommand() {
 		String result = new String();
 		logicController.exit(newMaxID);
 		logicController.setSerialNumber(logicController.getSerialNumber()+1);
@@ -677,7 +719,7 @@ public class CommandController implements InterfaceForParser {
 	}
 
 
-	String archiveCommand(String[] splitInput) {
+	private String archiveCommand(String[] splitInput) {
 		//syntax -archive [task ID]
 		String result = new String();
 		
@@ -715,7 +757,7 @@ public class CommandController implements InterfaceForParser {
 	}
 
 
-	String deleteCommand(String[] splitInput) {
+	private String deleteCommand(String[] splitInput) {
 		//syntax : -delete <current/archive> [task ID]
 		String result = new String();
 		int position = 0;
@@ -795,7 +837,7 @@ public class CommandController implements InterfaceForParser {
 	}
 
 
-	String searchCommand(String[] splitInput) {
+	private String searchCommand(String[] splitInput) {
 		// check input for what to search for (date/tag/priority/desc)
 		String result = new String();
 		String searchParameter = new String();
@@ -808,28 +850,47 @@ public class CommandController implements InterfaceForParser {
 		switch(searchParameter){
 			case("today"):{
 				//search by date, today's date
-				Calendar today = Calendar.getInstance();
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-				currentActiveTasks = logicController.searchByDate(formatter.format(today));
-				result = "Searched by date: today";
+				if(splitInput.length >2){
+					return "Search syntax error";
+				}else{
+					Calendar today = Calendar.getInstance();
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+					currentActiveTasks = logicController.searchByDate(formatter.format(today.getTime()));
+					result = "Searched by date: today";
+				}
+				
 				break;
 			}case("tmr"):{
 				//search by date, tomorrow's date
-				Calendar tomorrow = Calendar.getInstance();
-				tomorrow.add(Calendar.DATE, 1);
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-				currentActiveTasks = logicController.searchByDate(formatter.format(tomorrow));
-				result = "Searched by date: tomorrow";
+				if(splitInput.length>2){
+					return "Search syntax error";
+				}else{
+					Calendar tomorrow = Calendar.getInstance();
+					tomorrow.add(Calendar.DATE, 1);
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+					currentActiveTasks = logicController.searchByDate(formatter.format(tomorrow.getTime()));
+					result = "Searched by date: tomorrow";
+				}
+				
 				break;				
 			}case("date"):{
-				SimpleDateFormat dateInput = new SimpleDateFormat("dd/MM/yyyy");
-				SimpleDateFormat dateOutput = new SimpleDateFormat("yyyyMMdd");
+				ArrayList<String> dateInput = new ArrayList<String>();	
+				Date searchDate = new Date();
+				String dateInputString = new String();
+				for(int i =2; i<splitInput.length; i++){
+					dateInput.add(splitInput[i]);
+				}
+				for(int i = 0; i<dateInput.size(); i++){
+					dateInputString = dateInputString.concat(dateInput.get(i) + " ");
+				}
+				dateInputString = dateInputString.trim();
 				try {
-					java.util.Date tempDate = dateInput.parse(splitInput[2]);
-					String dateOutputString = dateOutput.format(tempDate);
+					searchDate = determineDeadline(dateInput);
+					SimpleDateFormat dateOutput = new SimpleDateFormat("yyyyMMdd");
+					String dateOutputString = dateOutput.format(searchDate);
 					currentActiveTasks = logicController.searchByDate(dateOutputString);
-					result = "Searched by date: " + splitInput[2];
-				} catch (ParseException e) {
+					result = "Searched by date: " + dateInputString;
+				} catch (Exception e) {
 					return result = DATE_FORMAT_ERROR ;
 				}
 				break;
@@ -842,6 +903,21 @@ public class CommandController implements InterfaceForParser {
 				currentActiveTasks = logicController.searchByPriority(priority);
 				result = "Searched by priority: " + splitInput[2];
 				break;
+			}case("desc"):{
+				String newDescription = new String();				
+				
+				for(int i =2; i<splitInput.length; i++){
+					newDescription = newDescription.concat(splitInput[i] + " ");
+				}
+				
+				newDescription = newDescription.trim();
+				if(newDescription.isEmpty()){
+					return result = "No description specified";
+				}else{
+					currentActiveTasks = logicController.searchByDesc(newDescription);
+					result = "Searched by description: " + newDescription;
+				}
+				break;
 			}
 			
 		}
@@ -850,11 +926,10 @@ public class CommandController implements InterfaceForParser {
 		return result;
 	}
 
-	String addCommand(String[] input){
+	private String addCommand(String[] input){
 		
 		//break the commands
 		newMaxID = logicController.getSerialNumber() +1;
-		System.out.println("Before add recurrenceNum : " + newMaxID);
 		logicController.setSerialNumber(newMaxID);
 		String result = new String();
 		String description = new String();
@@ -1093,7 +1168,9 @@ public class CommandController implements InterfaceForParser {
 				endTime = determineMeetingTime(positionCheck, dateAsString);
 				if(startTime == null | endTime == null){
 					return MEETINGTIME_FORMAT_ERROR;
-				}	
+				}else if(startTime.getTime() > endTime.getTime()){
+					return MEETINGTIME_FORMAT_ERROR;
+				}
 			}
 			
 		}
@@ -1171,11 +1248,6 @@ public class CommandController implements InterfaceForParser {
 		}
 		reflectChangeToCurrent(retrievedList);
 		
-		/*newMaxID+=recurrenceNum;
-		System.out.println("After add recurrenceNum : " + newMaxID);
-		logicController.setSerialNumber(newMaxID);
-		System.out.println("Logic controller get serial number: " + logicController.getSerialNumber());
-		*/
 		return result;
 	}
 
@@ -1192,9 +1264,12 @@ public class CommandController implements InterfaceForParser {
 		boolean isSlashInputType = false; //i.e dd/MM/yyyy
 		boolean isNormalInputType = false; //i.e dd MMMM yyyy
 		Date meetingTime;
-		/*if(!dateAsString.contains("from") | !dateAsString.contains("to")){
-			return null;
-		}*/
+		int supposedDayPosition = 0;
+		int supposedMonthPosition = 1;
+		int supposedYearPosition = 2;
+		int hourPosition = 0;
+		int startIndexOfMinutes = 1;
+		int endIndexOfMinutes = 3;
 		if(dateAsString.get(0).contains("/")){
 			isSlashInputType = true;
 		}else{
@@ -1203,21 +1278,25 @@ public class CommandController implements InterfaceForParser {
 		if(isSlashInputType){
 			//separate the fields
 			String[] slashInput = dateAsString.get(0).split("/");
-			specifiedDay = Integer.parseInt(slashInput[0]);
-			specifiedMonth = Integer.parseInt(slashInput[1]);
-			if(slashInput.length > 2){
+			specifiedDay = Integer.parseInt(slashInput[supposedDayPosition]);
+			System.out.println(specifiedDay);
+			specifiedMonth = Integer.parseInt(slashInput[supposedMonthPosition])-1;
+			System.out.println(specifiedMonth);
+			if(slashInput.length > supposedYearPosition){
 				//if year is specified
-				specifiedYear = Integer.parseInt(slashInput[2]);
+				specifiedYear = Integer.parseInt(slashInput[supposedYearPosition]);
+				System.out.println(specifiedYear);
 			}else{
 				Calendar today = Calendar.getInstance();
 				specifiedYear = today.get(Calendar.YEAR);
+				System.out.println(specifiedYear);
 			}
 			
 			int position = dateAsString.indexOf(positionCheck);
 			if(dateAsString.get(position+1).contains(":")){
 				int minutePosition = dateAsString.get(position+1).indexOf(":");
-				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(0, minutePosition));
-				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(minutePosition+1,minutePosition+3));
+				specifiedHour = Integer.parseInt(dateAsString.get(position+1).substring(hourPosition, minutePosition));
+				specifiedMinutes = Integer.parseInt(dateAsString.get(position+1).substring(minutePosition+startIndexOfMinutes,minutePosition+endIndexOfMinutes));
 			}else{
 				return null;
 			}
@@ -1231,8 +1310,7 @@ public class CommandController implements InterfaceForParser {
 			
 		}else if(isNormalInputType){
 			specifiedDay = Integer.parseInt(dateAsString.get(0));
-			specifiedMonth = getSpecifiedMonth(dateAsString,
-					specifiedMonth);
+			specifiedMonth = getSpecifiedMonth(dateAsString,specifiedMonth);
 			if(specifiedMonth ==0){
 				return null;
 			}
@@ -1396,8 +1474,7 @@ public class CommandController implements InterfaceForParser {
 			}case("dec"):{
 				specifiedMonth = 11;
 				break;
-			}
-			case("january"):{
+			}case("january"):{
 				specifiedMonth = 0;
 				break;
 			}case("february"):{
