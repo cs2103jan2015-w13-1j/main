@@ -78,6 +78,9 @@ public class Date extends java.util.Date{
 				Public methods
 ***********************************************/	
 	
+	/**
+	 * @return a string representation of the date yyyyMMdd
+	 */
 	public String getDateRepresentation() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		return df.format(this);

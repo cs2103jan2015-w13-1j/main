@@ -11,12 +11,7 @@ import Common.Task;
 public class ToDoSortedList extends GeneralSortedList{
 	
 	/**
-	 * Compare the tasks in the todo list. A task is 'smaller' if it has an earlier date.
-	 * If two tasks has the same date, the task with higher priority is 'smaller'
-	 * @Override 
-	 * @param t1
-	 * @param t2
-	 * @return an integer indicating the comparison result of t1 and t2
+	 * Comparator for the todo list sorted by deadline or starting time, then priority
 	 */
 	public ToDoSortedList(){
 		super(Task.dateThenPriority);

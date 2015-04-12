@@ -11,12 +11,7 @@ import Common.Task;
 public class ArchiveSortedList extends GeneralSortedList{
 
 	/**
-	 * Compare the tasks in the archive list. A task is 'smaller' if it has an later date.
-	 * If two tasks has the same date, the task with higher priority is 'smaller'
-	 * @Override 
-	 * @param t1
-	 * @param t2
-	 * @return an integer indicating the comparison result of t1 and t2
+	 * Comparator for the archive list sorted by finished time, then priority
 	 */
 	public ArchiveSortedList(){
 		super(Task.reverseDateThenPriority);

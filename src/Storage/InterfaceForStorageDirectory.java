@@ -8,7 +8,7 @@ package Storage;
 
 public interface InterfaceForStorageDirectory {
 	/**
-	 * @param path of the directory
+	 * @param directory path of the directory
 	 * @return the given path of the directory
 	 */
 	String changeFileDirectory(String directory);

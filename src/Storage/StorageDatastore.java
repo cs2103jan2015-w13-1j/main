@@ -147,6 +147,7 @@ public class StorageDatastore {
 	}
 	
 	/**
+	 * @param fileName
 	 * @return data in JSON object 
 	 */
 	public JSONObject retrieveDataFromStorage(String fileName) {
@@ -220,7 +221,7 @@ public class StorageDatastore {
 	
 	/**
 	 * @param json object
-	 * @param file name
+	 * @param fileName
 	 * @return true if storing is successful
 	 */
 	public boolean storeJsonIntoStorage(JSONObject json, String fileName) {
@@ -254,7 +255,7 @@ public class StorageDatastore {
 	}
 	
 	/**
-	 * @param File Relative Path
+	 * @param filePath Relative Path
 	 * @return True if file exist
 	 */
 	public boolean isStorageExist(String filePath) {
@@ -286,7 +287,7 @@ public class StorageDatastore {
 		return this._directory;
 	}
 	/**
-	 * @param _directory the _directory to set
+	 * @param directory the _directory to set
 	 */
 	public void setDirectory(String directory) {
 		this._directory = directory;

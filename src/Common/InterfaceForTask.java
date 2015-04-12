@@ -79,13 +79,13 @@ public interface InterfaceForTask {
 
 	/**
 	 * Change the start time to the new start time provided
-	 * @param newDate
+	 * @param newStartTime
 	 */
 	public void changeStartTime(Date newStartTime);
 
 	/**
 	 * Change the start time to the new start time provided
-	 * @param newDate
+	 * @param newEndTime
 	 */
 	public void changeEndTime(Date newEndTime);
 
@@ -100,7 +100,7 @@ public interface InterfaceForTask {
 
 	/**
 	 * Change the deadline to the new deadline provided
-	 * @param newDate
+	 * @param newDeadline
 	 */
 	public void changeDeadline(Date newDeadline);
 
@@ -118,6 +118,7 @@ public interface InterfaceForTask {
 
 	/**
 	 * Archive the task
+	 * @param finishedTime
 	 */
 	public void moveToArchive(Date finishedTime);
 
@@ -147,6 +148,7 @@ public interface InterfaceForTask {
 
 	/**
 	 * Copy a current task to a certain date with the interval period given
+	 * @id the id of the newly created task
 	 * @param period the interval between this task to the copied task
 	 * @return a new Task object representing the copied task
 	 */

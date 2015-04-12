@@ -77,7 +77,7 @@ public interface InterfaceForLogic {
 	 * Search tasks which contain a given keyword
 	 * Done this for V0.1, may need to improve later to accept multiple key words
 	 * @param keyword
-	 * @return
+	 * @return ArrayList<Task> with the specified keyword
 	 */
 	ArrayList<Task> searchByDesc(String keyword);
 
@@ -294,6 +294,7 @@ public interface InterfaceForLogic {
 	/**
 	 * This will modify all the linked recurrence tasks
 	 * @param task one member of the recurring tasks
+	 * @param newPriority
 	 * @return the updated toDoSortedList
 	 */
 	ToDoSortedList editAllPriority(Task task, int newPriority);
@@ -301,6 +302,7 @@ public interface InterfaceForLogic {
 	/**
 	 * This will modify all the linked recurrence tasks
 	 * @param task one member of the recurring tasks
+	 * @param tag
 	 * @return the updated toDoSortedList
 	 */
 	ToDoSortedList addAlltag(Task task, String tag);
@@ -308,6 +310,7 @@ public interface InterfaceForLogic {
 	/**
 	 * This will modify all the linked recurrence tasks
 	 * @param task one member of the recurring tasks
+	 * @param tag
 	 * @return the updated toDoSortedList
 	 */
 	ToDoSortedList removeAlltag(Task task, String tag);
@@ -315,6 +318,7 @@ public interface InterfaceForLogic {
 	/**
 	 * This will modify all the linked recurrence tasks
 	 * @param task one member of the recurring tasks
+	 * @param description
 	 * @return the updated toDoSortedList
 	 */
 	ToDoSortedList editAllDescription(Task task, String description);

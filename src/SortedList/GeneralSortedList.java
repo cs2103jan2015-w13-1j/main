@@ -61,7 +61,7 @@ public class GeneralSortedList extends TreeSet<Task>{
 	/**
 	 * When a task is updated in certain property, 
 	 * we need to re-insert the task so that the order remains correct
-	 * @param task
+	 * @param taskList
 	 */
 	public void updateTaskOrder(TaskList taskList) {
 		this.clear();

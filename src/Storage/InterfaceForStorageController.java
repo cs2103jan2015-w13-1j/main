@@ -15,7 +15,7 @@ public interface InterfaceForStorageController {
 	 */
 	DATA getAllData();
 	/**
-	 * @param a DATA object
+	 * @param data a DATA object
 	 * @return a message that indicates the storage status
 	 */
 	String storeAllData(DATA data); 
