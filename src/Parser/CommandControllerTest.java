@@ -1,6 +1,4 @@
-/**
- * @author A0110571W
- */
+// @author A0110571W
 package Parser;
 
 import static org.junit.Assert.*;
