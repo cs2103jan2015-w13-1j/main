@@ -148,7 +148,7 @@ public interface InterfaceForTask {
 
 	/**
 	 * Copy a current task to a certain date with the interval period given
-	 * @id the id of the newly created task
+	 * @param id the id of the newly created task
 	 * @param period the interval between this task to the copied task
 	 * @return a new Task object representing the copied task
 	 */

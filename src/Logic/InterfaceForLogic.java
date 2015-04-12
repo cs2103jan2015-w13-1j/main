@@ -55,21 +55,21 @@ public interface InterfaceForLogic {
 	/**
 	 * Search tasks on a particular date, the format of the string should be yyyyMMdd
 	 * @param searchDate the date to be searched
-	 * @return ArrayList<Task> on the specified date
+	 * @return ArrayList of tasks on the specified date
 	 */
 	ArrayList<Task> searchByDate(String searchDate);
 	
 	/**
 	 * Search tasks with a specific tag
 	 * @param tag the tag string
-	 * @return ArrayList<Task> with the specified tag
+	 * @return ArrayList of tasks with the specified tag
 	 */
 	ArrayList<Task> searchByTag(String tag);
 	
 	/**
 	 * Search tasks with a specific priority
 	 * @param priority the integer priority
-	 * @return ArrayList<Task> with the specified priority
+	 * @return ArrayList of tasks with the specified priority
 	 */
 	ArrayList<Task> searchByPriority(int priority);
 
@@ -77,7 +77,7 @@ public interface InterfaceForLogic {
 	 * Search tasks which contain a given keyword
 	 * Done this for V0.1, may need to improve later to accept multiple key words
 	 * @param keyword
-	 * @return ArrayList<Task> with the specified keyword
+	 * @return ArrayList of tasks with the specified keyword
 	 */
 	ArrayList<Task> searchByDesc(String keyword);
 

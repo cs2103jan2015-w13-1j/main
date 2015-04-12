@@ -325,7 +325,7 @@ public class StorageController implements InterfaceForStorageController {
 
 	/**
 	 * Intialise new DATA object
-	 * return a new DATA object
+	 * @return a new DATA object
 	 */
 	public DATA initialiseNewDataObject() {
 		logger.log(Level.FINE, MESSAGE_INITIALISE_NEW_DATA_OBJECT);
