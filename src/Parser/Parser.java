@@ -1,3 +1,6 @@
+/**
+ * @author A0110571W
+ */
 package Parser;
 
 
@@ -9,11 +12,11 @@ public class Parser {
 	public static void main(String[] args){
 		
 		Parser parser = new Parser();
-		parser.initialiseTasks();
+		//parser.initialiseTasks();
 		System.out.println(parser.parseIn("-add this generic task"));
-		System.out.println(parser.returnTasks());
+		//System.out.println(parser.returnTasks());
 		System.out.println(parser.parseIn("-add second generic task"));
-		System.out.println(parser.returnTasks());
+		//System.out.println(parser.returnTasks());
 		
 		
 	}
@@ -21,59 +24,84 @@ public class Parser {
 
 
 
-	public String parseIn(String command) {
+	public int parseIn(String command) {
 
 		
 		String[] splitCommand = command.split(" ");
 		String firstCommand = splitCommand[0];
-		String result = new String();
+		int commandNum=0;
 		
-		
+		commandNum = commandCheck(firstCommand,splitCommand);
 		//check first word for command
-		if(firstCommand.charAt(0)=='-'){
+		/*if(firstCommand.charAt(0)==''){
 			//command found
-			result = commandCheck(firstCommand,splitCommand);
-		}
+			
+		}*/
 		
-		return result;
+		return commandNum;
 		
 	}
 
-	private String commandCheck(String command, String[] splitInput) {
 	
-		String result = new String();
+	
+	private int commandCheck(String command, String[] splitInput) {
+	
+		int commandNum = 0;
 		switch(command){
-			case("-add"):{
+			case("add"):{
 				//run "add" functions
-				result = commandController.addCommand(splitInput);
+				//return to commandController what command to execute
+				//commandController.result(integer)
+				commandNum = 1;
 				break;
-			}case("-search"):{
-				result = commandController.searchCommand(splitInput);
+			}case("search"):{
+				commandNum = 2;
 				break;
-			}case("-delete"):{
-				result = commandController.deleteCommand(splitInput);
+			}case("delete"):{
+				commandNum = 3;
 				break;
-			}case("-archive"):{
-				result = commandController.archiveCommand(splitInput);
+			}case("archive"):{
+				commandNum = 4;
 				break;
-			}case("-exit"):{
-				result = commandController.exitCommand();
+			}case("exit"):{
+				commandNum = 5;
 				break;
-			}case("-change"):{
-				result = commandController.modifyCommand(splitInput);
+			}case("change"):{
+				commandNum = 6;
 				break;
-			}case("-directory"):{
-				result = commandController.fileDirectoryCommand(splitInput);
+			}case("directory"):{
+				commandNum = 7;
 				break;
-			}case("-refresh"):{
-				result = commandController.refreshCommand();
+			}case("refresh"):{
+				commandNum = 8;
+				break;
+			}case("undo"):{
+				commandNum = 9;
+				break;
+			}case("addtag"):{
+				commandNum = 10;
+				break;
+			}case("removetag"):{
+				commandNum = 11;
+				break;
+			}case("sort"):{
+				commandNum = 12;
+				break;
+			}case("import"):{
+				commandNum = 13;
+				break;
+			}case("export"):{
+				commandNum = 14;
+				break;
+			}case("redo"):{
+				commandNum = 15;
 				break;
 			}
 			default:
 				System.out.println("Invalid command");
 		}
 		
-		return result;
+		return commandNum;
 		
 	}
 	

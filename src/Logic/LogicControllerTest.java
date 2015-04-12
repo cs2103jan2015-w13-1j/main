@@ -1,3 +1,4 @@
+// @author A0113598X
 package Logic;
 import static org.junit.Assert.*;
 
@@ -5,6 +6,8 @@ import java.util.*;
 
 import Common.*;
 import Common.Date;
+import SortedList.PrioritySortedList;
+import SortedList.ToDoSortedList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,7 +16,8 @@ import org.junit.Test;
 
 
 public class LogicControllerTest {
-	LogicController lc = new LogicController();
+	static LogicController lc = new LogicController();
+
 	
 	static String tag1 = "tagA";
 	static String tag2 = "tagB";
@@ -61,9 +65,12 @@ public class LogicControllerTest {
 		d5.setTime(777677777);
 		d6.setTime(776677777);
 		
+		lc.isTesting = true;
+		
 	}
 	@Before
 	public void setUp() throws Exception {
+		
 		tags1.add(tag1);
 		
 		tags2.add(tag1);
@@ -78,9 +85,18 @@ public class LogicControllerTest {
 
 		tags5.add(tag2);
 		
-		lc.activeTaskList = new TaskList();
-		lc.archivedTaskList = new TaskList();
-		lc.toDoSortedList = new ToDoSortedList();
+		lc.initialise();
+		lc.data.clearAllData();
+		lc.loadData();
+//		lc.data.clearAllData();
+//		lc.loadData();
+//		System.out.println("here");
+//		System.out.println(lc.data.getActiveTaskList());
+//		System.out.println(lc.activeTaskList);
+//		lc.historyController = new HistoryController();
+//		lc.activeTaskList = new TaskList();
+//		lc.archivedTaskList = new TaskList();
+//		lc.toDoSortedList = new ToDoSortedList();
 		
 		t1 = new Task(1, "do a", 3, null);
 		t2 = new Task(2, "get b", 6, null);
@@ -103,19 +119,27 @@ public class LogicControllerTest {
 		tags3.clear();
 		tags4.clear();
 		tags5.clear();
+		
+		lc.data.clearAllData();
 	}
 	
 	/**
-	 * Adding one task
+	 * Adding one task and delete it
 	 */
 	@Test
 	public void testAdd1() {
+		assertEquals(0, lc.activeTaskList.size());
+		System.out.println(lc.activeTaskList);
 		lc.addTask(t1);
 		assertEquals(1, lc.activeTaskList.size());
 		assertEquals(t1, lc.activeTaskList.get(1));
 		assertEquals(1, lc.toDoSortedList.size());
 		assertEquals(true, lc.toDoSortedList.contains(t1));
 		assertEquals(0, lc.archivedTaskList.size());
+		lc.deleteTask(t1);
+		assertEquals(0, lc.activeTaskList.size());
+		lc.deleteTask(t1);
+		assertEquals(0, lc.activeTaskList.size());
 	}
 	
 	/**
@@ -139,7 +163,7 @@ public class LogicControllerTest {
 	}
 	
 	/**
-	 * Adding two tasks from UI
+	 * Two tasks with the same description
 	 */
 	@Test
 	public void testAddPotentialError() {
@@ -280,9 +304,11 @@ public class LogicControllerTest {
 		lc.addTask(t1);
 		lc.addTask(t2);
 		lc.addTask(t3);
+		
 		assertEquals(3, lc.activeTaskList.size());
 		assertEquals(t1, lc.activeTaskList.get(1));
 		assertEquals(t2, lc.activeTaskList.get(2));
+		
 		assertEquals(3, lc.toDoSortedList.size());
 		assertEquals(true, lc.toDoSortedList.contains(t1));
 		assertEquals(true, lc.toDoSortedList.contains(t2));

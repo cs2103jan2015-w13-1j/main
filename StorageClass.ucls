@@ -3,25 +3,25 @@
   associations="true" dependencies="false" nesting-relationships="true">  
   <class id="1" language="java" name="Storage.StorageController" project="main" 
     file="/main/src/Storage/StorageController.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="930" y="394"/>    
+    <position height="-1" width="-1" x="816" y="390"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="false" private="true" static="false"/>    
+      <operations public="true" package="true" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
   <class id="2" language="java" name="Storage.StorageADT" project="main" file="/main/src/Storage/StorageADT.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1486" y="464"/>    
+    <position height="-1" width="-1" x="452" y="400"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <interface id="3" language="java" name="Storage.InterfaceForStorage" project="main" 
-    file="/main/src/Storage/InterfaceForStorage.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1473" y="674"/>    
+  <interface id="3" language="java" name="Storage.InterfaceForStorageController" project="main" 
+    file="/main/src/Storage/InterfaceForStorageController.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1000" y="10"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -30,104 +30,70 @@
   </interface>  
   <class id="4" language="java" name="Common.DATA" project="main" file="/main/src/Common/DATA.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="465" y="326"/>    
+    <position height="-1" width="-1" x="1145" y="723"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="Common.StorageUtil" project="main" file="/main/src/Common/StorageUtil.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1481" y="239"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="6" language="java" name="Common.TaskList" project="main" file="/main/src/Common/TaskList.java" 
-    binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="123" y="277"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <component id="7" language="java" name="jars/gson-2.3.1.jar" project="main" file="/main/jars/gson-2.3.1.jar" 
+  <component id="5" language="java" name="jars/gson-2.3.1.jar" project="main" file="/main/jars/gson-2.3.1.jar" 
     binary="true" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="508" y="143"/>    
+    <position height="-1" width="-1" x="564" y="115"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </component>  
-  <component id="8" language="java" name="jars/json-simple-1.1.1.jar" project="main" 
+  <component id="6" language="java" name="jars/json-simple-1.1.1.jar" project="main" 
     file="/main/jars/json-simple-1.1.1.jar" binary="true" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="494" y="73"/>    
+    <position height="-1" width="-1" x="786" y="113"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </component>  
-  <association id="9">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="10" name="util">        
-        <position height="0" width="0" x="138" y="-2"/>      
-      </attribute>      
-      <multiplicity id="11" minimum="0" maximum="1">        
-        <position height="0" width="0" x="138" y="-2"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <realization id="12">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="3"/>  
-  </realization>  
-  <association id="13">    
+  <class id="7" language="java" name="Storage.StorageDatastore" project="main" 
+    file="/main/src/Storage/StorageDatastore.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1248" y="315"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <association id="8">    
     <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="14" name="program">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <attribute id="9" name="program">        
+        <position height="0" width="0" x="-114" y="-4"/>      
       </attribute>      
-      <multiplicity id="15" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <multiplicity id="10" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-114" y="-4"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="16">    
-    <bendpoint x="352" y="407"/>    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="17" name="activeTaskList">        
-        <position height="0" width="0" x="-78" y="-42"/>      
-      </attribute>      
-      <multiplicity id="18" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-78" y="-42"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="19">    
+  <realization id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </realization>  
+  <association id="12">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="20" name="data">        
-        <position height="0" width="0" x="-40" y="-18"/>      
+      <attribute id="13" name="_data">        
+        <position height="0" width="0" x="640" y="379"/>      
       </attribute>      
-      <multiplicity id="21" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-40" y="-18"/>      
+      <multiplicity id="14" minimum="0" maximum="1">        
+        <position height="0" width="0" x="640" y="379"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="22">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="23" name="archivedTaskList">        
-        <position height="0" width="0" x="-78" y="-42"/>      
+  <association id="15">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="16" name="_datastore">        
+        <position height="0" width="0" x="-158" y="72"/>      
       </attribute>      
-      <multiplicity id="24" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-78" y="-42"/>      
+      <multiplicity id="17" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-158" y="72"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
+    <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

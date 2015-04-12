@@ -1,0 +1,14 @@
+-add generic1
+-add meeting1 -date 25/03/2015 1600 1700
+-add deadline1 -date 25/03/2015 1530
+-add deadline2 -date 25/03/2015 1600
+-add deadline3 -date 25/03/2015 1630
+-add deadline4 -date 25/03/2015 1700
+-add deadline5 -date 25/03/2015 1730
+-change priority 3 8
+-add withtag -tags tag1
+
+-add recurring deadline -date 25/03/2015 1600 -recurring 5 weekly
+
+
+add tutorial -date 01/04/2015 -recurring 3 weekly -tags MA1101R<< show 2 entries only

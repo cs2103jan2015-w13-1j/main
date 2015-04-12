@@ -1,3 +1,6 @@
+/**
+ * @author Kangsoon
+ */
 package GUI;
 
 import javafx.beans.property.SimpleIntegerProperty;
@@ -10,61 +13,121 @@ public class UITask {
 	private final SimpleStringProperty start;
 	private final SimpleStringProperty end;
 	private final SimpleStringProperty due;
+	private SimpleStringProperty tags;
 	
-	public UITask(int id, String desc, String pri, String start, String end, String due){
+	/**
+	 * @param id
+	 * @param desc
+	 * @param pri
+	 * @param start
+	 * @param end
+	 * @param due
+	 * @param tags
+	 */
+	public UITask(int id, String desc, String pri, String start, String end, String due, String tags){
 		this.id = new SimpleIntegerProperty(id);
 		this.description = new SimpleStringProperty(desc);
 		this.priority = new SimpleStringProperty(pri);
 		this.start = new SimpleStringProperty(start);
 		this.end = new SimpleStringProperty(end);
 		this.due = new SimpleStringProperty(due);
+		this.tags = new SimpleStringProperty(tags);
 	}
 	
-	public Integer getId(){
+	/**
+	 * @return Tags
+	 */
+	public String getTags() {
+		return tags.get();
+	}
+	
+	/**
+	 * @return id
+	 */
+	public Integer getId() {
 		return id.get();
 	}
 	
-	public String getDescription(){
+	/**
+	 * @return description
+	 */
+	public String getDescription() {
 		return description.get();
 	}
 	
-	public String getPriority(){
+	/**
+	 * @return priority
+	 */
+	public String getPriority() {
 		return priority.get();
 	}
 	
-	public String getStart(){
+	/**
+	 * @return start
+	 */
+	public String getStart() {
 		return start.get();
 	}
 	
-	public String getEnd(){
+	/**
+	 * @return end
+	 */
+	public String getEnd() {
 		return end.get();
 	}
 	
-	public String getDue(){
+	/**
+	 * @return due
+	 */
+	public String getDue() {
 		return due.get();
 	}
 	
-	public void setId(int id){
-
+	/**
+	 * @param tags
+	 */
+	public void setTags(String tags) {
+		this.tags.set(tags);
+	}
+	
+	/**
+	 * @param id
+	 */
+	public void setId(int id) {
 		this.id.set(id);
 	}
 	
-	public void setDesc(String desc){
+	/**
+	 * @param desc
+	 */
+	public void setDesc(String desc) {
 		this.description.set(desc);
 	}
 	
-	public void setPri(String pri){
+	/**
+	 * @param pri
+	 */
+	public void setPri(String pri) {
 		this.priority.set(pri);
 	}
 	
+	/**
+	 * @param start
+	 */
 	public void setStart(String start){
 		this.start.set(start);
 	}
 	
+	/**
+	 * @param end
+	 */
 	public void setEnd(String end){
 		this.end.set(end);
 	}
 	
+	/**
+	 * @param due
+	 */
 	public void setDue(String due){
 		this.due.set(due);
 	}

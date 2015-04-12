@@ -1,17 +1,19 @@
+// @author A0113598X
 package Logic;
 
 import java.util.ArrayList;
 
-import javax.activity.InvalidActivityException;
-
-import Common.ArchiveSortedList;
+import SortedList.ArchiveSortedList;
+import SortedList.PrioritySortedList;
+import SortedList.ToDoSortedList;
 import Common.Date;
-import Common.PrioritySortedList;
 import Common.Task;
-import Common.ToDoSortedList;
 
 public interface InterfaceForLogic {
-
+	
+/***********************************************
+		Initialisation and ID methods
+***********************************************/	
 	/**
 	 * Initialise the Logic Controller, retrieve all data from the storage
 	 */
@@ -23,12 +25,160 @@ public interface InterfaceForLogic {
 	int getSerialNumber();
 	
 	/**
+	 * @param number - the new serial number
+	 */
+	void setSerialNumber(int number);
+	
+/***********************************************
+					Create
+***********************************************/	
+	/**
 	 * @param task a new task object
 	 * @return the updated ToDoSortedList
 	 * null if the task is already inside the list of tasks
 	 */
-	ToDoSortedList addTask(Task task);//sorted by date
+	ToDoSortedList addTask(Task task);
 	
+	/**
+	 * @param task a single task object which is the first task to be repeated.
+	 * 		The task must have a specific start and/or end time.
+	 * @param period the interval between each two recurrence tasks
+	 * @param recurrenceNum the number of recurrence tasks, should be at least 2
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum);
+	
+	
+/***********************************************
+				Read -> Search
+***********************************************/
+	/**
+	 * Search tasks on a particular date, the format of the string should be yyyyMMdd
+	 * @param searchDate the date to be searched
+	 * @return ArrayList of tasks on the specified date
+	 */
+	ArrayList<Task> searchByDate(String searchDate);
+	
+	/**
+	 * Search tasks with a specific tag
+	 * @param tag the tag string
+	 * @return ArrayList of tasks with the specified tag
+	 */
+	ArrayList<Task> searchByTag(String tag);
+	
+	/**
+	 * Search tasks with a specific priority
+	 * @param priority the integer priority
+	 * @return ArrayList of tasks with the specified priority
+	 */
+	ArrayList<Task> searchByPriority(int priority);
+
+	/**
+	 * Search tasks which contain a given keyword
+	 * Done this for V0.1, may need to improve later to accept multiple key words
+	 * @param keyword
+	 * @return ArrayList of tasks with the specified keyword
+	 */
+	ArrayList<Task> searchByDesc(String keyword);
+
+/***********************************************
+				Read -> sort
+***********************************************/
+	/**
+	 * Sort the tasks by priority
+	 * @return the PrioritySortedList
+	 */
+	PrioritySortedList sortByPriority();
+	
+	/**
+	 * Sort the tasks by time
+	 * @return the ToDoSortedList
+	 */
+	ToDoSortedList sortByTime();
+	
+	/**
+	 * @return the ArchiveSortedList
+	 */ 
+	ArchiveSortedList viewArchiveTasks();
+	
+	/**
+	 * @return the ToDoSortedList
+	 */
+	ToDoSortedList viewActiveTasks();
+
+/***********************************************
+			Delete & Archive
+***********************************************/
+		
+	/**
+	 * Delete a task
+	 * @param task
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList deleteTask(Task task);
+	
+	/**
+	 * This will delete all the linked recurrence tasks in the active task list
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList deleteAllRecurringTask(Task task);
+	
+	/**
+	 * delete a task from the archive
+	 * @param task
+	 * @return the updated ArchiveSortedList
+	 */
+	ArchiveSortedList deleteFromArchive(Task task);
+
+	/**
+	 * This will delete all the linked recurrence tasks in the archived task list
+	 * @param task
+	 * @return the updated archiveSortedList
+	 */
+	ArchiveSortedList deleteAllRecurringInArchive(Task task);
+	
+	/**
+	 * This will delete all the tasks with the specified tag in the todolist
+	 * @param tag
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList deleteByTag(String tag);
+	
+	/**
+	 * move the task from todo list to archive
+	 * @param task the task to be moved to archive
+	 * @param finishedTime 
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList moveToArchive(Task task, Date finishedTime);
+	
+	/**
+	 * This will archive all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param finishedTime the time when the task is moved to archive
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList archiveAllTasks(Task task, Date finishedTime);
+	
+	/**
+	 * move the task from archive to todo list
+	 * @param task
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList unArchive(Task task);
+	
+//	/**
+//	 * This will un-archive all the linked recurrence tasks
+//	 * @param task one member of the recurring tasks
+//	 * @return the updated ToDoSortedList
+//	 */
+//	ToDoSortedList unArchiveAllRecurring(Task task);
+	
+
+/***********************************************
+			Update -> time related
+***********************************************/
 	/**
 	 * @param task an existing generic task
 	 * @param deadline the deadline given to the task
@@ -55,7 +205,6 @@ public interface InterfaceForLogic {
 	ToDoSortedList editStartTime(Task task, Date start);
 	
 	/**
-	 * 
 	 * @param task an existing meeting task
 	 * @param end the new end time
 	 * @return the updated ToDoSortedList
@@ -64,7 +213,6 @@ public interface InterfaceForLogic {
 	ToDoSortedList editEndTime(Task task, Date end);
 	
 	/**
-	 * 
 	 * @param task an existing deadline task
 	 * @param deadline the new deadline
 	 * @return the updated ToDoSortedList
@@ -73,7 +221,46 @@ public interface InterfaceForLogic {
 	ToDoSortedList editDeadline(Task task, Date deadline);
 	
 	/**
-	 * 
+	 * Remove the deadline of a deadline task, the task will become a generic task.
+	 * @param task an existing deadline task
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList removeDeadline(Task task);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAlldeadlineTime(Task task, int hour, int minute);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllStartTime(Task task, int hour, int minute);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllEndTime(Task task, int hour, int minute);
+	
+	
+/***********************************************
+		Update -> tag, desc, priority
+***********************************************/	
+	
+	/**
+	 * Modify the description of a task
 	 * @param task an existing task
 	 * @param newDescription the new description
 	 * @return the updated ToDoSortedList
@@ -81,7 +268,7 @@ public interface InterfaceForLogic {
 	ToDoSortedList editDescription(Task task, String newDescription);
 	
 	/**
-	 * 
+	 * Modify the priority of a task
 	 * @param task an existing task
 	 * @param priority the new priority
 	 * @return the updated ToDoSortedList
@@ -89,7 +276,6 @@ public interface InterfaceForLogic {
 	ToDoSortedList editPriority(Task task, int priority);
 	
 	/**
-	 * 
 	 * @param task an existing task
 	 * @param tag a new tag
 	 * @return the updated ToDoSortedList
@@ -98,7 +284,6 @@ public interface InterfaceForLogic {
 	ToDoSortedList addTag(Task task, String tag);
 	
 	/**
-	 * 
 	 * @param task an existing task
 	 * @param tag an existing tag to be removed
 	 * @return the updated ToDoSortedList
@@ -107,78 +292,55 @@ public interface InterfaceForLogic {
 	ToDoSortedList removeTag(Task task, String tag);
 	
 	/**
-	 * Search tasks on a particular date, the format of the string should be yyyyMMdd
-	 * @param searchDate the date to be searched
-	 * @return ArrayList<Task> on the specified date
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param newPriority
+	 * @return the updated toDoSortedList
 	 */
-	ArrayList<Task> searchByDate(String searchDate);
+	ToDoSortedList editAllPriority(Task task, int newPriority);
 	
 	/**
-	 * Search tasks with a specific tag
-	 * @param tag the tag string
-	 * @return ArrayList<Task> with the specified tag
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param tag
+	 * @return the updated toDoSortedList
 	 */
-	ArrayList<Task> searchByTag(String tag);
+	ToDoSortedList addAlltag(Task task, String tag);
 	
 	/**
-	 * Search tasks with a specific priority
-	 * @param priority the integer priority
-	 * @return ArrayList<Task> with the specified priority
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param tag
+	 * @return the updated toDoSortedList
 	 */
-	ArrayList<Task> searchByPriority(int priority);
-
-	/**
-	 * Search tasks which contain a given keyword
-	 * Done this for V0.1, may need to improve later to accept multiple key words
-	 * @param keyword
-	 * @return
-	 */
-	ArrayList<Task> searchByDesc(String keyword);
+	ToDoSortedList removeAlltag(Task task, String tag);
 	
 	/**
-	 * Sort the tasks by priority
-	 * @return the PrioritySortedList
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param description
+	 * @return the updated toDoSortedList
 	 */
-	PrioritySortedList sortByPriority();
+	ToDoSortedList editAllDescription(Task task, String description);
+	
+/***********************************************
+				Undo & Redo
+***********************************************/
+	/**
+	 * undo an action
+	 * @return a boolean indicating whether this is successful
+	 */
+	boolean undo();
 	
 	/**
-	 * Sort the tasks by time
-	 * @return the ToDoSortedList
+	 * redo an action
+	 * @return a boolean indicating whether this is successful
 	 */
-	ToDoSortedList sortByTime();
-
-	/**
-	 * move the task from to do list to archive
-	 * @param task the task to be moved to archive
-	 * @param finishedTime 
-	 * @return the updated ToDoSortedList
-	 */
-	ToDoSortedList moveToArchive(Task task, Date finishedTime);
+	boolean redo();
 	
-	/**
-	 * @return the ArchiveSortedList
-	 */ 
-	ArchiveSortedList viewArchiveTasks();
-	
-	/**
-	 * @return the ToDoSortedList
-	 */
-	ToDoSortedList viewActiveTasks();
-	
-	/**
-	 * Delete a task
-	 * @param task
-	 * @return the updated ToDoSortedList
-	 */
-	ToDoSortedList deleteTask(Task task);
-	
-	/**
-	 * delete a task from the archive
-	 * @param task
-	 * @return the updated ArchiveSortedList
-	 */
-	ArchiveSortedList deleteFromArchive(Task task);
-	
+/***********************************************
+					Exit
+***********************************************/
 	/**
 	 * @param serialNumber the current highest ID that is already used
 	 * @return a string message indicating the state of program
