@@ -168,13 +168,6 @@ public interface InterfaceForLogic {
 	 */
 	ToDoSortedList unArchive(Task task);
 	
-//	/**
-//	 * This will un-archive all the linked recurrence tasks
-//	 * @param task one member of the recurring tasks
-//	 * @return the updated ToDoSortedList
-//	 */
-//	ToDoSortedList unArchiveAllRecurring(Task task);
-	
 
 /***********************************************
 			Update -> time related
