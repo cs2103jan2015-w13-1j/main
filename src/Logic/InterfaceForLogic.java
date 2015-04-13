@@ -3,11 +3,11 @@ package Logic;
 
 import java.util.ArrayList;
 
-import SortedList.ArchiveSortedList;
-import SortedList.PrioritySortedList;
-import SortedList.ToDoSortedList;
+import Common.ArchiveSortedList;
 import Common.Date;
+import Common.PrioritySortedList;
 import Common.Task;
+import Common.ToDoSortedList;
 
 public interface InterfaceForLogic {
 	
@@ -167,13 +167,6 @@ public interface InterfaceForLogic {
 	 * @return the updated ToDoSortedList
 	 */
 	ToDoSortedList unArchive(Task task);
-	
-//	/**
-//	 * This will un-archive all the linked recurrence tasks
-//	 * @param task one member of the recurring tasks
-//	 * @return the updated ToDoSortedList
-//	 */
-//	ToDoSortedList unArchiveAllRecurring(Task task);
 	
 
 /***********************************************
