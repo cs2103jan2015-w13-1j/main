@@ -2,26 +2,12 @@
 
 package Parser;
 
+import Common.Date;
+
 
 public class Parser {
 	
-	private static CommandController commandController = new CommandController();
-	
-	/*
-	public static void main(String[] args){
-		
-		Parser parser = new Parser();
-		//parser.initialiseTasks();
-		System.out.println(parser.parseIn("-add this generic task"));
-		//System.out.println(parser.returnTasks());
-		System.out.println(parser.parseIn("-add second generic task"));
-		//System.out.println(parser.returnTasks());
-		
-		
-	}
-	*/
-
-
+	//private static CommandController commandController = new CommandController();
 
 	public int parseIn(String command) {
 
@@ -31,26 +17,14 @@ public class Parser {
 		int commandNum=0;
 		
 		commandNum = commandCheck(firstCommand,splitCommand);
-		//check first word for command
-		/*if(firstCommand.charAt(0)==''){
-			//command found
-			
-		}*/
-		
 		return commandNum;
 		
-	}
-
-	
-	
+	}	
 	private int commandCheck(String command, String[] splitInput) {
 	
 		int commandNum = 0;
 		switch(command){
 			case("add"):{
-				//run "add" functions
-				//return to commandController what command to execute
-				//commandController.result(integer)
 				commandNum = 1;
 				break;
 			}case("search"):{
@@ -103,9 +77,7 @@ public class Parser {
 		
 		return commandNum;
 		
-	}
-	
-	
+	}	
 
 	
 }
