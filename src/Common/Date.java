@@ -69,8 +69,10 @@ public class Date extends java.util.Date{
 	 * @return a Date object representing the time specified by the inputs
 	 */
 	private static Date getDayTime(Calendar cal, int year, int month, int day, int hour, int minute ) {
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
         cal.set(Calendar.YEAR, year);
-        return getDayTime(cal, month, day, hour, minute);
+        return setTime(cal, hour, minute, 59, 0);
 	}
 
 	
