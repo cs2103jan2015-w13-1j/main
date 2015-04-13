@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import Command.CommandController;
 import Common.Task;
-import Parser.CommandController;
 
 public class UIControllerTest {
 

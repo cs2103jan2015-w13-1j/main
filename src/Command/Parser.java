@@ -1,6 +1,6 @@
 // @author A0110571W
 
-package Parser;
+package Command;
 
 public class Parser {
 	

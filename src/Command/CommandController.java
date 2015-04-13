@@ -1,5 +1,5 @@
 // @author A0110571W
-package Parser;
+package Command;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

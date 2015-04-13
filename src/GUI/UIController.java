@@ -21,8 +21,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Label;
 //import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import Command.CommandController;
 import Common.Task;
-import Parser.CommandController;
 
 public class UIController implements Initializable {
 
