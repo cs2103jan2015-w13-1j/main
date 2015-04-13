@@ -17,17 +17,11 @@ public class CommandControllerTest {
 		assertEquals("No description added, try again", test.executeCommand("add"));
 		//wrong syntax in add command
 		assertEquals("Invalid command", test.executeCommand("a"));
-		//wrong syntax in priority
-		//wrong syntax in tags
-		//wrong syntax in date
-		//date end < start
-		//date already passed
-		//add generic
 		assertEquals("New task added: generic task",test.executeCommand("add generic task"));
 		//add deadline
 		assertEquals("New task added with deadline: deadline task",test.executeCommand("add deadline task -by 22/11/2015"));
 		//add meeting
-		assertEquals("New task added for meeting: meeting task",test.executeCommand("add meeting task -on 11/11/2015 from 1100 to 1200"));
+		assertEquals("New task added for meeting: meeting task",test.executeCommand("add meeting task -on 11/11/2015 from 11:00 to 12:00"));
 	}
 	
 	@Test

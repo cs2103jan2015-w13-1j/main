@@ -152,27 +152,29 @@ public class UIController implements Initializable {
 		commandCommand.setCellValueFactory(new PropertyValueFactory<UICommand, String>(STRING_COMMAND));
 		commandShortcuts.setCellValueFactory(new PropertyValueFactory<UICommand, String>(STRING_SHORTCUTS));
 		commandTable.setItems(uiCommandList);
-		uiCommandList.add(new UICommand("Add a new task", "add <task description> [option: -date|-priority|-tag|-recurring] <value>", "add <task description> -d|p|t|r <value>"));
-		uiCommandList.add(new UICommand("Add tags to task","addtag <taskID> <value>", NOT_APPLICABLE));
-		uiCommandList.add(new UICommand("Archive a task", "archive <taskID>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Add a new task", "add <task description> [option: -by|-on|-priority|-tag|-recurring] <value>", "add <task description> -d|-p|-t|-r <value>"));
+		uiCommandList.add(new UICommand("Add tags to recurring or one task","addtag [option:all] <taskID> <value>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Archive recurring or one task", "archive [option:all] <taskID>", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Change an entry", "change <taskID> [option: desc|priority] <new value>", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Change a deadline", "change <taskID> date <new date> at <new time>", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Change a meeting", "change <taskID> date <new date> start <new start> end <new end>", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Change a recurring entry", "change all <taskID> [option: desc|priority] <new value>", NOT_APPLICABLE));
-		uiCommandList.add(new UICommand("Change a recurring deadline", "change all <taskID> date <new time>", NOT_APPLICABLE));
-		uiCommandList.add(new UICommand("Change a recurring meeting", "change all <taskID> date start <new start> end <new end>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change a recurring deadline", "change all <taskID> time <new time>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Change a recurring meeting", "change all <taskID> time start <new start> end <new end>", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Change directory", "directory <folder>|<absolute path of the folder>", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Change motto of the day", STRING_CHANGEMOTTO, NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Default tables view", "refresh", NOT_APPLICABLE));
-		uiCommandList.add(new UICommand("Delete an entry", "delete current|archive <taskID>", "delete <taskID>, delete archive <taskID>"));
+		uiCommandList.add(new UICommand("Delete one or recurring entries", "delete [option:all] current|archive <taskID>", "delete [opt:all] <taskID>, delete [opt:all] archive <taskID>"));
 		uiCommandList.add(new UICommand("Exit program", STRING_EXIT, NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Export existing storage file", "export to <absolute path of the file>", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Go to a panel", "goto <panel name>", "g t/c/s"));
 		uiCommandList.add(new UICommand("Import from existing storage file", "import from <absolute path of the file>", NOT_APPLICABLE));
-		uiCommandList.add(new UICommand("Removing tags from a task", "removetag <taskID> <value>", NOT_APPLICABLE));
-		uiCommandList.add(new UICommand("Searching for tasks", "search [option: desc|date|priority|tag] <value> or search today|tmr", NOT_APPLICABLE));
-		uiCommandList.add(new UICommand("Sort list", "sort [either: date|priority|tag]", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Remove tags from recurring or one task", "removetag [option:all]<taskID> <value>", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Searching for tasks", "search [option:desc|date|priority|tag|desc] <value> or search today|tmr", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Sort list", "sort [either: time|priority|tag]", NOT_APPLICABLE));
 		uiCommandList.add(new UICommand("Undo last user input","undo", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Redo last command","redo", NOT_APPLICABLE));
+		uiCommandList.add(new UICommand("Unarchive a task from archives","unarchive <taskID>", NOT_APPLICABLE));
 
 	}
 
