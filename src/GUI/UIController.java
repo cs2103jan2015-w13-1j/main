@@ -237,7 +237,6 @@ public class UIController implements Initializable {
 
 	private void displayImport(String message) {
 		if (message.contains(STRING_FROM)) {
-			String[] splitMessage = message.split(STRING_FROM);
 			taskList = commandController.returnTasks();
 			addToTaskDisplay();
 			archiveList = commandController.returnArchive();

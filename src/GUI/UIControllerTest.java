@@ -8,11 +8,7 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.BeforeClass;
-import org.junit.Rule;
 
-import javafx.application.Application;
-import javafx.application.Platform;
 import Common.Task;
 import Parser.CommandController;
 
@@ -22,9 +18,7 @@ public class UIControllerTest {
 	CommandController commandController = new CommandController();
 	
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
-	private static ArrayList<Task> archiveList = new ArrayList<Task>();
 	private static ArrayList<Task> uiTaskList = new ArrayList<Task>();
-	private static ArrayList<Task> uiArchiveList = new ArrayList<Task>();
 	
 	@Before
 	public void setUp(){
