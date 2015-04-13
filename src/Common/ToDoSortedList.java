@@ -3,9 +3,8 @@
  * Used to store the tasks in sorted order when the program is running for the todo list.
  * Support add, delete, update, and extract top_n tasks.
  */
-package SortedList;
+package Common;
 
-import Common.Task;
 
 @SuppressWarnings("serial")
 public class ToDoSortedList extends GeneralSortedList{

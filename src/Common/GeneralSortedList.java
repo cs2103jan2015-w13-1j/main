@@ -4,12 +4,11 @@
  * General sorted list used to store the tasks in sorted order when the program is running
  * Support add, delete, update, and extract top_n tasks.
  */
-package SortedList;
+package Common;
 import java.security.InvalidKeyException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import Common.Task;
 import Logic.TaskList;
 
 @SuppressWarnings("serial")

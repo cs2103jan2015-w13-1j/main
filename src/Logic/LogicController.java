@@ -3,12 +3,12 @@ package Logic;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import Common.ArchiveSortedList;
 import Common.Date;
+import Common.PrioritySortedList;
 import Common.Task;
+import Common.ToDoSortedList;
 import History.HistoryController;
-import SortedList.ArchiveSortedList;
-import SortedList.PrioritySortedList;
-import SortedList.ToDoSortedList;
 import Storage.StorageController;
 
 public class LogicController implements InterfaceForLogic{
