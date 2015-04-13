@@ -99,8 +99,8 @@ public class HistoryADT {
 		assertEquals(1, program.getRedoList().size());
 		// Perform 1 successful redo()
 		assertNotNull(program.redo());
-		// Verify both logList and redoList are empty
-		assertEquals(0, program.getLogList().size());
+		// Verify both logList and redoList size are correct
+		assertEquals(1, program.getLogList().size());
 		assertEquals(0, program.getRedoList().size());
 	}
 	

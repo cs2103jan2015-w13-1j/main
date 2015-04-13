@@ -1,0 +1,1626 @@
+//@author: a0111866e
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\History\HistoryADT.java
+	 */
+
+
+/**
+ * This java class will be the automated driver test for History Controller
+ */
+
+package History;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class HistoryADT {
+	HistoryController program;
+	
+	/**
+	 * Initialise stack in history controller
+	 */
+	@Before
+	public void initialise() {
+		program = new HistoryController();
+	}
+	
+	/**
+	 * Test for single log function
+	 */
+	@Test
+	public void testForSingleLog() {
+		assertEquals(true, program.log());
+		assertEquals(1, program.getLogList().size());
+	}
+	
+	/**
+	 * Test for multiple log function
+	 */
+	@Test
+	public void testForMultipleLog() {
+		assertEquals(true, program.log());
+		assertEquals(true, program.log());
+		assertEquals(true, program.log());
+		assertEquals(true, program.log());
+		assertEquals(true, program.log());
+		assertEquals(5, program.getLogList().size());
+	}
+	
+	/**
+	 * Test for undo function with empty stack
+	 */
+	@Test
+	public void testForUndoWithEmptyStack() {
+		// Verify logList is empty
+		assertEquals(0, program.getLogList().size());
+		// Perform 1 unsuccessful undo()
+		assertNull(program.undo());
+	}
+	
+	/**
+	 * Test for undo function with one log entry
+	 */
+	@Test
+	public void testForUndoWithOneLog() {
+		// Perform 1 log()
+		assertEquals(0, program.getLogList().size());
+		assertEquals(true, program.log());
+		// Verify logList size is 1
+		assertEquals(1, program.getLogList().size());
+		// Perform 1 successful undo()
+		assertNotNull(program.undo());
+		// Verify logList is empty
+		assertEquals(0, program.getLogList().size());
+	}
+	
+	@Test
+	public void testForRedoWithEmptyStack() {
+		// Verify both logList and redoList are empty
+		assertEquals(0, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+		// Perform 1 unsuccessful redo()
+		assertNull(program.redo());
+	}
+	
+	@Test
+	public void testForRedoWithOneUndo() {
+		// Perform 1 log()
+		assertEquals(true, program.log());
+		// Verify logList size is 1 and redoList is empty
+		assertEquals(1, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+		// Perform 1 unsuccessful redo()
+		assertNull(program.redo());
+		// Perform 1 successful undo()
+		assertNotNull(program.undo());
+		// Verify logList is empty and redoList size is 1
+		assertEquals(0, program.getLogList().size());
+		assertEquals(1, program.getRedoList().size());
+		// Perform 1 successful redo()
+		assertNotNull(program.redo());
+		// Verify both logList and redoList size are correct
+		assertEquals(1, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+	}
+	
+	@Test
+	public void testForOneUndoThenLog() {
+		// Perform 1 log()
+		assertEquals(true, program.log());
+		// Verify logList size is 1 and redoList is empty
+		assertEquals(1, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+		// Perform 1 successful undo()
+		assertNotNull(program.undo());
+		// Verify logList is empty and redoList size is 1
+		assertEquals(0, program.getLogList().size());
+		assertEquals(1, program.getRedoList().size());
+		// Perform 1 successful undo()
+		assertEquals(true, program.log());
+		// Verify logList size is 1 and redoList is empty
+		assertEquals(1, program.getLogList().size());
+		assertEquals(0, program.getRedoList().size());
+	}
+	
+	/**
+	 * clear stack entries
+	 */
+	@After
+	public void cleanUp() {
+		program.getLogList().clear();
+		program.getRedoList().clear();
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\History\HistoryADT.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\History\HistoryController.java
+	 */
+
+
+/**
+ * This java class is the controller for the History component in the software architecture.
+ */
+
+package History;
+
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import Logic.DATA;
+import Storage.StorageController;
+
+public class HistoryController implements InterfaceForHistory {
+
+	private static final String MESSAGE_ERROR_REDO = "Redo not successful. No previous command entry found.";
+	private static final String MESSAGE_ERROR_UNDO = "Undo not successful. No previous command entry found.";
+	private static final String MESSAGE_ERROR_LOG = "Log previous DATA was not successful.";
+	private static final String MESSAGE_SUCCESS_LOG = "Log previous DATA successfully.";
+	private static final String MESSAGE_SUCCESS_INITIALISE = "Log list is initialised.";
+	private final int SIZE = 10;
+	private LinkedList<DATA> _logList;
+	private LinkedList<DATA> _redoList;
+	private StorageController _storageControl;
+	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
+	
+	public HistoryController() {
+		this._logList = new LinkedList<DATA>();
+		this._redoList = new LinkedList<DATA>();
+		_storageControl = new StorageController();
+		logger.log(Level.INFO, MESSAGE_SUCCESS_INITIALISE);
+	}
+
+	@Override
+	public boolean log() {
+		manageLogListEntryLimit();
+		clearRedoList();
+		DATA previousData = _storageControl.getAllData();
+		return executeLog(previousData);
+	}
+
+	private void clearRedoList() {
+		// clear redoList
+		this._redoList.clear();
+	}
+
+	private boolean executeLog(DATA previousData) {
+		this._logList.push(previousData);
+		if (this._logList.contains(previousData) == true) {
+			logger.log(Level.INFO, MESSAGE_SUCCESS_LOG);
+			return true;
+		} else {
+			logger.log(Level.WARNING, MESSAGE_ERROR_LOG);
+			return false;
+		}
+	}
+
+	private void manageLogListEntryLimit() {
+		if (this._logList.size() == SIZE) {
+			this._logList.removeLast();
+		}
+	}
+
+	@Override
+	public DATA undo() {
+		if (this._logList.isEmpty() == true) {
+			logger.log(Level.WARNING, MESSAGE_ERROR_UNDO);
+			return null;
+		}
+		// retrieve DATA from storage and push into redoList
+		DATA currentData = _storageControl.getAllData();
+		return executeUndo(currentData);
+	}
+
+	private DATA executeUndo(DATA currentData) {
+		this._redoList.push(currentData);
+		// pop DATA from logList and return DATA
+		DATA previousData = this._logList.pop();
+		return previousData;
+	}
+
+	@Override
+	public DATA redo() {
+		if (this._redoList.isEmpty() == true) {
+			logger.log(Level.WARNING, MESSAGE_ERROR_REDO);
+			return null;
+		}
+		// retrieve DATA from storage and push into redoList
+		DATA currentData = _storageControl.getAllData();
+		return executeRedo(currentData);
+	}
+
+	private DATA executeRedo(DATA currentData) {
+		this._logList.push(currentData);
+		// pop DATA from redoList and return DATA
+		DATA previousData = this._redoList.pop();
+		return previousData;
+	}
+
+	/**
+	 * @return the logList
+	 */
+	public LinkedList<DATA> getLogList() {
+		return _logList;
+	}
+
+	/**
+	 * @param logList the logList to set
+	 */
+	public void setLogList(LinkedList<DATA> logList) {
+		this._logList = logList;
+	}
+
+	/**
+	 * @return the redoList
+	 */
+	public LinkedList<DATA> getRedoList() {
+		return _redoList;
+	}
+
+	/**
+	 * @param redoList
+	 */
+	public void setRedoList(LinkedList<DATA> redoList) {
+		this._redoList = redoList;
+	}
+	
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\History\HistoryController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\History\InterfaceForHistory.java
+	 */
+
+
+/**
+ * This class is an interface for history. It contains the methods for logic controller.
+ */
+
+package History;
+
+import Logic.DATA;
+
+public interface InterfaceForHistory {
+	
+	/**
+	 * @return true if successful log previous DATA into log list
+	 */
+	boolean log();
+	
+	/**
+	 * @return previous DATA object if logList is not empty. Otherwise, return null
+	 */
+	DATA undo();
+	
+	/**
+	 * @return undo DATA object if redoList is not empty. Otherwise, return null
+	 */
+	DATA redo();
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\History\InterfaceForHistory.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Motivator\InterfaceForMotivator.java
+	 */
+
+
+/**
+ * This class is an interface for Motivator
+ */
+
+package Motivator;
+
+public interface InterfaceForMotivator {
+	
+	/**
+	 * @return a random quote
+	 */
+	String getRandomQuotes();
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Motivator\InterfaceForMotivator.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Motivator\Motivator.java
+	 */
+
+
+/**
+ * This class reads from quotes.txt and stores the content into an array list.
+ * It provides a function which returns a random quote from the array list.
+ */
+
+package Motivator;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Random;
+
+public class Motivator implements InterfaceForMotivator {
+	
+	private ArrayList<String> _quotes;
+	
+	public static void main(String[] args) {
+		Motivator motivator = new Motivator();
+		motivator.initialise();
+//		System.out.println(motivator.getRandomQuotes());
+	}
+
+	/**
+	 * Default constructor with initialise method call
+	 */
+	public Motivator() {
+		initialise();
+	}
+
+	@Override
+	public String getRandomQuotes() {
+		int randomInt = generateRandomInteger();
+		return getQuoteFromIndex(randomInt);
+	}
+
+	/**
+	 * @param randomInt
+	 * @return quote from index
+	 */
+	private String getQuoteFromIndex(int randomInt) {
+		return _quotes.get(randomInt);
+	}
+
+	/**
+	 * @return a random integer
+	 */
+	private int generateRandomInteger() {
+		//note a single Random object is reused here
+	    Random randomGenerator = new Random();
+	    int randomInt = randomGenerator.nextInt(this._quotes.size() - 1);
+		return randomInt;
+	}
+	
+	/**
+	 * initialise quotes list
+	 */
+	private void initialise() {
+		this._quotes = new ArrayList<String>();
+		copyQuotesFromFile();
+	}
+	
+	/**
+	 * Copy Quotes from file
+	 */
+	private void copyQuotesFromFile() {
+		try {
+			InputStream is = this.getClass().getResourceAsStream("/quotes.txt");
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+			    String line;
+			    while ((line = br.readLine()) != null) {
+			       // process the line.
+			    	_quotes.add(line);
+			    }
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @return the quotes
+	 */
+	public ArrayList<String> getQuotes() {
+		return _quotes;
+	}
+
+	/**
+	 * @param quotes the quotes to set
+	 */
+	public void setQuotes(ArrayList<String> quotes) {
+		this._quotes = quotes;
+	}
+
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Motivator\Motivator.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Storage\InterfaceForStorageController.java
+	 */
+
+
+/**
+ * This class is an interface for storage controller
+ */
+
+package Storage;
+
+import Logic.DATA;
+
+public interface InterfaceForStorageController {
+	
+	/**
+	 * @return a DATA object that is stored in the storage
+	 */
+	DATA getAllData();
+	/**
+	 * @param data a DATA object
+	 * @return a message that indicates the storage status
+	 */
+	String storeAllData(DATA data); 
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Storage\InterfaceForStorageController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Storage\InterfaceForStorageDirectory.java
+	 */
+
+
+/**
+ * This class is an interface for storage directory
+ */
+
+package Storage;
+
+public interface InterfaceForStorageDirectory {
+	/**
+	 * @param directory path of the directory
+	 * @return the given path of the directory
+	 */
+	String changeFileDirectory(String directory);
+	/**
+	 * @return the current relative path of the directory
+	 */
+	String getFileDirectory();
+	/**
+	 * @return the current relative path of the directory
+	 */
+	String getFileName();
+	/**
+	 * @param file
+	 * @return true if import is successful
+	 */
+	boolean importFromDirectory(String file);
+	/**
+	 * @param file
+	 * @return true if export is successful
+	 */
+	boolean exportToDirectory(String file);
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Storage\InterfaceForStorageDirectory.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Storage\StorageADT.java
+	 */
+
+
+/**
+ * This java class will be the automated driver test for Storage Controller
+ */
+
+package Storage;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class StorageADT {
+	
+	private StorageController program;
+	private StorageDirectory directory;
+	
+	/**
+	 * Initialise storage utility file with its default settings and initialise new DATA object
+	 */
+	@Before
+	public void initialise() {
+		program = new StorageController();
+		directory = new StorageDirectory();
+		program.initialiseNewDataObject();
+	}
+	
+	/**
+	 * Test for creation of dummy data
+	 */
+	@Test
+	public void testForDummyData() {
+		assertEquals("9 Dummy data created.", program.createDummyData());
+		assertEquals(6, program.getData().getActiveTaskList().size());
+		assertEquals(3, program.getData().getArchivedTaskList().size());
+	}
+	
+	/**
+	 * Test for storing after dummy creation
+	 */
+	@Test
+	public void testForStoring() {
+		testForDummyData();
+		assertEquals("success in storing", program.storeAllData(program.getData()));
+	}
+	
+	/**
+	 * Test for retrieval from storage
+	 */
+	@Test
+	public void testForRetrieval() {
+		testForStoring();
+		assertEquals(6, program.getAllData().getActiveTaskList().size());
+		assertEquals(3, program.getAllData().getArchivedTaskList().size());
+	}
+	
+	@After
+	public void cleanUp() {
+		directory.changeFileDirectory("tables");
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Storage\StorageADT.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Storage\StorageController.java
+	 */
+
+
+/**
+ * This java class is the controller for the Storage component in the software architecture.
+ * 
+ * Dependency files: 
+ * - jar/gson-2.3.1.jar for Gson library 
+ * - jar/json-simpler-1.1.1.jar for JSON library
+ * 
+ * Test driver: StorageADT.java
+ * Interface:	InterfaceForStorageController.java
+ */
+
+package Storage;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import Common.Date;
+import Common.Task;
+import Logic.DATA;
+import Logic.TaskList;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+public class StorageController implements InterfaceForStorageController {
+	private static final String STRING_GENERIC = "generic";
+	private static final String STRING_FINISHED_TIME = "finishedTime";
+	private static final String STRING_END_TIME = "endTime";
+	private static final String STRING_START_TIME = "startTime";
+	private static final String STRING_MEETING = "meeting";
+	private static final String STRING_DEADLINE = "deadline";
+	private static final String STRING_ARCHIVED = "archived";
+	private static final String STRING_PRIORITY = "priority";
+	private static final String STRING_TAGS = "tags";
+	private static final String STRING_TYPE = "type";
+	private static final String STRING_DESCRIPTION = "description";
+	private static final String STRING_ID = "id";
+	private static final String STRING_RECURRENCE_ID = "recurrenceId";
+	private static final String STRING_SERIAL_NUMBER = "serialNumber";
+	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
+	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
+	private static final String MESSAGE_ERROR_CREATE_TASK = "Unable to create task due to invalid task type";
+	private static final String MESSAGE_ERROR_CONVERT_DATA = "Unable to get DATA from storage.";
+	private static final String MESSAGE_DUMMY_DATA = "9 Dummy data created.";
+	private static final String MESSAGE_INITIALISE_NEW_DATA_OBJECT = "Initialise new DATA object.";
+	private static final String MESSAGE_ERROR_STORE = "failure in storing";
+	private static final String MESSAGE_SUCCESS_STORE = "success in storing";
+	private static final int STARTING_INDEX = 0;
+
+	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
+	
+	private DATA _data;
+	private StorageDatastore _datastore = new StorageDatastore();
+	
+	public static void main(String[] args) {
+		StorageController control = new StorageController();
+		control.testForStoreFunction();
+//		control.getAllData();
+	}
+	
+	/**
+	 * for testing purpose
+	 */
+	private void testForStoreFunction() {
+		this._data = initialiseNewDataObject();
+		createDummyData();
+		storeAllData(this._data);
+	}
+	
+	@Override
+	public DATA getAllData() {
+		this._data = convertJsonObjectToData(_datastore.getData());
+		return _data;
+	}
+	
+	/**
+	 * @param dataJSON
+	 * @return DATA object
+	 */
+	private DATA convertJsonObjectToData(JSONObject dataJSON) {		
+		if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
+				|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
+			logger.log(Level.WARNING, MESSAGE_ERROR_CONVERT_DATA);
+			return initialiseNewDataObject();
+		} else {
+			DATA newData = new DATA();
+			Gson gson = new Gson();
+			// retrieve serial number and store into data
+			newData.setSerialNumber(gson.fromJson(String.valueOf(dataJSON.get(STRING_SERIAL_NUMBER)) , int.class));
+			// retrieve recurrence ID and store into data
+			newData.setRecurrenceId(gson.fromJson(String.valueOf(dataJSON.get(STRING_RECURRENCE_ID)) , int.class));
+			// retrieve active list and store into data
+			TaskList activeTaskList = getTaskListFromJsonByTaskList(dataJSON, STRING_ACTIVE_TASK_LIST);
+			newData.setActiveTaskList(activeTaskList);
+			// retrieve archive list and store into data
+			TaskList archivedTaskList = getTaskListFromJsonByTaskList(dataJSON, STRING_ARCHIVED_TASK_LIST);
+			newData.setArchivedTaskList(archivedTaskList);
+			return newData;
+		}
+	}
+
+	@Override
+	public String storeAllData(DATA data) {
+		this._data = data;
+		if (_datastore.storeJsonIntoStorage(convertDataToJSONObject()) == true) {
+			logger.log(Level.INFO, MESSAGE_SUCCESS_STORE);
+			return MESSAGE_SUCCESS_STORE;
+		} else {
+			logger.log(Level.WARNING, MESSAGE_ERROR_STORE);
+			return MESSAGE_ERROR_STORE;
+		}
+	}
+
+	/**
+	 * @param dataJSON
+	 * @param taskList type
+	 * @return taskList
+	 */
+	@SuppressWarnings("rawtypes")
+	private TaskList getTaskListFromJsonByTaskList(JSONObject dataJSON, String taskList) {
+		TaskList taskListHashMap = new TaskList();
+		try {
+			JSONObject tasklistJSON = (JSONObject) dataJSON.get(taskList);
+			Iterator it = tasklistJSON.entrySet().iterator();
+			
+		    while (it.hasNext()) {
+		    	Map.Entry pair = (Map.Entry)it.next();
+		    	JSONObject taskJSON = (JSONObject) tasklistJSON.get(pair.getKey()); 
+		    	Task task = convertJsonObjectToTask(taskJSON);
+				taskListHashMap.addTask(task.getId(), task);
+		    	it.remove(); // avoids a ConcurrentModificationException
+	        }
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+		return taskListHashMap;
+	}
+
+	/**
+	 * @param taskJSON
+	 * @return task object
+	 */
+	private Task convertJsonObjectToTask(JSONObject taskJSON) {
+		// Generic Type attributes
+		Gson gson = new Gson();
+		int id = gson.fromJson(String.valueOf(taskJSON.get(STRING_ID)) , int.class);
+		int recurrenceId = gson.fromJson(String.valueOf(taskJSON.get(STRING_RECURRENCE_ID)) , int.class);
+		String description = String.valueOf(taskJSON.get(STRING_DESCRIPTION));
+		String type = String.valueOf(taskJSON.get(STRING_TYPE));
+		ArrayList<String> tags = gson.fromJson(String.valueOf(taskJSON.get(STRING_TAGS)) , new TypeToken<ArrayList<String>>() {}.getType());
+		int priority = gson.fromJson(String.valueOf(taskJSON.get(STRING_PRIORITY)) , int.class);
+		boolean archived = gson.fromJson(String.valueOf(taskJSON.get(STRING_ARCHIVED)) , boolean.class);
+		
+		Task task = createTaskFromAttribute(taskJSON, id, description, type, tags, priority, archived, recurrenceId);
+		return task;
+	}
+
+	/**
+	 * @param taskJSON
+	 * @param id
+	 * @param description
+	 * @param type
+	 * @param tags
+	 * @param priority
+	 * @param archived
+	 * @return task object
+	 */
+	private Task createTaskFromAttribute(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags,	int priority, boolean archived, int recurrenceId) {
+		Task task = createTask(taskJSON, id, description, type, tags, priority, recurrenceId);
+		determineTaskIsArchived(taskJSON, archived, task);
+		return task;
+	}
+
+	/**
+	 * @param taskJSON
+	 * @param id
+	 * @param description
+	 * @param type
+	 * @param tags
+	 * @param priority
+	 * @return task object
+	 */
+	private Task createTask(JSONObject taskJSON, int id, String description, String type, ArrayList<String> tags, int priority, int recurrenceId) {
+		Task task = null;
+		Gson gson = new Gson();
+		try {
+			if (type.equals(STRING_DEADLINE)) {
+				// Deadline Type
+				long string_date = gson.fromJson(String.valueOf(taskJSON.get(STRING_DEADLINE)) , long.class);
+				Date deadline = new Date();
+				deadline.setTime(string_date);
+				task = new Task(id, description, deadline, priority, tags, recurrenceId);
+			} else if (type.equals(STRING_MEETING)) {
+				// Meeting Type
+				long long_start_date = gson.fromJson(String.valueOf(taskJSON.get(STRING_START_TIME)) , long.class);
+				Date startDate = new Date();
+				startDate.setTime(long_start_date);
+				
+				long long_end_date = gson.fromJson(String.valueOf(taskJSON.get(STRING_END_TIME)) , long.class);
+				Date endDate = new Date();
+				endDate.setTime(long_end_date);
+				
+				task = new Task(id, description, startDate, endDate, priority, tags, recurrenceId);
+			} else if (type.equals(STRING_GENERIC)) {
+				// Generic type
+				task = new Task(id, description, priority, tags, recurrenceId);
+			} else {
+				logger.log(Level.WARNING, MESSAGE_ERROR_CREATE_TASK);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+		return task;
+	}
+	
+	/**
+	 * @param taskJSON
+	 * @param archived
+	 * @param task
+	 */
+	private void determineTaskIsArchived(JSONObject taskJSON, boolean archived, Task task) {
+		Gson gson = new Gson();
+		try {
+			if (archived == true) {
+				long string_finished_time= gson.fromJson(String.valueOf(taskJSON.get(STRING_FINISHED_TIME)) , long.class);
+				Date finishedTime = new Date();
+				finishedTime.setTime(string_finished_time);
+				task.moveToArchive(finishedTime);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	/**
+	 * pre-requisite: DATA object must be valid
+	 * @return json object
+	 */
+	private JSONObject convertDataToJSONObject() {
+		JSONObject dataJSON = new JSONObject();
+		try {
+			Gson gson = new Gson();
+			JSONParser parser = new JSONParser();
+			dataJSON = (JSONObject) parser.parse(gson.toJson(this._data));
+			modifyDataJsonByTaskList(dataJSON, STRING_ACTIVE_TASK_LIST);
+			modifyDataJsonByTaskList(dataJSON, STRING_ARCHIVED_TASK_LIST);
+		} catch (ParseException e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+		return dataJSON;
+	}
+
+	/**
+	 * @param dataJSON
+	 * @param taskList
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void modifyDataJsonByTaskList(JSONObject dataJSON, String taskList) {
+		try {
+			JSONObject taskListJSON = (JSONObject) dataJSON.get(taskList);
+			Iterator it = null;
+			it = setIteratorByTaskList(taskList, it);
+			while (it.hasNext()) {
+			    Map.Entry pair = (Map.Entry)it.next();
+				Task task = (Task) pair.getValue();
+				JSONObject taskJSON = (JSONObject) taskListJSON.get(String.valueOf(task.getId()));
+				modifyNonGenericTaskForDataJson(task, taskJSON); 
+				processArchivedTaskForDataJson(task, taskJSON);
+				taskListJSON.replace(String.valueOf(task.getId()), taskJSON);
+			}
+			dataJSON.replace(taskList, taskListJSON);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	/**
+	 * @param task
+	 * @param taskJSON
+	 */
+	@SuppressWarnings("unchecked")
+	private void processArchivedTaskForDataJson(Task task, JSONObject taskJSON) {
+		if (task.isArchived() == true) {
+			taskJSON.replace(STRING_FINISHED_TIME, task.getFinishedTime().getTime());
+		}
+	}
+
+	/**
+	 * @param task
+	 * @param taskJSON
+	 */
+	@SuppressWarnings("unchecked")
+	private void modifyNonGenericTaskForDataJson(Task task, JSONObject taskJSON) {
+		if (taskJSON.containsKey(STRING_DEADLINE)) {
+			taskJSON.replace(STRING_DEADLINE, task.getDeadline().getTime());
+		} else if (taskJSON.containsKey(STRING_START_TIME)) {
+			taskJSON.replace(STRING_START_TIME, task.getStartTime().getTime());
+			taskJSON.replace(STRING_END_TIME, task.getEndTime().getTime());
+		}
+	}
+
+	/**
+	 * @param taskList
+	 * @param it
+	 * @return it
+	 */
+	@SuppressWarnings("rawtypes")
+	private Iterator setIteratorByTaskList(String taskList, Iterator it) {
+		if (taskList.equals(STRING_ACTIVE_TASK_LIST)) {
+			it = _data.getActiveTaskList().entrySet().iterator();
+		} else if (taskList.equals(STRING_ARCHIVED_TASK_LIST)) {
+			it = _data.getArchivedTaskList().entrySet().iterator();
+		}
+		return it;
+	}
+
+	/**
+	 * Intialise new DATA object
+	 * @return a new DATA object
+	 */
+	public DATA initialiseNewDataObject() {
+		logger.log(Level.FINE, MESSAGE_INITIALISE_NEW_DATA_OBJECT);
+		this._data = new DATA();
+		this._data.setActiveTaskList(new TaskList());
+		this._data.setArchivedTaskList(new TaskList());
+		this._data.setSerialNumber(STARTING_INDEX);
+		this._data.setRecurrenceId(STARTING_INDEX);
+		return this._data;
+	}
+
+	/**
+	 * @return datastore.getStorageRelativePath();
+	 */
+	public String getFileRelativePath() {
+		return _datastore.getStorageFilePath();
+	}
+
+	/**
+	 * @return the data
+	 */
+	public DATA getData() {
+		return _data;
+	}
+
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(DATA data) {
+		this._data = data;
+	}
+	
+	/**
+	 * For testing purpose ,create 9 dummy tasks and store into data 
+	 * @return a message to show 9 dummy tasks created
+	 */
+	public String createDummyData() {
+		// dummy GenericTask
+		Task dummyGenericTask1 = new Task(1, "dummyGenericTask 1", 1, null);
+		dummyGenericTask1.addTag("Personal"); 
+		Task dummyGenericTask2 = new Task(2, "dummyGenericTask 2", 2, null);
+		dummyGenericTask2.addTag("Work");	
+		Task dummyGenericTask3 = new Task(3, "dummyGenericTask 3", 3, null);
+		dummyGenericTask3.addTag("School");
+
+		// dummy DeadlineTask
+		Task dummyDeadlineTask1 = new Task(4, "dummyDeadlineTask 1", null, 2, null);
+		long deadlinetime1 = Long.valueOf("1424361600000"); // date: 20/02/2015
+		Date deadline1 = new Date();
+		deadline1.setTime(deadlinetime1);
+		dummyDeadlineTask1.changeDeadline(deadline1);
+		dummyDeadlineTask1.addTag("Personal");
+		dummyDeadlineTask1.addTag("Work");
+		Task dummyDeadlineTask2 = new Task(5, "dummyDeadlineTask 2", null, 2, null);
+		long deadlinetime2 = Long.valueOf("1424797200000"); // date: 25/02/2015
+		Date deadline2 = new Date();
+		deadline2.setTime(deadlinetime2);
+		dummyDeadlineTask2.changeDeadline(deadline2);	
+		dummyDeadlineTask2.addTag("Work");
+		dummyDeadlineTask2.addTag("School");
+		Task dummyDeadlineTask3 = new Task(6, "dummyDeadlineTask 3", null, 2, null);
+		long deadlinetime3 = Long.valueOf("1425056400000"); // date: 28/02/2015 1 am
+		Date deadline3 = new Date();
+		deadline3.setTime(deadlinetime3);
+		dummyDeadlineTask3.changeDeadline(deadline3);
+		dummyDeadlineTask3.addTag("Personal");
+		dummyDeadlineTask3.addTag("School");
+
+		// dummy MeetingTask
+		Task dummyMeetingTask1 = new Task(7, "dummyMeetingTask 1", null, null, 3, null);
+		dummyMeetingTask1.changeStartTime(deadline2); 
+		dummyMeetingTask1.changeEndTime(deadline3);
+		dummyMeetingTask1.addTag("Work");
+		dummyMeetingTask1.addTag("Personal");
+		Task dummyMeetingTask2 = new Task(8, "dummyMeetingTask 2", null, null, 3, null);
+		dummyMeetingTask2.changeStartTime(deadline1);
+		dummyMeetingTask2.changeEndTime(deadline2);
+		dummyMeetingTask2.addTag("Personal");
+		dummyMeetingTask2.addTag("School");
+		Task dummyMeetingTask3 = new Task(9, "dummyMeetingTask 3", null, null, 3, null);
+		dummyMeetingTask3.changeStartTime(deadline1); 
+		dummyMeetingTask3.changeEndTime(deadline3);
+		dummyMeetingTask3.addTag("Work");
+		dummyMeetingTask3.addTag("Personal");
+
+		// tasks set to archive
+		dummyGenericTask2.moveToArchive(deadline1);
+		dummyDeadlineTask1.moveToArchive(deadline2);
+		dummyMeetingTask2.moveToArchive(deadline3);
+
+		_data.setSerialNumber(10); // hard-coded serial number
+		_data.setRecurrenceId(STARTING_INDEX); // hard-coded recurrence id
+
+		_data.getActiveTaskList().addTask(dummyGenericTask1.getId(), dummyGenericTask1);
+		_data.getActiveTaskList().addTask(dummyGenericTask3.getId(), dummyGenericTask3);
+		_data.getActiveTaskList().addTask(dummyDeadlineTask2.getId(), dummyDeadlineTask2);
+		_data.getActiveTaskList().addTask(dummyDeadlineTask3.getId(), dummyDeadlineTask3);
+		_data.getActiveTaskList().addTask(dummyMeetingTask1.getId(), dummyMeetingTask1);
+		_data.getActiveTaskList().addTask(dummyMeetingTask3.getId(), dummyMeetingTask3);
+
+		_data.getArchivedTaskList().addTask(dummyGenericTask2.getId(), dummyGenericTask2);
+		_data.getArchivedTaskList().addTask(dummyDeadlineTask1.getId(), dummyDeadlineTask1);
+		_data.getArchivedTaskList().addTask(dummyMeetingTask2.getId(), dummyMeetingTask2);
+		logger.log(Level.INFO, MESSAGE_DUMMY_DATA);
+		return MESSAGE_DUMMY_DATA;
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Storage\StorageController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Storage\StorageDatastore.java
+	 */
+
+
+/**
+ * This java class is the datastore for the Storage component in the software architecture.
+ * 
+ * Dependency files: 
+ * - jar/json-simpler-1.1.1.jar for JSON library
+ * 
+ * Test driver: StorageADT.java
+ * Interface:	InterfaceForStorage.java
+ */
+
+package Storage;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class StorageDatastore {
+	
+	private String _directory;
+	private String _storageName;
+	private static final int NEGATIVE_ONE = -1;
+	private static final String STRING_DIRECTORY = "directory";
+	private static final String STRING_STORAGE_NAME = "storageName";
+	private static final String STRING_UTILITY_FILE_NAME = "tables/utility.json";
+	private static final String STRING_DEFAULT_STORAGE_NAME_VALUE = "storage.json";
+	private static final String STRING_DEFAULT_DIRECTORY_VALUE = "tables/";
+	private static final String STRING_RECURRENCE_ID = "recurrenceId";
+	private static final String STRING_SERIAL_NUMBER = "serialNumber";
+	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
+	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
+	private static final String MESSAGE_INIT_ERROR_INVALID_CONTENT = STRING_UTILITY_FILE_NAME + " content invalid.";
+	private static final String MESSAGE_INIT_ERROR_STORAGE_NOT_FOUND = STRING_UTILITY_FILE_NAME + " does not exist.";
+	private static final String MESSAGE_NEW_FILE_DIRECTORY = "New directory : %1$s";
+	private static final String MESSAGE_CREATE_STORAGE_FILE = "Creating storage file : %1$s";
+	private static final String MESSAGE_ADD_DEFAULT_UTIL_SETTINGS = "Add default settings to utility. Directory: \"tables/\" Storage: \"storage.json\"";
+	private static final String MESSAGE_PROCESS_STORAGE_NOT_FOUND = "Storage does not exist.";
+	private static final String MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST = "Storage file does not exist.";
+	private static final String MESSAGE_GET_ALL_DATA_STORAGE_EXIST = "Storage file exists. Retrieving DATA from storage.";
+	private static final String MESSAGE_RETRIEVE_SUCCESS = "Data is retrieved.";
+	private static final String MESSAGE_RETRIEVE_FROM_EMPTY_FILE = "File is empty. No data is retrieved.";
+	private static final String MESSAGE_DELETE_FILE = "%1$s is deleted.";
+	private static final String MESSAGE_STORE_FAILURE = "%1$s not saved.";
+	private static final String MESSAGE_STORE_SUCCESS = "%1$s is saved successfully.";
+	private static final String MESSAGE_RETRIEVE_ERROR_FILE_CONTENT_INVALID = "File content invalid. No data is retrieved.";
+	private final static Logger logger = Logger.getLogger(StorageController.class.getName());
+	
+	public static void main(String[] args) {
+//		StorageDatastore control = new StorageDatastore();
+//		control.setDirectory("test");
+//		System.out.println(control.getData().toJSONString());
+	}
+	
+	/**
+	 * Default constructor
+	 */
+	public StorageDatastore() {
+		this.initialise();
+	}
+	
+	/**
+	 * Retrieve datastore settings if exists, otherwise, creates new utility file and set it with default settings
+	 */
+	public void initialise() {
+		if (isStorageExist(STRING_UTILITY_FILE_NAME) == false) {
+			initPhaseOne();
+		} else {
+			initPhaseTwo();
+		}
+	}
+
+	/**
+	 * initialise phase two: get JSON object from file
+	 */
+	private void initPhaseTwo() {
+		JSONObject utilJSON = new JSONObject();
+		try {
+			JSONParser parser = new JSONParser();
+			FileReader readFile = new FileReader(STRING_UTILITY_FILE_NAME);
+			Object obj = parser.parse(readFile);
+			readFile.close();
+			utilJSON = (JSONObject) obj;
+			initPhaseThree(utilJSON);
+			
+		} catch (IOException | ParseException e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	/**
+	 * initialise phase three: read JSON attribute
+	 * @param utilJSON
+	 */
+	private void initPhaseThree(JSONObject utilJSON) {
+		if (utilJSON.containsKey(STRING_DIRECTORY) == false) {
+			logger.log(Level.WARNING, MESSAGE_INIT_ERROR_INVALID_CONTENT);
+			resetToDefaultSettings();
+		} else {
+			this._storageName = String.valueOf(utilJSON.get(STRING_STORAGE_NAME));
+			this._directory = String.valueOf(utilJSON.get(STRING_DIRECTORY));					
+		}
+	}
+
+	/**
+	 * initialise phase one: check on utility.json 
+	 */
+	private void initPhaseOne() {
+		logger.log(Level.WARNING, MESSAGE_INIT_ERROR_STORAGE_NOT_FOUND);
+		createStorage(STRING_UTILITY_FILE_NAME);
+		resetToDefaultSettings();
+	}
+	
+	/**
+	 * @param json object
+	 * @return true if storing is successful
+	 */
+	public boolean storeJsonIntoStorage(JSONObject json) {
+		initialise();
+		processStorage(getStorageFilePath());
+		return storeJsonIntoStorage(json, getStorageFilePath());
+	}
+	
+	/**
+	 * @return data in JSON object 
+	 */
+	public JSONObject getData() {
+		initialise();
+		JSONObject dataJSON = new JSONObject();
+		if (isStorageExist(getStorageFilePath()) == true) {
+			logger.log(Level.INFO, MESSAGE_GET_ALL_DATA_STORAGE_EXIST);
+			dataJSON = retrieveDataFromStorage(getStorageFilePath());
+		} else {
+			// must store data first, cannot create new storage because user might change directory
+			logger.log(Level.WARNING, MESSAGE_GET_ALL_DATA_STORAGE_NOT_EXIST);
+		}
+		return dataJSON;
+	}
+	
+	/**
+	 * @param fileName
+	 * @return data in JSON object 
+	 */
+	public JSONObject retrieveDataFromStorage(String fileName) {
+		// do nothing if task list is empty
+		JSONObject dataJSON = new JSONObject();
+		try {
+			FileReader fileRead = new FileReader(fileName);
+			BufferedReader br = new BufferedReader(fileRead);
+			if (br.readLine() == null) {
+				logger.log(Level.WARNING, MESSAGE_RETRIEVE_FROM_EMPTY_FILE);
+				br.close();
+				fileRead.close();
+				return dataJSON;
+			} 
+			br.close();
+			fileRead.close();
+		} catch (IOException e1) {
+			logger.log(Level.SEVERE, e1.getMessage());
+		}
+		
+		try {
+			JSONParser parser = new JSONParser();
+			FileReader fileRead = new FileReader(fileName);
+			Object obj = parser.parse(fileRead);
+			fileRead.close();
+			dataJSON = (JSONObject) obj; 
+			if (dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
+					|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
+				logger.log(Level.WARNING, MESSAGE_RETRIEVE_ERROR_FILE_CONTENT_INVALID);
+				dataJSON = new JSONObject();
+				return dataJSON;
+			}
+			
+		} catch (IOException | ParseException e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+		logger.log(Level.INFO, MESSAGE_RETRIEVE_SUCCESS);
+		return dataJSON;
+	}
+	
+	/**
+	 * Reset datastore directory and storage name to default
+	 */
+	private void resetToDefaultSettings() {
+		logger.log(Level.INFO, MESSAGE_ADD_DEFAULT_UTIL_SETTINGS);
+		this._directory = STRING_DEFAULT_DIRECTORY_VALUE;			// default settings
+		this._storageName = STRING_DEFAULT_STORAGE_NAME_VALUE;	// default settings
+		saveSettingsToUtility();
+	}
+
+	/**
+	 * Save settings to utility file
+	 */
+	@SuppressWarnings("unchecked")
+	public void saveSettingsToUtility() {
+		JSONObject utilJSON = new JSONObject();
+		utilJSON.put(STRING_DIRECTORY, this._directory);
+		utilJSON.put(STRING_STORAGE_NAME, this._storageName);
+		storeJsonIntoStorage(utilJSON, STRING_UTILITY_FILE_NAME);
+	}
+	
+	/**
+	 * @param storage
+	 * Create new storage if storage not found
+	 */
+	public void processStorage(String storage) {
+		if (isStorageExist(storage) == false) {
+			logger.log(Level.WARNING, MESSAGE_PROCESS_STORAGE_NOT_FOUND);
+			createStorage(storage);
+		}
+	}
+	
+	/**
+	 * @param json object
+	 * @param fileName
+	 * @return true if storing is successful
+	 */
+	public boolean storeJsonIntoStorage(JSONObject json, String fileName) {
+		File file = new File(fileName);
+		long timeBeforeModification = file.lastModified();
+		long timeAfterModification = NEGATIVE_ONE;
+		try {
+			FileWriter fileWriter = new FileWriter(fileName);
+			fileWriter.write(json.toJSONString());
+			fileWriter.flush();  
+			fileWriter.close();
+			timeAfterModification = file.lastModified();
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+		boolean result = timeAfterModification > timeBeforeModification;
+		logStoreResult(fileName, result);
+		return result;
+	}
+
+	/**
+	 * @param fileName
+	 * @param result
+	 */
+	private void logStoreResult(String fileName, boolean result) {
+		if (result == true) {
+			logger.log(Level.INFO, String.format(MESSAGE_STORE_SUCCESS, fileName));
+		} else {
+			logger.log(Level.WARNING, String.format(MESSAGE_STORE_FAILURE, fileName));
+		}
+	}
+	
+	/**
+	 * @param filePath Relative Path
+	 * @return True if file exist
+	 */
+	public boolean isStorageExist(String filePath) {
+		File file = new File(filePath);
+		return file.exists();
+	}
+	
+	/**
+	 * @param filePath
+	 */
+	private void createStorage(String filePath) {
+		logger.log(Level.INFO, String.format(MESSAGE_CREATE_STORAGE_FILE, filePath));
+		try {
+			File storageFile = new File(filePath);
+			if (storageFile.getParentFile() != null) {
+				storageFile.getParentFile().mkdirs();
+			}
+			storageFile.createNewFile();
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+	}
+	
+	/**
+	 * @return directory
+	 */
+	public String getDirectory() {
+		initPhaseTwo();
+		return this._directory;
+	}
+	/**
+	 * @param directory the _directory to set
+	 */
+	public void setDirectory(String directory) {
+		this._directory = directory;
+	}
+	/**
+	 * @param directory the directory to set
+	 */
+	public void changeDirectory(String directory) {
+		initialise();
+		JSONObject dataJSON = new JSONObject();
+		String previousDirectory = getStorageFilePath();
+		
+		dataJSON = changeDirectoryPhaseOne(dataJSON);
+		changeDirectoryPhaseTwo(directory);
+		changeDirectoryPhaseThree(dataJSON, previousDirectory);
+		logger.log(Level.INFO, String.format(MESSAGE_NEW_FILE_DIRECTORY, this.getDirectory()));
+	}
+
+	/**
+	 * change directory phase three: store existing storage data, if any, into new directory 
+	 * @param dataJSON
+	 * @param previousDirectory
+	 */
+	private void changeDirectoryPhaseThree(JSONObject dataJSON,	String previousDirectory) {
+		if ((dataJSON.containsKey(STRING_SERIAL_NUMBER) == false || dataJSON.containsKey(STRING_ACTIVE_TASK_LIST) == false
+				|| dataJSON.containsKey(STRING_RECURRENCE_ID) == false || dataJSON.containsKey(STRING_ARCHIVED_TASK_LIST) == false) == false) {
+			processStorage(getStorageFilePath());
+			storeJsonIntoStorage(dataJSON, getStorageFilePath());
+		}
+		deleteFile(previousDirectory);	// remove old storage file if it exists
+	}
+
+	/**
+	 * change directory phase two: save new directory to utility.json
+	 * @param directory
+	 */
+	private void changeDirectoryPhaseTwo(String directory) {
+		URI uri = fileToUri(directory);
+		String absolutePath = uriToString(uri);
+		this._directory = new String();
+		this._directory = absolutePath;
+		saveSettingsToUtility();
+	}
+
+	/**
+	 * change directory phase one: retrieve and delete existing storage file if any
+	 * @param dataJSON
+	 * @return dataJSON
+	 */
+	private JSONObject changeDirectoryPhaseOne(JSONObject dataJSON) {
+		if (isStorageExist(getStorageFilePath()) == true) {
+			dataJSON = retrieveDataFromStorage(getStorageFilePath());
+			deleteFile(getStorageFilePath());	// remove old storage file if it exists
+		}
+		return dataJSON;
+	}
+
+	/**
+	 * @param uri
+	 * @return string
+	 */
+	private String uriToString(URI uri) {
+		String absolutePath = uri.getPath().replaceFirst("/", "");
+		if (absolutePath.endsWith("/") == false) {
+			absolutePath = absolutePath.concat("/");
+		}
+		return absolutePath;
+	}
+
+	/**
+	 * @param directory
+	 * @return Uri
+	 */
+	private URI fileToUri(String directory) {
+		File newDirectory = new File(directory);
+		URI uri = newDirectory.toURI();
+		return uri;
+	}
+	
+	/**
+	 * @param fileName
+	 */
+	private void deleteFile(String fileName) {
+		File oldFile = new File(fileName);
+		oldFile.setWritable(true);
+		if (oldFile.exists()) {
+			oldFile.delete();
+			logger.log(Level.INFO, String.format(MESSAGE_DELETE_FILE, fileName));
+		}
+	}
+	
+	/**
+	 * @return the storageName
+	 */
+	public String getStorageName() {
+		initPhaseTwo();
+		return this._storageName;
+	}
+	/**
+	 * @param storageName the storageName to set
+	 */
+	public void setStorageName(String storageName) {
+		this._storageName = storageName;
+	}
+	
+	/**
+	 * @return directory + storageName
+	 */
+	public String getStorageFilePath() {
+		String path = getDirectory().concat(getStorageName());
+		return path;
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Storage\StorageDatastore.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Storage\StorageDirectory.java
+	 */
+
+
+/**
+ * This java class is the directory class for the Storage component in the software architecture.
+ * 
+ * Interface:	InterfaceForStorageDirectory.java
+ */
+package Storage;
+
+import java.io.File;
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.json.simple.JSONObject;
+
+public class StorageDirectory implements InterfaceForStorageDirectory {
+
+	private static final String STRING_RECURRENCE_ID = "recurrenceId";
+	private static final String STRING_SERIAL_NUMBER = "serialNumber";
+	private static final String STRING_ARCHIVED_TASK_LIST = "archivedTaskList";
+	private static final String STRING_ACTIVE_TASK_LIST = "activeTaskList";
+	private static final String MESSAGE_SUCCESS_EXPORT = "Successful export to %1$s";
+	private static final String MESSAGE_ERROR_EXPORT = "Unsuccessful export.";
+	private StorageDatastore _datastore = new StorageDatastore();
+	private final static Logger logger = Logger.getLogger(StorageDirectory.class.getName());
+	
+
+	@Override
+	public String changeFileDirectory(String directory) {
+		_datastore.changeDirectory(directory);
+		return _datastore.getDirectory();
+	}
+
+	@Override
+	public String getFileDirectory() {
+		return _datastore.getDirectory();
+	}
+
+	@Override
+	public String getFileName() {
+		return _datastore.getStorageName();
+	}
+
+	@Override
+	public boolean importFromDirectory(String file) {
+		File importedFile = new File(file);
+		URI uri = importedFile.toURI();
+		String importedFileAbsolutePath = uri.getPath().replaceFirst("/", "");
+		if (_datastore.isStorageExist(importedFileAbsolutePath)) {
+			return importPhaseOne(importedFileAbsolutePath);
+		} else {
+			// file not found
+			return false;
+		}
+	}
+	
+	/**
+	 * @param importedFileAbsolutePath
+	 * @return result
+	 */
+	private boolean importPhaseOne(String importedFileAbsolutePath) {
+		JSONObject importedJsonData = _datastore.retrieveDataFromStorage(importedFileAbsolutePath);
+		if (importedJsonData.containsKey(STRING_SERIAL_NUMBER) == false || importedJsonData.containsKey(STRING_ACTIVE_TASK_LIST) == false
+				|| importedJsonData.containsKey(STRING_RECURRENCE_ID) == false || importedJsonData.containsKey(STRING_ARCHIVED_TASK_LIST) == false) {
+			// wrong format of data
+			return false;
+		} else {
+			File file = new File(importedFileAbsolutePath);
+			String importedFileFolderAbsolutePath = file.getParentFile().toURI().getPath().replaceFirst("/", "");
+			String importedFileName= file.getName();
+			importPhaseTwo(importedFileFolderAbsolutePath, importedFileName);
+			importPhaseThree(importedFileAbsolutePath, importedFileFolderAbsolutePath, importedFileName);
+			return true;
+		}
+	}
+
+	/**
+	 * @param importedFileAbsolutePath
+	 * @param importedFileFolderAbsolutePath
+	 * @param importedFileName
+	 */
+	private void importPhaseThree(String importedFileAbsolutePath, String importedFileFolderAbsolutePath, String importedFileName) {
+		if (_datastore.getDirectory().equals(importedFileFolderAbsolutePath) && _datastore.getStorageName().equals(importedFileName)) {
+			logger.log(Level.INFO, "Successful import from " + importedFileAbsolutePath);
+		} else {
+			logger.log(Level.WARNING, "Unsuccessful import from " + importedFileAbsolutePath);
+		}
+	}
+
+	/**
+	 * @param importedFileFolderAbsolutePath
+	 * @param importedFileName
+	 */
+	private void importPhaseTwo(String importedFileFolderAbsolutePath, String importedFileName) {
+		_datastore.setDirectory(importedFileFolderAbsolutePath);
+		_datastore.setStorageName(importedFileName);
+		_datastore.saveSettingsToUtility();
+		_datastore.initialise();
+	}
+
+	@Override
+	public boolean exportToDirectory(String file) {
+		File exportFile = new File(file);
+		URI uri = exportFile.toURI();
+		String importedFileAbsolutePath = uri.getPath().replaceFirst("/", "");
+		_datastore.processStorage(importedFileAbsolutePath);
+		return logExportResult(importedFileAbsolutePath);
+	}
+
+	/**
+	 * @param importedFileAbsolutePath
+	 * @return result
+	 */
+	private boolean logExportResult(String importedFileAbsolutePath) {
+		if (_datastore.storeJsonIntoStorage(_datastore.getData(), importedFileAbsolutePath) == true) {
+			logger.log(Level.INFO, String.format(MESSAGE_SUCCESS_EXPORT, importedFileAbsolutePath));
+			return true;
+		} else {
+			logger.log(Level.WARNING, MESSAGE_ERROR_EXPORT);
+			return false;
+		}
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Storage\StorageDirectory.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Testing\TestAll.java
+	 */
+
+
+/**
+ * This class runs all the test cases of the program.
+ */
+
+package Testing;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({History.HistoryADT.class, Storage.StorageADT.class, Logic.LogicControllerTest.class, Logic.LogicControllerTestRecurrence.class, Command.CommandControllerTest.class})
+public class TestAll {
+
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Testing\TestAll.java
+
+
+
+
+

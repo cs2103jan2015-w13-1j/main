@@ -1,0 +1,2880 @@
+//@author: a0113598x
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Common\ArchiveSortedList.java
+	 */
+
+package Common;
+
+
+/**
+ * Used to store the tasks in sorted order when the program is running for the archive list.
+ * Support add, delete, update, and extract top_n tasks.
+ */
+@SuppressWarnings("serial")
+public class ArchiveSortedList extends GeneralSortedList{
+
+	/**
+	 * Comparator for the archive list sorted by finished time, then priority
+	 */
+	public ArchiveSortedList(){
+		super(Task.reverseDateThenPriority);
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Common\ArchiveSortedList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Common\Date.java
+	 */
+
+
+package Common;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+@SuppressWarnings("serial")
+public class Date extends java.util.Date{
+
+/***********************************************
+				Constructors
+***********************************************/
+	public Date() {
+		super();
+	}
+	
+	public Date(long time) {
+		this();
+		this.setTime(time);
+	}
+	
+/***********************************************
+				Private methods
+***********************************************/
+	
+	/**
+	 * Set the hour, minute, second of a given date to certain values
+	 * @param cal
+	 * @param hour
+	 * @param minute
+	 * @param second
+	 * @param milisecond
+	 * @return a date object with specified time values
+	 */
+	private static Date setTime(Calendar cal, int hour, int minute, int second, int milisecond) {
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, second);
+        cal.set(Calendar.MILLISECOND, milisecond);
+        Date date = new Date(cal.getTime().getTime());
+        return date;
+	}
+
+	/**
+	 * @param cal
+	 * @param month
+	 * @param day
+	 * @param hour
+	 * @param minute
+	 * @return a Date object representing the time specified by the inputs
+	 */
+	private static Date getDayTime(Calendar cal, int month, int day, int hour, int minute ) {
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        if (cal.compareTo(new GregorianCalendar())<0) {
+        	cal.add(Calendar.YEAR, 1);
+        }
+        return setTime(cal, hour, minute, 59, 0);
+	}
+	
+	/**
+	 * @param cal
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param hour
+	 * @param minute
+	 * @return a Date object representing the time specified by the inputs
+	 */
+	private static Date getDayTime(Calendar cal, int year, int month, int day, int hour, int minute ) {
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.YEAR, year);
+        return setTime(cal, hour, minute, 59, 0);
+	}
+
+	
+/***********************************************
+				Public methods
+***********************************************/	
+	
+	/**
+	 * @return a string representation of the date yyyyMMdd
+	 */
+	public String getDateRepresentation() {
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		return df.format(this);
+	}
+	
+	/**
+	 * @param month
+	 * @param day
+	 * @param hour
+	 * @param minute
+	 * @return a Date object representing the time specified by the inputs
+	 */
+	public static Date getDayTime(int month, int day, int hour, int minute ) {
+		Calendar cal = new GregorianCalendar();
+        return getDayTime(cal, month, day, hour, minute);
+	}
+	
+	/**
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param hour
+	 * @param minute
+	 * @return a Date object representing the time specified by the inputs
+	 */
+	public static Date getDayTime(int year, int month, int day, int hour, int minute ) {
+		Calendar cal = new GregorianCalendar();
+        return getDayTime(cal, year, month, day, hour, minute);
+	}
+	
+	/**
+	 * Get the yyMMdd 2359 of the specified date
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return the Date object
+	 */
+	public static Date getDay2359(int year, int month, int day) {
+		return getDayTime(year, month, day, 23, 59);
+	}
+	
+	/**
+	 * Get the MMdd 2359 of the specified date
+	 * @param month
+	 * @param day
+	 * @return the Date object
+	 */
+	public static Date getDay2359(int month, int day) {
+		return getDayTime(month, day, 23, 59);
+	}
+	
+	/**
+	 * @return a date object represents 23:59 of the current day
+	 */
+	public static Date today2359() {
+		Calendar cal = new GregorianCalendar();
+		return setTime(cal, 23, 59, 59, 0);
+	}
+	
+	/**
+	 * @return a date object represents 23:59 of the next day
+	 */
+	public static Date tmr2359() {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DATE, 1);
+		return setTime(cal, 23, 59, 59, 0);
+	}
+	
+	/**
+	 * @param hour
+	 * @param minute
+	 * @return a date object represents HH:mm of the current day
+	 */
+	public static Date todayTime(int hour, int minute) {
+		Calendar cal = new GregorianCalendar();
+		return setTime(cal, hour, minute, 0, 0);
+	}
+	
+	/**
+	 * @param hour
+	 * @param minute
+	 * @return a date object represents HH:mm of the next day
+	 */
+	public static Date tmrTime(int hour, int minute) {
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DATE, 1);
+		return setTime(cal, hour, minute, 0, 0);
+	}
+	
+	/**
+	 * Change the HH:mm of a date object to the hour and minute specified,
+	 * without changing the yyMMdd
+	 * @param hour
+	 * @param minute
+	 * @return the new Date object
+	 */
+	public Date changeTime(int hour, int minute) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(this);
+		Date changedDate = setTime(cal, hour, minute, 0, 0);
+		return changedDate;
+	}
+	
+	/**
+	 * @param interval a string indicating the interval
+	 * @return the number of miliseconds representing the interval
+	 */
+	public static long getMiliseconds(String interval) {
+		switch(interval) {
+			case "oneHour" :
+				return 3600000;
+			case "oneDay" :
+				return 86400000;
+			case "oneWeek" :
+				return 604800000;
+		}
+		return 0;
+	}
+	
+	/**
+	 * @param deadline the deadline or endtime of a task 
+	 * @return number of days overdue
+	 */
+	public static int getOverdueDays(Date deadline) {
+		Calendar cal = new GregorianCalendar();
+		Date today = setTime(cal, 0, 0, 0, 0);
+		long deadlineTime = deadline.getTime();
+		long todayTime = today.getTime();
+		int numOfDays = (int) ((float)(todayTime - deadlineTime)/getMiliseconds("oneDay") + 1);
+		return numOfDays;
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Common\Date.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Common\GeneralSortedList.java
+	 */
+
+
+/**
+ * General sorted list used to store the tasks in sorted order when the program is running
+ * Support add, delete, update, and extract top_n tasks.
+ */
+package Common;
+import java.security.InvalidKeyException;
+import java.util.*;
+import java.util.Map.Entry;
+
+import Logic.TaskList;
+
+@SuppressWarnings("serial")
+public class GeneralSortedList extends TreeSet<Task>{
+	
+	private static final String MESSAGE_ERROR_DELETE = "Id does not exist";
+
+	protected GeneralSortedList(Comparator<Task> c) {
+		super(c);
+	}
+	
+	public void addTask(Task task) {
+		this.add(task);
+	}
+	
+	@Override
+	public boolean contains(Object task) {
+		for (Task t: this) {
+			if (t.equals(task)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void deleteTaskById(int id) throws InvalidKeyException {
+		Iterator<Task> taskIterator = this.iterator();
+		Task toBeDeleted = null;
+		while (taskIterator.hasNext()) {
+			Task task = taskIterator.next();
+			
+			if (task.getId() == id) {
+				toBeDeleted = task;
+				break;
+			}
+		}
+		if (toBeDeleted != null) {
+			this.remove(toBeDeleted);
+		} else {
+			throw new InvalidKeyException(MESSAGE_ERROR_DELETE);
+		}
+	}
+	
+	public void deleteTask(Task task){
+		assert(this.contains(task));
+		this.remove(task);
+	}
+	
+	/**
+	 * When a task is updated in certain property, 
+	 * we need to re-insert the task so that the order remains correct
+	 * @param taskList
+	 */
+	public void updateTaskOrder(TaskList taskList) {
+		this.clear();
+		for (Entry<Integer, Task> entry: taskList.entrySet()) {
+			this.addTask(entry.getValue());
+		}
+	}
+	
+	/**
+	 * @param n
+	 * @return arraylist
+	 */
+	public ArrayList<Task> getTopNTasks(int n) {
+		ArrayList<Task> taskList = new ArrayList<Task>(n);
+		Iterator<Task> taskIterator = this.iterator();
+		for (int i = 0; i < n; i++) {
+			if (taskIterator.hasNext()) {
+				taskList.add(taskIterator.next());
+			} else {
+				break;
+			}
+		}
+		return taskList;
+	}
+	
+	@Override
+	public String toString() {
+		String output = "";
+		Iterator<Task> taskIterator = this.iterator();
+		while (taskIterator.hasNext()) {
+			output += taskIterator.next().getId() + "\n";
+		}
+		return output;
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Common\GeneralSortedList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Common\InterfaceForTask.java
+	 */
+
+package Common;
+
+import java.util.ArrayList;
+
+public interface InterfaceForTask {
+
+	/**
+	 * @return the type
+	 */
+	public String getType();
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type);
+
+	public int getId();
+
+	public String getDescription();
+
+	public int getPriority();
+
+	public ArrayList<String> getTags();
+
+	public boolean isArchived();
+
+	/**
+	 * @return the 'time' of the task
+	 */
+	public Date getTime();
+
+	/**
+	 * Change the original description to the new description provided
+	 * @param newDescription
+	 */
+	public void changeDescription(String newDescription);
+
+	/**
+	 * Change the priority to the new priority provided
+	 * @param newPriority
+	 */
+	public void changePriority(int newPriority);
+
+	/**
+	 * Add the new tag provided to the task
+	 * @param newTag
+	 */
+	public void addTag(String newTag);
+
+	/**
+	 * Remove a tag specified from the tags
+	 * @param toBeRemovedTag
+	 */
+	public void removeTag(String toBeRemovedTag);
+
+	public boolean hasTagExact(String searchTag);
+
+	public boolean containsTag(String searchTag);
+
+	public Date getStartTime();
+
+	public Date getEndTime();
+
+	/**
+	 * @return the duration of the Task in terms of milliseconds.
+	 */
+	public long getDuration();
+
+	/**
+	 * @return the duration of the Task in terms of minutes
+	 */
+	public int getDurationInMinutes();
+
+	/**
+	 * @return the duration of the Task in terms of hours
+	 */
+	public int getDurationInHours();
+
+	/**
+	 * Change the start time to the new start time provided
+	 * @param newStartTime
+	 */
+	public void changeStartTime(Date newStartTime);
+
+	/**
+	 * Change the start time to the new start time provided
+	 * @param newEndTime
+	 */
+	public void changeEndTime(Date newEndTime);
+
+	/**
+	 * Add start and end time
+	 * @param start
+	 * @param end
+	 */
+	public void addStartAndEndTime(Date start, Date end);
+
+	public Date getDeadline();
+
+	/**
+	 * Change the deadline to the new deadline provided
+	 * @param newDeadline
+	 */
+	public void changeDeadline(Date newDeadline);
+
+	public void addDeadline(Date deadline);
+
+	/**
+	 * @return the finishedTime
+	 */
+	public Date getFinishedTime();
+
+	/**
+	 * @param finishedTime the finishedTime to set
+	 */
+	public void setFinishedTime(Date finishedTime);
+
+	/**
+	 * Archive the task
+	 * @param finishedTime
+	 */
+	public void moveToArchive(Date finishedTime);
+
+	/**
+	 * Remove the task from archive, basically means mark this task as unfinished
+	 */
+	public void removeFromArchive();
+
+	public String toString();
+
+	public int compareTo(Task other);
+
+	/**
+	 * @return the recurrenceId
+	 */
+	public int getRecurrenceId();
+
+	/**
+	 * @return whether the task is recurrent
+	 */
+	public boolean isRecurrence();
+
+	/**
+	 * @param recurrenceId the recurrenceId to set
+	 */
+	public void setRecurrenceId(int recurrenceId);
+
+	/**
+	 * Copy a current task to a certain date with the interval period given
+	 * @param id the id of the newly created task
+	 * @param period the interval between this task to the copied task
+	 * @return a new Task object representing the copied task
+	 */
+	public Task copyWithInterval(int id, long period);
+
+	public boolean equals(Object other);
+
+	public int getOverdueDays();
+
+	public boolean isOnDate(String date);
+
+}
+	// End of segment: C:\Users\Esmond\Documents\main\src\Common\InterfaceForTask.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Common\PrioritySortedList.java
+	 */
+
+/**
+ * Used to store the tasks in sorted order when the program is running for the priority-sorted list.
+ * Support add, delete, update, and extract top_n tasks.
+ */
+package Common;
+
+
+@SuppressWarnings("serial")
+public class PrioritySortedList extends GeneralSortedList{
+
+	/**
+	 * Comparator for the todo list sorted by priority, then date
+	 */
+	public PrioritySortedList(){
+		super(Task.priorityThenDate);
+	}
+	
+	
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Common\PrioritySortedList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Common\Task.java
+	 */
+
+
+/**
+ * Use to represent one single Task
+ */
+package Common;
+import java.util.*;
+
+public class Task implements Comparable<Task>, InterfaceForTask{
+	
+	private static final int MILISECONDS_IN_HOUR = 3600000;
+	private static final int MILISECONDS_IN_MINUTE = 60000;
+	private static final String STRING_DEADLINE = "deadline";
+	private static final String STRING_MEETING = "meeting";
+
+	/*
+	 * Might need to be edited here
+	 */
+	protected static final String PRINT_TASK_DETAILS = "Task ID : %1$s \nDescription : \"%2$s\" \n"
+								+ "Priority : %3$s \nTags : %4$s \nArchived : %5$s \nType : %6$s\n"
+								+ "Deadline : %7$s \nStartTime : %8$s \n"
+								+ "EndTime : %9$s \nfinishedTime : %10$s\n";
+
+	private String type = "generic";
+	private int id;
+	private String description;
+	private int priority = -1;
+	private ArrayList<String> tags = new ArrayList<String>();
+	private boolean archived = false;
+	private Date startTime = null;
+	private Date endTime = null;
+	private Date deadline = null;
+	private Date finishedTime = null;
+	private int recurrenceId = -1;
+	
+	/**
+	 * The default Constructor for a task
+	 * @param id
+	 * @param description
+	 * @param priority
+	 * 			-1 if not specified
+	 * @param tags
+	 * 			null if not specified
+	 */
+	public Task(int id, String description, int priority, ArrayList<String> tags){
+		this.id = id;
+		this.description = description;
+		if (priority > 0){
+			this.priority = priority;
+		}
+		if (tags != null){
+			this.tags = tags;
+		}
+	}
+	
+	/**
+	 * Constructor for a generic task.
+	 * @param id
+	 * @param description
+	 * @param priority
+	 * 			-1 if not specified
+	 * @param tags
+	 * 			null if not specified
+	 * @param recurrenceId
+	 */
+	public Task(int id, String description, int priority, ArrayList<String> tags, int recurrenceId) {
+		super();
+		this.id = id;
+		this.description = description;
+		this.priority = priority;
+		this.tags = tags;
+		this.recurrenceId = recurrenceId;
+	}
+	
+	/**
+	 * Constructor for a meeting task.
+	 * @param id
+	 * @param description
+	 * @param start
+	 * @param end
+	 * @param priority
+	 * @param tags
+	 * @param recurrenceId
+	 */
+	public Task(int id, String description, Date start, Date end, int priority, ArrayList<String> tags, int recurrenceId){
+		this(id, description, priority, tags, recurrenceId);
+		this.startTime = start;
+		this.endTime = end;
+		this.setType(STRING_MEETING);
+	}
+	
+	/**
+	 * Constructor for a meeting task.
+	 * @param id
+	 * @param description
+	 * @param start
+	 * @param end
+	 * @param priority
+	 * @param tags
+	 */
+	public Task(int id, String description, Date start, Date end, int priority, ArrayList<String> tags){
+		this(id, description, priority, tags);
+		this.startTime = start;
+		this.endTime = end;
+		this.setType(STRING_MEETING);
+	}
+	
+	/**
+	 * Constructor for a deadline task
+	 * @param id
+	 * @param description
+	 * @param deadline
+	 * @param priority
+	 * @param tags
+	 * @param recurrenceId
+	 */
+	public Task(int id, String description, Date deadline, int priority, ArrayList<String> tags, int recurrenceId){
+		this(id, description, priority, tags, recurrenceId);
+		this.deadline = deadline;
+		this.setType(STRING_DEADLINE);
+	}
+	
+	/**
+	 * Constructor for a deadline task
+	 * @param id
+	 * @param description
+	 * @param deadline
+	 * @param priority
+	 * @param tags
+	 */
+	public Task(int id, String description, Date deadline, int priority, ArrayList<String> tags){
+		this(id, description, priority, tags);
+		this.deadline = deadline;
+		this.setType(STRING_DEADLINE);
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getType()
+	 */
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#setType(java.lang.String)
+	 */
+	@Override
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getId()
+	 */
+	@Override
+	public int getId(){
+		return this.id;
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDescription()
+	 */
+	@Override
+	public String getDescription(){
+		return this.description;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getPriority()
+	 */
+	@Override
+	public int getPriority(){
+		return this.priority;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getTags()
+	 */
+	@Override
+	public ArrayList<String> getTags(){
+		return this.tags;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#isArchived()
+	 */
+	@Override
+	public boolean isArchived(){
+		return this.archived;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getTime()
+	 */
+	@Override
+	public Date getTime() {
+		if (this.getType() == STRING_MEETING) {
+			return this.getStartTime();
+		} else if (this.getType() == STRING_DEADLINE) {
+			return this.getDeadline();
+		} else {
+			return null;
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changeDescription(java.lang.String)
+	 */
+	@Override
+	public void changeDescription(String newDescription){
+		this.description = newDescription;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changePriority(int)
+	 */
+	@Override
+	public void changePriority(int newPriority){
+		this.priority = newPriority;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#addTag(java.lang.String)
+	 */
+	@Override
+	public void addTag(String newTag){
+		this.tags.add(newTag);
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#removeTag(java.lang.String)
+	 */
+	@Override
+	public void removeTag(String toBeRemovedTag){
+		this.tags.remove(toBeRemovedTag);
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#hasTagExact(java.lang.String)
+	 */
+	@Override
+	public boolean hasTagExact(String searchTag) {
+		for (String tag : getTags()) {
+			if (tag.equals(searchTag)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#containsTag(java.lang.String)
+	 */
+	@Override
+	public boolean containsTag(String searchTag) {
+		for (String tag : getTags()) {
+			if (tag.toLowerCase().contains(searchTag.toLowerCase())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getStartTime()
+	 */
+	@Override
+	public Date getStartTime(){
+		return this.startTime;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getEndTime()
+	 */
+	@Override
+	public Date getEndTime(){
+		return this.endTime;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDuration()
+	 */
+	@Override
+	public long getDuration() {
+		return this.endTime.getTime() - this.startTime.getTime();
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDurationInMinutes()
+	 */
+	@Override
+	public int getDurationInMinutes() {
+		return (int)(this.getDuration() / MILISECONDS_IN_MINUTE);
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDurationInHours()
+	 */
+	@Override
+	public int getDurationInHours() {
+		return (int)(this.getDuration() / MILISECONDS_IN_HOUR);
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changeStartTime(Common.Date)
+	 */	
+	@Override
+	public void changeStartTime(Date newStartTime){
+		this.startTime = newStartTime;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changeEndTime(Common.Date)
+	 */	
+	@Override
+	public void changeEndTime(Date newEndTime){
+		this.endTime = newEndTime;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#addStartAndEndTime(Common.Date, Common.Date)
+	 */
+	@Override
+	public void addStartAndEndTime(Date start, Date end) {
+		this.startTime = start;
+		this.endTime = end;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getDeadline()
+	 */
+	@Override
+	public Date getDeadline(){
+		return this.deadline;
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#changeDeadline(Common.Date)
+	 */	
+	@Override
+	public void changeDeadline(Date newDeadline){
+		this.deadline = newDeadline;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#addDeadline(Common.Date)
+	 */
+	@Override
+	public void addDeadline(Date deadline) {
+		this.deadline = deadline;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getFinishedTime()
+	 */
+	@Override
+	public Date getFinishedTime() {
+		return finishedTime;
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#setFinishedTime(Common.Date)
+	 */
+	@Override
+	public void setFinishedTime(Date finishedTime) {
+		this.finishedTime = finishedTime;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#moveToArchive(Common.Date)
+	 */
+	@Override
+	public void moveToArchive(Date finishedTime){
+		this.archived = true;
+		this.finishedTime = finishedTime;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#removeFromArchive()
+	 */
+	@Override
+	public void removeFromArchive(){
+		this.archived = false;
+		this.finishedTime = null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format(PRINT_TASK_DETAILS, getId(), getDescription(),
+								getPriority(), getTags(), isArchived(), getType(),
+							getDeadline(), getStartTime(), getEndTime(), getFinishedTime());
+	}
+	
+	public static int compareTime(Task t1, Task t2) {
+		if (t2.getTime() == null) {
+			if (t1.getTime() == null) {
+					return 0;
+			} else {
+				return -1;
+			}
+		} else if (t1.getTime() == null) {
+			return 1;
+		} else {
+			return t1.getTime().compareTo(t2.getTime());
+		}
+	}
+	
+	public static int comparePriority(Task t1, Task t2) {
+		return t2.getPriority()-t1.getPriority();
+	}
+	
+	public static int compareFinishTime(Task t1, Task t2) {
+		return t2.getFinishedTime().compareTo(t1.getFinishedTime());
+	}
+	
+	public static int compareId(Task t1, Task t2) {
+		return t1.getId() - t2.getId();
+	}
+	
+	/**
+	 * Comparator for the todo list sorted by deadline or starting time, then priority
+	 */
+	public static Comparator<Task> dateThenPriority = new Comparator<Task>(){
+		public int compare(Task t1, Task t2) {
+			int dateCompare = compareTime(t1, t2);
+			if (dateCompare != 0) {
+				return dateCompare;
+			} else {
+				int priorityCompare = comparePriority(t1, t2);
+				if (priorityCompare != 0) {
+					return priorityCompare;
+				} else {
+					return compareId(t1, t2);
+				}
+			}
+		}
+	};
+	
+	/**
+	 * Comparator for the archive list sorted by finished time, then priority
+	 */
+	public static Comparator<Task> reverseDateThenPriority = new Comparator<Task>(){
+		public int compare(Task t1, Task t2) {
+			int finishCompare = compareFinishTime(t1, t2);
+			if (finishCompare != 0) {
+				return finishCompare;
+			} else {
+				int priorityCompare = comparePriority(t1, t2);
+				if (priorityCompare != 0) {
+					return priorityCompare;
+				} else {
+					int dateCompare = compareTime(t2, t1);
+					if (dateCompare != 0) {
+						return dateCompare;
+					} else {
+						return compareId(t2, t1);
+					}
+				}
+			}
+		}
+	};
+	
+	/**
+	 * Comparator for the todo list sorted by priority, then date
+	 */
+	public static Comparator<Task> priorityThenDate = new Comparator<Task>(){
+		public int compare(Task t1, Task t2) {
+			int priorityCompare = comparePriority(t1, t2);
+			if (priorityCompare != 0) {
+				return priorityCompare;
+			} else {
+				int dateCompare = compareTime(t1, t2);
+				if (dateCompare != 0) {
+					return dateCompare;
+				} else {
+					return compareId(t1, t2);
+				}
+			}
+		}
+	};
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#compareTo(Common.Task)
+	 */
+	@Override
+	public int compareTo(Task other) {
+		return this.getId() - other.getId();
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getRecurrenceId()
+	 */
+	@Override
+	public int getRecurrenceId() {
+		return recurrenceId;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#isRecurrence()
+	 */
+	@Override
+	public boolean isRecurrence() {
+		return recurrenceId>-1;
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#setRecurrenceId(int)
+	 */
+	@Override
+	public void setRecurrenceId(int recurrenceId) {
+		this.recurrenceId = recurrenceId;
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#copyWithInterval(int, long)
+	 */
+	@Override
+	public Task copyWithInterval(int id, long period) {
+		Task task;
+		ArrayList<String> tags = new ArrayList<String>();
+		tags.addAll(this.tags);
+		if (this.type.equals(STRING_MEETING)) {
+			Date startTime = new Date();
+			Date endTime = new Date();
+			startTime.setTime(this.startTime.getTime() + period);
+			endTime.setTime(this.endTime.getTime() + period);
+			task = new Task(id, this.description, startTime, endTime, this.priority, tags);
+		} else { // the type is a deadline task
+			Date deadline = new Date();
+			deadline.setTime(this.getDeadline().getTime() + period);
+			task = new Task(id, this.description, deadline, this.priority, tags);
+		}
+		System.out.println(task);
+		return task;
+	}
+	
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object other) {	
+		return this.toString().equals(other.toString());
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#getOverdueDays()
+	 */
+	@Override
+	public int getOverdueDays() {
+		if (this.getFinishedTime()==null) {
+			Date now = new Date();
+			if (this.getType().equals("deadline") && (now.compareTo(this.getDeadline()) > 0)) {
+				return Date.getOverdueDays(this.getDeadline());
+			}
+			if (this.getType().equals("meeting") && (now.compareTo(this.getEndTime()) > 0)) {
+				return Date.getOverdueDays(this.getEndTime());
+			}
+		}
+		return -1;
+	}
+
+	/* (non-Javadoc)
+	 * @see Common.InterfaceForTask#isOnDate(java.lang.String)
+	 */
+	@Override
+	public boolean isOnDate(String date) {
+		Date dateOfTask = this.getTime();
+		if (dateOfTask != null) {
+			if (dateOfTask.getDateRepresentation().equals(date)) {
+				return true;
+			} else {
+				// if this is a meeting task
+				if (this.getEndTime() != null) {
+					// if the start date is the date given, return true
+					if (this.getEndTime().getDateRepresentation().equals(date)) {
+						return true;
+					}
+					// if the date given is between the start and end, return true
+					if (this.getStartTime().getDateRepresentation().compareTo(date)<0 &&
+						this.getEndTime().getDateRepresentation().compareTo(date)>0) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+}
+	// End of segment: C:\Users\Esmond\Documents\main\src\Common\Task.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Common\ToDoSortedList.java
+	 */
+
+/**
+ * Used to store the tasks in sorted order when the program is running for the todo list.
+ * Support add, delete, update, and extract top_n tasks.
+ */
+package Common;
+
+
+@SuppressWarnings("serial")
+public class ToDoSortedList extends GeneralSortedList{
+	
+	/**
+	 * Comparator for the todo list sorted by deadline or starting time, then priority
+	 */
+	public ToDoSortedList(){
+		super(Task.dateThenPriority);
+	}
+
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Common\ToDoSortedList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Logic\DATA.java
+	 */
+
+package Logic;
+
+
+/**
+ * To store all the data
+ * Used during initialisation and closing of the program
+ */
+public class DATA {
+	
+	private int serialNumber;
+	private int recurrenceId;
+	
+	//The hashMaps
+	private TaskList activeTaskList;
+	private TaskList archivedTaskList;
+	
+	/**
+	 * @return the activeTaskList
+	 */
+	public TaskList getActiveTaskList() {
+		return activeTaskList;
+	}
+	/**
+	 * @param activeTaskList the activeTaskList to set
+	 */
+	public void setActiveTaskList(TaskList activeTaskList) {
+		this.activeTaskList = activeTaskList;
+	}
+	
+	/**
+	 * @return the archivedTaskList
+	 */
+	public TaskList getArchivedTaskList() {
+		return archivedTaskList;
+	}
+	/**
+	 * @param archivedTaskList the archivedTaskList to set
+	 */
+	public void setArchivedTaskList(TaskList archivedTaskList) {
+		this.archivedTaskList = archivedTaskList;
+	}
+	
+	/**
+	 * @return the serialNumber
+	 */
+	public int getSerialNumber() {
+		return serialNumber;
+	}
+	/**
+	 * @param serialNumber the serialNumber to set
+	 */
+	public void setSerialNumber(int serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+	
+	/**
+	 * increment the serialNumber
+	 */
+	public void incrementSerialNumber() {
+		this.serialNumber ++;
+	}
+	
+	/**
+	 * @return the recurrenceId
+	 */
+	public int getRecurrenceId() {
+		return this.recurrenceId;
+	}
+	
+	/**
+	 * @param recurrenceId the recurrenceId to set
+	 */
+	public void setRecurrenceId(int recurrenceId) {
+		this.recurrenceId = recurrenceId;
+	}
+	
+	public void increamentRecurrenceId() {
+		this.recurrenceId++;
+	}
+	
+	/**
+	 * For testing purpose only
+	 */
+	public void clearAllData() {
+		this.activeTaskList = new TaskList();
+		this.archivedTaskList = new TaskList();
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Logic\DATA.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Logic\InterfaceForLogic.java
+	 */
+
+package Logic;
+
+import java.util.ArrayList;
+
+import Common.ArchiveSortedList;
+import Common.Date;
+import Common.PrioritySortedList;
+import Common.Task;
+import Common.ToDoSortedList;
+
+public interface InterfaceForLogic {
+	
+/***********************************************
+		Initialisation and ID methods
+***********************************************/	
+	/**
+	 * Initialise the Logic Controller, retrieve all data from the storage
+	 */
+	void initialise();
+	
+	/**
+	 * @return the current highest ID that is already used
+	 */
+	int getSerialNumber();
+	
+	/**
+	 * @param number - the new serial number
+	 */
+	void setSerialNumber(int number);
+	
+/***********************************************
+					Create
+***********************************************/	
+	/**
+	 * @param task a new task object
+	 * @return the updated ToDoSortedList
+	 * null if the task is already inside the list of tasks
+	 */
+	ToDoSortedList addTask(Task task);
+	
+	/**
+	 * @param task a single task object which is the first task to be repeated.
+	 * 		The task must have a specific start and/or end time.
+	 * @param period the interval between each two recurrence tasks
+	 * @param recurrenceNum the number of recurrence tasks, should be at least 2
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum);
+	
+	
+/***********************************************
+				Read -> Search
+***********************************************/
+	/**
+	 * Search tasks on a particular date, the format of the string should be yyyyMMdd
+	 * @param searchDate the date to be searched
+	 * @return ArrayList of tasks on the specified date
+	 */
+	ArrayList<Task> searchByDate(String searchDate);
+	
+	/**
+	 * Search tasks with a specific tag
+	 * @param tag the tag string
+	 * @return ArrayList of tasks with the specified tag
+	 */
+	ArrayList<Task> searchByTag(String tag);
+	
+	/**
+	 * Search tasks with a specific priority
+	 * @param priority the integer priority
+	 * @return ArrayList of tasks with the specified priority
+	 */
+	ArrayList<Task> searchByPriority(int priority);
+
+	/**
+	 * Search tasks which contain a given keyword
+	 * Done this for V0.1, may need to improve later to accept multiple key words
+	 * @param keyword
+	 * @return ArrayList of tasks with the specified keyword
+	 */
+	ArrayList<Task> searchByDesc(String keyword);
+
+/***********************************************
+				Read -> sort
+***********************************************/
+	/**
+	 * Sort the tasks by priority
+	 * @return the PrioritySortedList
+	 */
+	PrioritySortedList sortByPriority();
+	
+	/**
+	 * Sort the tasks by time
+	 * @return the ToDoSortedList
+	 */
+	ToDoSortedList sortByTime();
+	
+	/**
+	 * @return the ArchiveSortedList
+	 */ 
+	ArchiveSortedList viewArchiveTasks();
+	
+	/**
+	 * @return the ToDoSortedList
+	 */
+	ToDoSortedList viewActiveTasks();
+
+/***********************************************
+			Delete & Archive
+***********************************************/
+		
+	/**
+	 * Delete a task
+	 * @param task
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList deleteTask(Task task);
+	
+	/**
+	 * This will delete all the linked recurrence tasks in the active task list
+	 * @param task one member of the recurring tasks
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList deleteAllRecurringTask(Task task);
+	
+	/**
+	 * delete a task from the archive
+	 * @param task
+	 * @return the updated ArchiveSortedList
+	 */
+	ArchiveSortedList deleteFromArchive(Task task);
+
+	/**
+	 * This will delete all the linked recurrence tasks in the archived task list
+	 * @param task
+	 * @return the updated archiveSortedList
+	 */
+	ArchiveSortedList deleteAllRecurringInArchive(Task task);
+	
+	/**
+	 * This will delete all the tasks with the specified tag in the todolist
+	 * @param tag
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList deleteByTag(String tag);
+	
+	/**
+	 * move the task from todo list to archive
+	 * @param task the task to be moved to archive
+	 * @param finishedTime 
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList moveToArchive(Task task, Date finishedTime);
+	
+	/**
+	 * This will archive all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param finishedTime the time when the task is moved to archive
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList archiveAllTasks(Task task, Date finishedTime);
+	
+	/**
+	 * move the task from archive to todo list
+	 * @param task
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList unArchive(Task task);
+	
+
+/***********************************************
+			Update -> time related
+***********************************************/
+	/**
+	 * @param task an existing generic task
+	 * @param deadline the deadline given to the task
+	 * @return the updated ToDoSortedList
+	 * null if the task was not 'generic' task
+	 */
+	ToDoSortedList addDeadLine(Task task, Date deadline);
+	
+	/**
+	 * @param task an existing generic task
+	 * @param start the start time of the task
+	 * @param end the end time of the task
+	 * @return the updated ToDoSortedList
+	 * null if the task was not 'generic' task
+	 */
+	ToDoSortedList addStartAndEndTime(Task task, Date start, Date end);
+	
+	/**
+	 * @param task an existing meeting task
+	 * @param start the new start time
+	 * @return the updated ToDoSortedList
+	 * null if the task was not 'meeting' task
+	 */
+	ToDoSortedList editStartTime(Task task, Date start);
+	
+	/**
+	 * @param task an existing meeting task
+	 * @param end the new end time
+	 * @return the updated ToDoSortedList
+	 * null if the task was not 'meeting' task
+	 */
+	ToDoSortedList editEndTime(Task task, Date end);
+	
+	/**
+	 * @param task an existing deadline task
+	 * @param deadline the new deadline
+	 * @return the updated ToDoSortedList
+	 * null if the task was not 'deadline' task
+	 */
+	ToDoSortedList editDeadline(Task task, Date deadline);
+	
+	/**
+	 * Remove the deadline of a deadline task, the task will become a generic task.
+	 * @param task an existing deadline task
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList removeDeadline(Task task);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAlldeadlineTime(Task task, int hour, int minute);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllStartTime(Task task, int hour, int minute);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param hour the HH to be changed to
+	 * @param minute the mm to be changed to
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllEndTime(Task task, int hour, int minute);
+	
+	
+/***********************************************
+		Update -> tag, desc, priority
+***********************************************/	
+	
+	/**
+	 * Modify the description of a task
+	 * @param task an existing task
+	 * @param newDescription the new description
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList editDescription(Task task, String newDescription);
+	
+	/**
+	 * Modify the priority of a task
+	 * @param task an existing task
+	 * @param priority the new priority
+	 * @return the updated ToDoSortedList
+	 */
+	ToDoSortedList editPriority(Task task, int priority);
+	
+	/**
+	 * @param task an existing task
+	 * @param tag a new tag
+	 * @return the updated ToDoSortedList
+	 * null if the tag already exist
+	 */
+	ToDoSortedList addTag(Task task, String tag);
+	
+	/**
+	 * @param task an existing task
+	 * @param tag an existing tag to be removed
+	 * @return the updated ToDoSortedList
+	 * null if the tag does not exist
+	 */
+	ToDoSortedList removeTag(Task task, String tag);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param newPriority
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllPriority(Task task, int newPriority);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param tag
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList addAlltag(Task task, String tag);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param tag
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList removeAlltag(Task task, String tag);
+	
+	/**
+	 * This will modify all the linked recurrence tasks
+	 * @param task one member of the recurring tasks
+	 * @param description
+	 * @return the updated toDoSortedList
+	 */
+	ToDoSortedList editAllDescription(Task task, String description);
+	
+/***********************************************
+				Undo & Redo
+***********************************************/
+	/**
+	 * undo an action
+	 * @return a boolean indicating whether this is successful
+	 */
+	boolean undo();
+	
+	/**
+	 * redo an action
+	 * @return a boolean indicating whether this is successful
+	 */
+	boolean redo();
+	
+/***********************************************
+					Exit
+***********************************************/
+	/**
+	 * @param serialNumber the current highest ID that is already used
+	 * @return a string message indicating the state of program
+	 */
+	String exit(int serialNumber);
+	
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Logic\InterfaceForLogic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Logic\LogicController.java
+	 */
+
+package Logic;
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
+import Common.ArchiveSortedList;
+import Common.Date;
+import Common.PrioritySortedList;
+import Common.Task;
+import Common.ToDoSortedList;
+import History.HistoryController;
+import Storage.StorageController;
+
+public class LogicController implements InterfaceForLogic{
+	
+	protected boolean isTesting = false;
+	
+	protected StorageController storageController = new StorageController();
+	protected DATA data;
+	
+	protected TaskList activeTaskList;
+	protected TaskList archivedTaskList;
+	
+	protected ToDoSortedList toDoSortedList;
+	protected HistoryController historyController;
+	
+	@Override
+	public void initialise() {
+		data = storageController.getAllData();
+		historyController = new HistoryController();
+		
+		loadData();
+	}
+	
+	/**
+	 * Load relevant task lists from the data object
+	 * @param data
+	 */
+	protected void loadData() {
+		activeTaskList = data.getActiveTaskList();
+		archivedTaskList = data.getArchivedTaskList();
+		toDoSortedList = new ToDoSortedList();
+		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {
+			toDoSortedList.addTask(e.getValue());
+		}
+	}
+	
+	/**
+	 * Store the current data and return the todoSortedList
+	 * @return the toDoSortedList
+	 */
+	private ToDoSortedList storeAndReturnToDo() {
+		if (!isTesting) {
+			data.setActiveTaskList(activeTaskList);
+			data.setArchivedTaskList(archivedTaskList);
+			storageController.storeAllData(data);
+		}
+		return toDoSortedList;
+	}
+	
+	/**
+	 * Update the todosortedlist and return it
+	 * @return
+	 */
+	private ToDoSortedList update_Save_ReturnTodo() {
+		toDoSortedList.updateTaskOrder(activeTaskList);
+		return storeAndReturnToDo();
+	}
+	
+	/**
+	 * Log the current data object to history
+	 */
+	private void logToHistory() {
+		if (!isTesting) {
+			historyController.log();
+		}
+	}
+	
+	@Override
+	public ToDoSortedList addTask(Task task) {
+		assert(!toDoSortedList.contains(task));	
+		logToHistory();
+		
+		toDoSortedList.add(task);
+		activeTaskList.addTask(task.getId(), task);
+		return storeAndReturnToDo();
+	}
+	
+	@Override
+	public ToDoSortedList addDeadLine(Task task, Date deadline) {
+		assert(task.getType().equals("generic"));
+		logToHistory();
+		
+		task.addDeadline(deadline);
+		task.setType("deadline");
+		return update_Save_ReturnTodo();
+	}
+	
+	@Override
+	public ToDoSortedList removeDeadline(Task task) {
+		assert(task.getType().equals("deadline"));
+		logToHistory();
+		task.changeDeadline(null);
+		task.setType("generic");
+		return update_Save_ReturnTodo();
+	}
+	
+	@Override
+	public ToDoSortedList editDeadline(Task task, Date deadline) {
+		assert (task.getType().equals("deadline"));
+		logToHistory();
+		
+		task.changeDeadline(deadline);
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList addStartAndEndTime(Task task, Date start, Date end) {
+		assert(task.getType().equals("generic"));
+		logToHistory();
+		
+		task.addStartAndEndTime(start, end);
+		task.setType("meeting");
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList editStartTime(Task task, Date start) {
+		assert (task.getType().equals("meeting"));
+		assert (start.compareTo(task.getEndTime()) < 0);
+		logToHistory();
+		
+		task.changeStartTime(start);
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList editEndTime(Task task, Date end) {
+		assert (task.getType().equals("meeting"));
+		assert (task.getStartTime().compareTo(end) < 0);
+		logToHistory();
+		
+		task.changeEndTime(end);
+		return update_Save_ReturnTodo();
+	}
+	
+	@Override
+	public ToDoSortedList editDescription(Task task, String newDescription) {
+		logToHistory();
+		
+		task.changeDescription(newDescription);
+		return storeAndReturnToDo();
+	}
+
+	@Override
+	public ToDoSortedList editPriority(Task task, int priority) {
+		assert (priority <= 10);
+		logToHistory();
+		
+		task.changePriority(priority);
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList addTag(Task task, String tag) {
+		assert (!task.getTags().contains(tag));
+		logToHistory();
+		
+		task.addTag(tag);
+		return storeAndReturnToDo();
+	}
+
+	@Override
+	public ToDoSortedList removeTag(Task task, String tag) {
+		assert (task.getTags().contains(tag));
+		logToHistory();
+		
+		task.removeTag(tag);
+		return storeAndReturnToDo();
+	}
+
+	@Override
+	public ToDoSortedList moveToArchive(Task task, Date finishedTime) {
+		assert (activeTaskList.containsValue(task));
+		assert (toDoSortedList.contains(task));
+		logToHistory();
+		
+		task.moveToArchive(finishedTime);
+		int id = task.getId();
+		activeTaskList.removeTaskbyId(id);
+		archivedTaskList.addTask(id, task);
+		toDoSortedList.deleteTask(task);
+		return storeAndReturnToDo();
+	}
+	
+	@Override
+	public ToDoSortedList unArchive(Task task) {
+		assert (archivedTaskList.containsValue(task));
+		logToHistory();
+		
+		task.removeFromArchive();
+		int id = task.getId();
+		archivedTaskList.removeTaskbyId(id);
+		activeTaskList.addTask(id, task);
+		return update_Save_ReturnTodo();
+	}
+	
+	// Only for tasks in the to do list
+	@Override
+	public ArrayList<Task> searchByDate(String date) {
+		ArrayList<Task> taskOnDate = new ArrayList<Task>();
+		for (Task task: toDoSortedList) {
+			if (task.isOnDate(date)) {
+				taskOnDate.add(task);
+			}
+		}
+		return taskOnDate;
+	}
+
+	// Only for tasks in the to do list
+	@Override
+	public ArrayList<Task> searchByTag(String tag) {
+		ArrayList<Task> taskByTag = new ArrayList<Task>();
+		for (Task task: toDoSortedList) {
+			if (task.containsTag(tag)) {
+				taskByTag.add(task);
+			}
+		}
+		return taskByTag;
+	}
+	
+	// Only for tasks in the to do list
+	@Override
+	public ArrayList<Task> searchByPriority(int priority) {
+		ArrayList<Task> taskByPriority = new ArrayList<Task>();
+		for (Task task: toDoSortedList) {
+			if (task.getPriority() == priority) {
+				taskByPriority.add(task);
+			}
+		}
+		return taskByPriority;
+	}
+
+	// Only for tasks in the to do list
+	@Override
+	public ArrayList<Task> searchByDesc(String keyword) {
+		ArrayList<Task> taskByKeyword = new ArrayList<Task>();
+		for (Task task: toDoSortedList) {
+			if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+				taskByKeyword.add(task);
+			}
+		}
+		return taskByKeyword;	
+	}
+	
+	@Override
+	public int getSerialNumber() {
+		return this.data.getSerialNumber();
+	}
+	
+	@Override
+	public void setSerialNumber(int n) {
+		this.data.setSerialNumber(n);
+	}
+
+	@Override
+	public PrioritySortedList sortByPriority() {
+		PrioritySortedList prioritySortedList = new PrioritySortedList();
+		for (Entry<Integer, Task> e: activeTaskList.entrySet()) {			
+			Task task = e.getValue();
+			prioritySortedList.addTask(task);
+		}
+		return prioritySortedList;
+	}
+
+	@Override
+	public ToDoSortedList sortByTime() {
+		return toDoSortedList;
+	}
+
+	@Override
+	public ToDoSortedList viewActiveTasks() {
+		return toDoSortedList;
+	}
+	
+	@Override
+	public ArchiveSortedList viewArchiveTasks() {
+		ArchiveSortedList archiveSortedList = new ArchiveSortedList();
+		for (Entry<Integer, Task> e: archivedTaskList.entrySet()) {
+			archiveSortedList.addTask(e.getValue());
+		}
+		return archiveSortedList;
+	}
+	
+	@Override
+	public ToDoSortedList deleteTask(Task task) {
+		assert(activeTaskList.containsValue(task));
+		logToHistory();
+		toDoSortedList.deleteTask(task);
+		activeTaskList.removeTaskbyId(task.getId());
+		return storeAndReturnToDo();
+	}
+	
+	@Override
+	public ToDoSortedList deleteByTag(String tag) {
+		logToHistory();
+		for (Task task: toDoSortedList) {
+			if (task.hasTagExact(tag)) {
+				toDoSortedList.deleteTask(task);
+				activeTaskList.removeTaskbyId(task.getId());
+			}
+		}
+		return storeAndReturnToDo();
+	}
+	
+	@Override
+	public ArchiveSortedList deleteFromArchive(Task task) {
+		assert(archivedTaskList.containsValue(task));
+		logToHistory();
+		archivedTaskList.removeTaskbyId(task.getId());
+		storageController.storeAllData(data);
+		return viewArchiveTasks();
+	}
+	
+
+	@Override
+	public ToDoSortedList addRecurringTask(Task task, long period, int recurrenceNum) {
+		assert(!task.getType().equals("generic"));
+		assert(period > 0);
+		logToHistory();
+		int id = task.getId();
+		activeTaskList.addTask(id, task);
+		return generateRecurringTasks(task, period, recurrenceNum, id);
+	}
+	
+	/**
+	 * @param task
+	 * @param period
+	 * @param recurrenceNum
+	 * @param id
+	 * @return
+	 */
+	private ToDoSortedList generateRecurringTasks(Task task, long period, int recurrenceNum, int id) {
+		int recurrenceId = data.getRecurrenceId();
+		task.setRecurrenceId(recurrenceId);
+		for (int i = 1; i < recurrenceNum ; i++) {
+			createAndAddRecurringTask(task, period, id, recurrenceId, i);
+		}
+		data.increamentRecurrenceId();
+		return update_Save_ReturnTodo();
+	}
+	
+	/**
+	 * @param task
+	 * @param period
+	 * @param id
+	 * @param recurrenceId
+	 * @param i
+	 */
+	private void createAndAddRecurringTask(Task task, long period, int id, int recurrenceId, int i) {
+		Task newTask = task.copyWithInterval(id + i, i * period);
+		newTask.setRecurrenceId(recurrenceId);
+		activeTaskList.addTask(id + i, newTask);
+	}
+	
+	/**
+	 * @param task a recurrence task
+	 * @return an array list of task objects with the same recurring id
+	 */
+	private ArrayList<Task> getRecurringTasks(Task task) {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		for (Task t: activeTaskList.values()) {
+			if (t.getRecurrenceId() == task.getRecurrenceId()) {
+				tasks.add(t);
+			}
+		}
+		assert(tasks.size()>1);
+		return tasks;
+	}
+	
+	@Override
+	// Only for tasks in the active task list
+	public ToDoSortedList deleteAllRecurringTask(Task task) {
+		assert(activeTaskList.containsValue(task));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			activeTaskList.removeTaskbyId(t.getId());
+		}
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList archiveAllTasks(Task task, Date finishedTime) {
+		assert(activeTaskList.containsValue(task));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.moveToArchive(finishedTime);
+			int id = t.getId();
+			activeTaskList.removeTaskbyId(id);
+			archivedTaskList.addTask(id, t);
+		}
+		return update_Save_ReturnTodo();
+	}
+	
+	@Override
+	public ToDoSortedList editAlldeadlineTime(Task task, int hour, int minute) {
+		assert(activeTaskList.containsValue(task));
+		assert(task.getType().equals("deadline"));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			Date originalTime = t.getDeadline();
+			Date newTime = originalTime.changeTime(hour, minute);
+			t.changeDeadline(newTime);
+		}
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList editAllStartTime(Task task, int hour, int minute) {
+		assert(activeTaskList.containsValue(task));
+		assert(task.getType().equals("meeting"));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			Date originalTime = t.getStartTime();
+			Date newTime = originalTime.changeTime(hour, minute);
+			t.changeStartTime(newTime);
+		}
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList editAllEndTime(Task task, int hour, int minute) {
+		assert(activeTaskList.containsValue(task));
+		assert(task.getType().equals("meeting"));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			Date originalTime = t.getEndTime();
+			Date newTime = originalTime.changeTime(hour, minute);
+			t.changeEndTime(newTime);
+		}
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList editAllPriority(Task task, int newPriority) {
+		assert(activeTaskList.containsValue(task));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.changePriority(newPriority);
+		}
+		return update_Save_ReturnTodo();
+	}
+
+	@Override
+	public ToDoSortedList addAlltag(Task task, String tag) {
+		assert(!task.getTags().contains(tag));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			if (!t.getTags().contains(tag)) {
+				t.addTag(tag);
+			}	
+		}
+		return storeAndReturnToDo();
+	}
+
+	@Override
+	public ToDoSortedList removeAlltag(Task task, String tag) {
+		assert(task.getTags().contains(tag));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			if (t.containsTag(tag)) {
+				t.removeTag(tag);
+			}
+		}
+		return storeAndReturnToDo();
+	}
+
+	@Override
+	public ToDoSortedList editAllDescription(Task task, String description) {
+		assert(activeTaskList.containsValue(task));
+		logToHistory();
+		
+		ArrayList<Task> tasks = getRecurringTasks(task);
+		for (Task t: tasks) {
+			t.changeDescription(description);
+		}
+		return storeAndReturnToDo();
+	}
+
+	@Override
+	public ArchiveSortedList deleteAllRecurringInArchive(Task task) {
+		assert(archivedTaskList.containsValue(task));
+		logToHistory();
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		for (Task t: archivedTaskList.values()) {
+			if (t.getRecurrenceId() == task.getRecurrenceId()) {
+				tasks.add(t);
+			}
+		}
+		for (Task t: tasks) {
+			archivedTaskList.removeTaskbyId(t.getId());
+		}
+		if (!isTesting) {
+			data.setActiveTaskList(activeTaskList);
+			data.setArchivedTaskList(archivedTaskList);
+			storageController.storeAllData(data);
+		}
+		return viewArchiveTasks();
+	}
+	
+	@Override
+	public boolean undo() {
+		DATA data = historyController.undo();
+		return reloadData(data);
+	}
+	
+	@Override
+	public boolean redo() {
+		DATA data = historyController.redo();
+		return reloadData(data);
+	}
+
+	/**
+	 * @param data
+	 * @return true if data is not null
+	 */
+	private boolean reloadData(DATA data) {
+		if (data == null) {
+			return false;
+		}
+		this.data = data;
+		loadData();
+		storageController.storeAllData(data);
+		return true;
+	}
+	
+	@Override
+	public String exit(int serialNumber) {
+		data.setSerialNumber(serialNumber);
+		return storageController.storeAllData(data);
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Logic\LogicController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Logic\LogicControllerTest.java
+	 */
+
+package Logic;
+import static org.junit.Assert.*;
+
+import java.util.*;
+
+import Common.*;
+import Common.Date;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+
+public class LogicControllerTest {
+	static LogicController lc = new LogicController();
+
+	
+	static String tag1 = "tagA";
+	static String tag2 = "tagB";
+	static String tag3 = "tagC";
+	static String tag4 = "tagD";
+	
+	static ArrayList<String> tags1 = new ArrayList<String>();
+	static ArrayList<String> tags2 = new ArrayList<String>();
+	static ArrayList<String> tags3 = new ArrayList<String>();
+	static ArrayList<String> tags4 = new ArrayList<String>();	
+	static ArrayList<String> tags5 = new ArrayList<String>();
+	
+	static Date d1;
+	static Date d2;
+	static Date d3;
+	static Date d4;
+	static Date d5;
+	static Date d6;
+	
+	static Task t1;
+	static Task t2;
+	static Task t3;
+	static Task t4;
+	static Task t5;
+	static Task t6;
+	static Task t7;
+	static Task t8;
+	static Task t9;
+	static Task t00;
+	static Task t01;
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		
+		d1 = new Date();
+		d2 = new Date();
+		d3 = new Date();
+		d4 = new Date();
+		d5 = new Date();
+		d6 = new Date();
+		d1.setTime(111111111);
+		d2.setTime(222222222);
+		d3.setTime(777777777);
+		d4.setTime(555555555);
+		d5.setTime(777677777);
+		d6.setTime(776677777);
+		
+		lc.isTesting = true;
+		
+	}
+	@Before
+	public void setUp() throws Exception {
+		
+		tags1.add(tag1);
+		
+		tags2.add(tag1);
+		tags2.add(tag2);
+		
+		tags3.add(tag1);
+		tags3.add(tag4);
+
+		tags4.add(tag2);
+		tags4.add(tag3);
+		tags4.add(tag4);
+
+		tags5.add(tag2);
+		
+		lc.initialise();
+		lc.data.clearAllData();
+		lc.loadData();
+//		lc.data.clearAllData();
+//		lc.loadData();
+//		System.out.println("here");
+//		System.out.println(lc.data.getActiveTaskList());
+//		System.out.println(lc.activeTaskList);
+//		lc.historyController = new HistoryController();
+//		lc.activeTaskList = new TaskList();
+//		lc.archivedTaskList = new TaskList();
+//		lc.toDoSortedList = new ToDoSortedList();
+		
+		t1 = new Task(1, "do a", 3, null);
+		t2 = new Task(2, "get b", 6, null);
+		t3 = new Task(3, "c waht", 2, tags1);
+		t4 = new Task(4, "deadline d", d2,  5, tags2);
+		t5 = new Task(5, "meeting e", d1, d4, 2, tags3);
+		t6 = new Task(6, "f deadline", d3, 7, null);
+		t7 = new Task(7, "g meeting", d5, d3, 2, tags4);
+		t8 = new Task(8, "h deadline", d6, 4, tags4);
+		t9 = new Task(9, "i deadline", d3, 9, null);
+		
+		t00 = new Task(1, "task", -1, null);
+		t01 = new Task(2, "test", -1, null);
+	}
+	
+	@After
+	public void clear() throws Exception {
+		tags1.clear();
+		tags2.clear();
+		tags3.clear();
+		tags4.clear();
+		tags5.clear();
+		
+		lc.data.clearAllData();
+	}
+	
+	/**
+	 * Adding one task and delete it
+	 */
+	@Test
+	public void testAdd1() {
+		assertEquals(0, lc.activeTaskList.size());
+		System.out.println(lc.activeTaskList);
+		lc.addTask(t1);
+		assertEquals(1, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(1, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(0, lc.archivedTaskList.size());
+		lc.deleteTask(t1);
+		assertEquals(0, lc.activeTaskList.size());
+		lc.deleteTask(t1);
+		assertEquals(0, lc.activeTaskList.size());
+	}
+	
+	/**
+	 * Adding two tasks
+	 */
+	@Test
+	public void testAdd2() {
+		ToDoSortedList td1 = lc.addTask(t1);
+		assertEquals(1, td1.size());
+		ToDoSortedList td2 = lc.addTask(t2);
+		assertEquals(2, td2.size());
+		assertEquals("2\n1\n", td2.toString());
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(t2, lc.activeTaskList.get(2));
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals("2\n1\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+	}
+	
+	/**
+	 * Two tasks with the same description
+	 */
+	@Test
+	public void testAddPotentialError() {
+		ToDoSortedList td1 = lc.addTask(t00);
+		assertEquals(1, td1.size());
+		ToDoSortedList td2 = lc.addTask(t01);
+		assertEquals(2, td2.size());
+		assertEquals("1\n2\n", td2.toString());
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(t00, lc.activeTaskList.get(1));
+		assertEquals(t01, lc.activeTaskList.get(2));
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t00));
+		assertEquals(true, lc.toDoSortedList.contains(t01));
+		assertEquals("1\n2\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+	}
+	
+	/**
+	 * Adding deadline
+	 */
+	@Test
+	public void testAdddeadline() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addDeadLine(t1, d1);
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(t2, lc.activeTaskList.get(2));
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals("1\n2\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+		assertEquals("2\n1\n", lc.sortByPriority().toString());
+		assertEquals(d1, t1.getDeadline());
+	}
+	
+	/**
+	 * Adding three tasks
+	 */
+	@Test
+	public void testAdd3() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		assertEquals(3, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(t2, lc.activeTaskList.get(2));
+		assertEquals(3, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals(true, lc.toDoSortedList.contains(t3));
+		assertEquals("2\n1\n3\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+	}
+
+	/**
+	 * Searching by tag
+	 */
+	@Test
+	public void testSearchTag() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		ArrayList<Task> result1 = lc.searchByTag(tag1);
+		assertEquals(1, result1.size());
+		assertEquals(t3, result1.get(0));
+		ArrayList<Task> result2 = lc.searchByTag(tag2);
+		assertEquals(0, result2.size());
+	}
+	
+	/**
+	 * Adding meeting
+	 */
+	@Test
+	public void testAddMeeting() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addDeadLine(t1, d1);
+		lc.addStartAndEndTime(t2, d1, d2);
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(t2, lc.activeTaskList.get(2));
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals("2\n1\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+		assertEquals("2\n1\n", lc.sortByPriority().toString());
+		assertEquals(d1, t1.getDeadline());
+	}
+	
+	/**
+	 * Edit meeting
+	 */
+	@Test
+	public void testEditMeeting() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+   		lc.addDeadLine(t1, d1);
+		lc.addStartAndEndTime(t2, d1, d2);
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(t2, lc.activeTaskList.get(2));
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals("2\n1\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+		assertEquals("2\n1\n", lc.sortByPriority().toString());
+		assertEquals(d1, t1.getDeadline());
+		lc.editEndTime(t2, d3);
+		assertEquals(2, lc.activeTaskList.size());
+		assertEquals(2, lc.toDoSortedList.size());
+		assertEquals("2\n1\n", lc.toDoSortedList.toString());
+	}
+	
+	/**
+	 * Edit deadline
+	 */
+	@Test
+	public void testEditDeadline() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addDeadLine(t1, d1);
+		assertEquals(d1, t1.getDeadline());
+		lc.editDeadline(t1, d3);
+		assertEquals("1\n2\n", lc.toDoSortedList.toString());
+		assertEquals(d3, t1.getDeadline());
+	}
+	
+	/**
+	 * Edit priority
+	 */
+	@Test
+	public void testEditPriority() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		
+		assertEquals(3, lc.activeTaskList.size());
+		assertEquals(t1, lc.activeTaskList.get(1));
+		assertEquals(t2, lc.activeTaskList.get(2));
+		
+		assertEquals(3, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t1));
+		assertEquals(true, lc.toDoSortedList.contains(t2));
+		assertEquals(true, lc.toDoSortedList.contains(t3));
+		assertEquals("2\n1\n3\n", lc.toDoSortedList.toString());
+		assertEquals(0, lc.archivedTaskList.size());
+		lc.editPriority(t3, 7);
+		assertEquals("3\n2\n1\n", lc.toDoSortedList.toString());
+	}
+	
+	/**
+	 * add tag
+	 */
+	@Test
+	public void testAddTag() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		lc.addTask(t5);
+		ArrayList<Task> result1 = lc.searchByTag(tag1);
+		assertEquals(2, result1.size());
+		assertEquals(t5, result1.get(0));
+		ArrayList<Task> result2 = lc.searchByTag(tag2);
+		assertEquals(0, result2.size());
+		ArrayList<Task> result3 = lc.searchByTag(tag4);
+		assertEquals(1, result3.size());
+		lc.addTag(t1, tag1);
+		ArrayList<Task> result4= lc.searchByTag(tag1);
+		assertEquals(3, result4.size());
+		assertEquals(t5, result4.get(0));
+		assertEquals(t1, result4.get(1));
+	}
+	
+	/**
+	 * remove tag
+	 */
+	@Test
+	public void testRemoveTag() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		lc.addTask(t5);
+		lc.removeTag(t5, tag1);
+		ArrayList<Task> result4= lc.searchByTag(tag1);
+		assertEquals(1, result4.size());
+		assertEquals(t3, result4.get(0));
+	}
+	
+	/**
+	 * search by date
+	 */
+	@Test
+	public void testSearchDate() {
+		lc.addTask(t4);
+		lc.addTask(t5);
+		lc.addTask(t6);
+		lc.addTask(t7);
+		lc.addTask(t8);
+		lc.addTask(t9);
+		ArrayList<Task> result = lc.searchByDate("19700110");
+		assertEquals(4, result.size());
+		assertEquals(t8, result.get(0));
+		assertEquals(t7, result.get(1));
+		assertEquals(t9, result.get(2));
+		assertEquals(t6, result.get(3));
+		ArrayList<Task> result2 = lc.searchByDate("19700103");
+		assertEquals(2, result2.size());
+		assertEquals(t5, result2.get(0));
+		assertEquals(t4, result2.get(1));
+	}
+	
+	/**
+	 * Sort by date or priority
+	 */
+	@Test
+	public void testSort() {
+		lc.addTask(t1);
+		lc.addTask(t2);
+		lc.addTask(t3);
+		lc.addTask(t4);
+		lc.addTask(t5);
+		lc.addTask(t6);
+		lc.addTask(t7);
+		lc.addTask(t8);
+		lc.addTask(t9);
+		PrioritySortedList priorityLsit = lc.sortByPriority();
+		assertEquals(9, priorityLsit.size());
+		assertEquals("9\n6\n2\n4\n8\n1\n5\n7\n3\n",priorityLsit.toString());
+		
+		ToDoSortedList todoSorted = lc.sortByTime();
+		assertEquals(9, todoSorted.size());
+		assertEquals("5\n4\n8\n7\n9\n6\n2\n1\n3\n",todoSorted.toString());
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Logic\LogicControllerTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Logic\LogicControllerTestRecurrence.java
+	 */
+
+package Logic;
+import static org.junit.Assert.*;
+
+import java.util.*;
+
+import Common.*;
+import Common.Date;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+
+public class LogicControllerTestRecurrence {
+	static LogicController lc = new LogicController();
+
+	
+	static String tag1 = "tagA";
+	static String tag2 = "tagB";
+	static String tag3 = "tagC";
+	static String tag4 = "tagD";
+	
+	static ArrayList<String> tags1 = new ArrayList<String>();
+	static ArrayList<String> tags2 = new ArrayList<String>();
+	static ArrayList<String> tags3 = new ArrayList<String>();
+	static ArrayList<String> tags4 = new ArrayList<String>();	
+	static ArrayList<String> tags5 = new ArrayList<String>();
+	
+	static Date d1;
+	static Date d2;
+	static Date d3;
+	static Date d4;
+	static Date d5;
+	static Date d6;
+	
+	static Task t1;
+	static Task t2;
+	static Task t3;
+	static Task t4;
+	static Task t5;
+	static Task t6;
+	static Task t7;
+	static Task t8;
+	static Task t9;
+	static Task t00;
+	static Task t01;
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		
+		d1 = new Date();
+		d2 = new Date();
+		d3 = new Date();
+		d4 = new Date();
+		d5 = new Date();
+		d6 = new Date();
+		d1.setTime(111111111);
+		d2.setTime(222222222);
+		d3.setTime(777777777);
+		d4.setTime(555555555);
+		d5.setTime(777677777);
+		d6.setTime(776677777);
+		
+		lc.isTesting = true;
+	}
+	@Before
+	public void setUp() throws Exception {
+		tags1.add(tag1);
+		
+		tags2.add(tag1);
+		tags2.add(tag2);
+		
+		tags3.add(tag1);
+		tags3.add(tag4);
+
+		tags4.add(tag2);
+		tags4.add(tag3);
+		tags4.add(tag4);
+
+		tags5.add(tag2);
+		
+		lc.initialise();
+		lc.data.clearAllData();
+		lc.loadData();
+//		lc.historyController = new HistoryController();
+//		lc.activeTaskList = new TaskList();
+//		lc.archivedTaskList = new TaskList();
+//		lc.toDoSortedList = new ToDoSortedList();
+		
+		t1 = new Task(1, "do a", 3, null);
+		t2 = new Task(2, "get b", 6, null);
+		t3 = new Task(3, "c waht", 2, tags1);
+		t4 = new Task(4, "deadline d", d2,  5, tags2);
+		t5 = new Task(555, "meeting e", d1, d4, 2, tags3);
+		t6 = new Task(666, "f deadline", d3, 7, null);
+		t7 = new Task(777, "g meeting", d5, d3, 2, tags4);
+		t8 = new Task(888, "h deadline", d6, 4, tags4);
+		t9 = new Task(999, "i deadline", d3, 9, null);
+		
+		t00 = new Task(1, "task", -1, null);
+		t01 = new Task(2, "test", -1, null);
+	}
+	
+	@After
+	public void clear() throws Exception {
+		tags1.clear();
+		tags2.clear();
+		tags3.clear();
+		tags4.clear();
+		tags5.clear();
+		
+		lc.data.clearAllData();
+//		lc.storageController.storeAllData(lc.data);
+	}
+	
+	/**
+	 * Adding one recurrence task
+	 */
+	@Test
+	public void testAdd1R() {
+		lc.addRecurringTask(t4, Date.getMiliseconds("oneWeek"), 10);
+		assertEquals(10, lc.activeTaskList.size());
+		assertEquals(t4, lc.activeTaskList.getTaskbyId(4));
+		assertEquals(10, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t4));
+		assertEquals(0, lc.archivedTaskList.size());
+	}
+	
+	/**
+	 * Adding two recurrence task
+	 */
+	@Test
+	public void testAdd2R() {
+		lc.addRecurringTask(t4, Date.getMiliseconds("oneWeek"), 10);
+		assertEquals(10, lc.activeTaskList.size());
+		assertEquals(t4, lc.activeTaskList.getTaskbyId(4));
+		assertEquals(10, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t4));
+		assertEquals(0, lc.archivedTaskList.size());
+		lc.addRecurringTask(t5, Date.getMiliseconds("oneWeek"), 10);
+		assertEquals(20, lc.activeTaskList.size());	
+	}
+	
+	/**
+	 * Archive an recurrence task
+	 */
+	@Test
+	public void testArchive() {
+		lc.addRecurringTask(t4, Date.getMiliseconds("oneWeek"), 10);
+		assertEquals(10, lc.activeTaskList.size());
+		assertEquals(t4, lc.activeTaskList.getTaskbyId(4));
+		assertEquals(10, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t4));
+		assertEquals(0, lc.archivedTaskList.size());
+		lc.addRecurringTask(t5, Date.getMiliseconds("oneWeek"), 10);
+		assertEquals(20, lc.activeTaskList.size());	
+		lc.archiveAllTasks(t5, new Date());
+		assertEquals(10, lc.activeTaskList.size());
+		assertEquals(t4, lc.activeTaskList.getTaskbyId(4));
+		assertEquals(10, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t4));
+		assertEquals(10, lc.archivedTaskList.size());
+	}
+	
+	/**
+	 * delete an recurrence task
+	 */
+	@Test
+	public void testDelete() {
+		lc.addRecurringTask(t4, Date.getMiliseconds("oneWeek"), 5);
+		assertEquals(5, lc.activeTaskList.size());
+		assertEquals(t4, lc.activeTaskList.getTaskbyId(4));
+		assertEquals(5, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t4));
+		assertEquals(0, lc.archivedTaskList.size());
+		System.out.println(lc.toDoSortedList);
+		lc.addRecurringTask(t5, Date.getMiliseconds("oneWeek"), 5);
+		assertEquals(10, lc.activeTaskList.size());	
+		lc.deleteAllRecurringTask(t5);
+		assertEquals(5, lc.activeTaskList.size());
+		assertEquals(t4, lc.activeTaskList.getTaskbyId(4));
+		assertEquals(5, lc.toDoSortedList.size());
+		assertEquals(true, lc.toDoSortedList.contains(t4));
+		assertEquals(0, lc.archivedTaskList.size());
+	}
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Logic\LogicControllerTestRecurrence.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Esmond\Documents\main\src\Logic\TaskList.java
+	 */
+
+/**
+ * Used for creating task lists for both todo list and archived list
+ */
+
+package Logic;
+import java.util.*;
+
+import Common.Task;
+
+@SuppressWarnings("serial")
+public class TaskList extends HashMap<Integer, Task>{
+
+	public void addTask(int id, Task task){
+		if (this.containsKey(id)) {
+			try {
+				throw new Exception();
+			} catch (Exception e) {
+				System.out.println("ID: " + id + " already exists in the tasklist");
+				System.out.println(task);
+				e.printStackTrace();
+				return;
+			}
+		}
+		this.put(id, task);
+	}
+	
+	public Task getTaskbyId(int id){
+		return this.get(id);
+	}
+	
+	public boolean removeTaskbyId(int id){
+		if (this.containsKey(id)){
+			this.remove(id);
+			return true;
+		}
+		return false;
+	}
+	
+}
+
+	// End of segment: C:\Users\Esmond\Documents\main\src\Logic\TaskList.java
+
+
+
+
+
