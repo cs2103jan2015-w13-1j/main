@@ -5,12 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import Common.ArchiveSortedList;
 import Common.Date;
+import Common.PrioritySortedList;
 import Common.Task;
+import Common.ToDoSortedList;
 import Logic.LogicController;
-import SortedList.ArchiveSortedList;
-import SortedList.PrioritySortedList;
-import SortedList.ToDoSortedList;
 import Storage.StorageDirectory;
 import Motivator.Motivator;
 

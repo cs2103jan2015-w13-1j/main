@@ -3,11 +3,11 @@ package Logic;
 
 import java.util.ArrayList;
 
-import SortedList.ArchiveSortedList;
-import SortedList.PrioritySortedList;
-import SortedList.ToDoSortedList;
+import Common.ArchiveSortedList;
 import Common.Date;
+import Common.PrioritySortedList;
 import Common.Task;
+import Common.ToDoSortedList;
 
 public interface InterfaceForLogic {
 	

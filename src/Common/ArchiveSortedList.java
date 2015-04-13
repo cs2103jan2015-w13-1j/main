@@ -1,7 +1,6 @@
 // @author A0113598X
-package SortedList;
+package Common;
 
-import Common.Task;
 
 /**
  * Used to store the tasks in sorted order when the program is running for the archive list.

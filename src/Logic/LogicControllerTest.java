@@ -6,8 +6,6 @@ import java.util.*;
 
 import Common.*;
 import Common.Date;
-import SortedList.PrioritySortedList;
-import SortedList.ToDoSortedList;
 
 import org.junit.After;
 import org.junit.Before;
